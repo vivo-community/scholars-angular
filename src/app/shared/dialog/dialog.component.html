@@ -1,0 +1,16 @@
+<form novalidate>
+  <div class="modal-header">
+    <span class="h4 modal-title text-primary" id="modal-basic-title">{{dialog.title | async}}</span>
+    <button *ngIf="dialog.close" type="button" class="close text-primary" aria-label="Close" (click)="dialog.close.action()" [disabled]="dialog.close.disabled() | async">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <scholars-alert [location]="location"></scholars-alert>
+    <ng-content></ng-content>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="dialog.close" type="button" class="btn {{dialog.close.type}}" (click)="dialog.close.action()" [disabled]="dialog.close.disabled() | async">{{dialog.close.label | async}}</button>
+    <button *ngIf="dialog.submit" type="button" class="btn {{dialog.submit.type}}" (click)="dialog.submit.action()" [disabled]="dialog.submit.disabled() | async">{{dialog.submit.label | async}}</button>
+  </div>
+</form>
