@@ -44,7 +44,7 @@
     "pretest:coverage": "yarn base",
     "test": "ng test",
     "test:coverage": "ng test --no-watch --code-coverage --browsers HeadlessChrome",
-    "test:report": "cd .. && cat ./ui/coverage/lcov.info | ./ui/node_modules/coveralls/bin/coveralls.js",
+    "test:report": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test:ci": "yarn lint && yarn build:ssr:prod && yarn e2e && yarn test:coverage"
   },
   "dependencies": {
