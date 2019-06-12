@@ -6,7 +6,7 @@
           <span *ngSwitchCase="'STRING'">
             <a [routerLink]="routerLink" [queryParams]="getQueryParams(sdrFacet, entry)" queryParamsHandling="merge">
               <span>
-                <span>{{entry.value}}</span>
+                <span>{{entry.value | formalize}}</span>
               </span>
             </a>
             <span> ({{entry.count}})</span>
