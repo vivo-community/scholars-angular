@@ -22,6 +22,12 @@ export interface Sort {
     readonly date: boolean;
 }
 
+export interface Export {
+    readonly columnHeader: string;
+    readonly valuePath: string;
+    readonly delimiter: string;
+}
+
 export interface Facet {
     readonly name: string;
     readonly field: string;
@@ -46,4 +52,5 @@ export interface CollectionView extends ResourceView {
     readonly facets: Facet[];
     readonly filters: Filter[];
     readonly sort: Sort[];
+    readonly export: Export[];
 }

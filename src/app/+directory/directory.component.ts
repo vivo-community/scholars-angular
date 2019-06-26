@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Store, select } from '@ngrx/store';
 
@@ -15,7 +15,9 @@ import { SdrPage, SdrFacet } from '../core/model/sdr';
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDefaultDiscoveryView } from '../core/store/sdr';
 import { selectRouterQueryParams } from '../core/store/router';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams } from '../shared/utilities/view.utility';
+import { addFacetsToQueryParams, addFiltersToQueryParams, addExportToQueryParams } from '../shared/utilities/view.utility';
+
+import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'scholars-directory',
@@ -41,6 +43,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
 
     constructor(
         private store: Store<AppState>,
+        private router: Router,
         private route: ActivatedRoute
     ) {
         this.subscriptions = [];
@@ -80,17 +83,36 @@ export class DirectoryComponent implements OnDestroy, OnInit {
         return option === 'All';
     }
 
+    public hasExport(directoryView: DirectoryView): boolean {
+        return directoryView.export !== undefined && directoryView.export.length > 0;
+    }
+
     public getDirectoryRouterLink(directoryView: DirectoryView): string[] {
         return ['/directory', directoryView.name];
     }
 
     public getDirectoryQueryParams(directoryView: DirectoryView, option: string): Params {
-        const queryParams: Params = this.getResetQueryParams(directoryView);
+        const queryParams: Params = this.getQueryParams(directoryView);
+        addFacetsToQueryParams(queryParams, directoryView);
         queryParams.index = `${directoryView.index.field},${directoryView.index.operationKey},${option}`;
         return queryParams;
     }
 
     public getResetQueryParams(directoryView: DirectoryView): Params {
+        const queryParams: Params = this.getQueryParams(directoryView);
+        return queryParams;
+    }
+
+    public getDirectoryExportUrl(directoryView: DirectoryView, params: Params): string {
+        const queryParams: Params = Object.assign({}, params);
+        addExportToQueryParams(queryParams, directoryView);
+        queryParams.collection = null;
+        const tree = this.router.createUrlTree([''], { queryParams });
+        const query = tree.toString().substring(1);
+        return `${environment.service}/${directoryView.collection}/search/export${query}`;
+    }
+
+    private getQueryParams(directoryView: DirectoryView): Params {
         const queryParams: Params = {};
         queryParams.collection = directoryView.collection;
         queryParams.index = undefined;

@@ -13,6 +13,11 @@
       <span class="mr-2">Search results for:</span>
       <span>{{query | async}}</span>
     </span>
+    <span class="pull-right" *ngIf="hasExport(discoveryView)">
+      <a [href]="getDiscoveryExportUrl(discoveryView, queryParams | async)" download>
+        <span>{{ 'DISCOVERY.EXPORT' | translate }}</span>
+      </a>
+    </span>
     <div class="applied-filters mt-2" *ngIf="filters | async; let filters">
       <span class="badge badge-light p-2 mr-2 mb-2" *ngFor="let filter of filters">
         <span *ngIf="showFilter(discoveryView, filter)">
