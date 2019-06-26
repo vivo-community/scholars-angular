@@ -105,8 +105,10 @@ export class DirectoryComponent implements OnDestroy, OnInit {
 
     public getDirectoryExportUrl(directoryView: DirectoryView, params: Params): string {
         const queryParams: Params = Object.assign({}, params);
-        addExportToQueryParams(queryParams, directoryView);
+        queryParams.fields = queryParams.facets;
+        queryParams.facets = null;
         queryParams.collection = null;
+        addExportToQueryParams(queryParams, directoryView);
         const tree = this.router.createUrlTree([''], { queryParams });
         const query = tree.toString().substring(1);
         return `${environment.service}/${directoryView.collection}/search/export${query}`;
