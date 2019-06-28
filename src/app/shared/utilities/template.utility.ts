@@ -44,16 +44,18 @@ const initializeTemplateHelpers = () => {
         return options.fn(workByStudent);
     });
     registerHelper('showPositionForPreferredTitle', (positions, preferredTitle, options) => {
-        const positionsCount = positions.length;
-        let organizationForTitle;
-        for (let i = 0; i < positionsCount; i++) {
-            const position = positions[i];
-            if (position.label === preferredTitle) {
-                organizationForTitle = position.organizations[0];
-                break;
+        if (positions !== undefined) {
+            const positionsCount = positions.length;
+            let organizationForTitle;
+            for (let i = 0; i < positionsCount; i++) {
+                const position = positions[i];
+                if (position.label === preferredTitle) {
+                    organizationForTitle = position.organizations[0];
+                    break;
+                }
             }
+            return options.fn(organizationForTitle);
         }
-        return options.fn(organizationForTitle);
     });
     registerHelper('eachSortedPosition', (positions, hrJobTitle, options) => {
         function positionSorter(labelCheck) {
