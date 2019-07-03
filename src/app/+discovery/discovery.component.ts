@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Store, select } from '@ngrx/store';
 
@@ -13,11 +13,13 @@ import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
 
-import { selectRouterSearchQuery, selectRouterUrl, selectRouterQueryParamFilters } from '../core/store/router';
+import { selectRouterSearchQuery, selectRouterUrl, selectRouterQueryParamFilters, selectRouterQueryParams } from '../core/store/router';
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById } from '../core/store/sdr';
 import { selectWindowDimensions } from '../core/store/layout';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams, addSortToQueryParams } from '../shared/utilities/view.utility';
+import { addFacetsToQueryParams, addFiltersToQueryParams, addSortToQueryParams, addExportToQueryParams } from '../shared/utilities/view.utility';
+
+import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'scholars-discovery',
@@ -32,6 +34,8 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
     public url: Observable<string>;
 
     public query: Observable<string>;
+
+    public queryParams: Observable<Params>;
 
     public filters: Observable<any[]>;
 
@@ -49,6 +53,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
 
     constructor(
         private store: Store<AppState>,
+        private router: Router,
         private route: ActivatedRoute
     ) {
         this.subscriptions = [];
@@ -64,6 +69,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
         this.url = this.store.pipe(select(selectRouterUrl));
         this.query = this.store.pipe(select(selectRouterSearchQuery));
+        this.queryParams = this.store.pipe(select(selectRouterQueryParams));
         this.filters = this.store.pipe(select(selectRouterQueryParamFilters));
         this.discoveryViews = this.store.pipe(select(selectAllResources<DiscoveryView>('discoveryViews')));
         this.subscriptions.push(this.route.params.subscribe((params) => {
@@ -99,6 +105,10 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         return true;
     }
 
+    public hasExport(discoveryView: DiscoveryView): boolean {
+        return discoveryView.export !== undefined && discoveryView.export.length > 0;
+    }
+
     public getDiscoveryRouterLink(discoveryView: DiscoveryView): string[] {
         return ['/discovery', discoveryView.name];
     }
@@ -108,7 +118,6 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         queryParams.collection = discoveryView.collection;
         addFacetsToQueryParams(queryParams, discoveryView);
         addFiltersToQueryParams(queryParams, discoveryView);
-        // NOTE: only first sort is applied to query
         addSortToQueryParams(queryParams, discoveryView);
         // tslint:disable-next-line:no-shadowed-variable
         filters.filter((filter: Filter) => !this.equals(filter, removeFilter)).forEach((filter: Filter) => {
@@ -121,6 +130,17 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
             queryParams.size = page.size;
         }
         return queryParams;
+    }
+
+    public getDiscoveryExportUrl(discoveryView: DiscoveryView, params: Params): string {
+        const queryParams: Params = Object.assign({}, params);
+        queryParams.fields = queryParams.facets;
+        queryParams.facets = null;
+        queryParams.collection = null;
+        addExportToQueryParams(queryParams, discoveryView);
+        const tree = this.router.createUrlTree([''], { queryParams });
+        const query = tree.toString().substring(1);
+        return `${environment.service}/${discoveryView.collection}/search/export${query}`;
     }
 
     private equals(filterOne: Filter, filterTwo: Filter): boolean {

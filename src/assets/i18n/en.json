@@ -45,10 +45,12 @@
     }
   },
   "DIRECTORY": {
-    "ALL": "All"
+    "ALL": "All",
+    "EXPORT": "Export Directory"
   },
   "DISCOVERY": {
-    "TITLE": "Discovery"
+    "TITLE": "Discovery",
+    "EXPORT": "Export Search Results"
   },
   "HEADER": {
     "BANNER": {

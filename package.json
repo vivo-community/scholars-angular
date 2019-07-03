@@ -82,7 +82,7 @@
     "rxjs": "6.5.2",
     "sockjs-client": "1.3.0",
     "stompjs": "2.3.3",
-    "web-animations-js": "2.3.1",
+    "web-animations-js": "2.3.2",
     "zone.js": "0.8.26"
   },
   "devDependencies": {
@@ -100,7 +100,7 @@
     "@types/handlebars": "4.1.0",
     "@types/jasmine": "3.3.13",
     "@types/jasminewd2": "2.0.6",
-    "@types/node": "12.0.8",
+    "@types/node": "12.0.10",
     "codelyzer": "5.1.0",
     "coveralls": "3.0.4",
     "http-server": "0.11.1",
@@ -115,8 +115,8 @@
     "karma-mocha-reporter": "2.2.5",
     "protractor": "5.4.2",
     "rimraf": "2.6.3",
-    "ts-node": "8.2.0",
-    "tslint": "5.17.0",
+    "ts-node": "8.3.0",
+    "tslint": "5.18.0",
     "typescript": "3.2.4"
   }
 }

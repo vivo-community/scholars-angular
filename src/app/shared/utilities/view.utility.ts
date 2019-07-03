@@ -1,6 +1,6 @@
 import { Params } from '@angular/router';
 
-import { Facet, Filter, CollectionView } from '../../core/model/view';
+import { Export, Facet, Filter, CollectionView, Sort } from '../../core/model/view';
 
 const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
     if (collectionView.facets && collectionView.facets.length > 0) {
@@ -21,17 +21,26 @@ const addFiltersToQueryParams = (queryParams: Params, collectionView: Collection
 };
 
 const addSortToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
-    // NOTE: only first sort is applied to query
-    // Spring requires multiple sort parameters use multiple entries with the 'sort' key
-    // e.g. ?sort=name,asc&sort=preferredTitle,desc
-    // Angular unfortunately does not support constructing that with queryParams
     if (collectionView.sort && collectionView.sort.length > 0) {
-        queryParams.sort = `${collectionView.sort[0].field},${collectionView.sort[0].direction}`;
+        queryParams.sort = [];
+        collectionView.sort.forEach((sort: Sort) => {
+            queryParams.sort.push(`${sort.field},${sort.direction}`);
+        });
+    }
+};
+
+const addExportToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
+    if (collectionView.export && collectionView.export.length > 0) {
+        queryParams.export = [];
+        collectionView.export.forEach((exp: Export) => {
+            queryParams.export.push(`${exp.valuePath},${exp.columnHeader}${exp.delimiter !== '||' ? ',' + exp.delimiter : '' }`);
+        });
     }
 };
 
 export {
     addFacetsToQueryParams,
     addFiltersToQueryParams,
-    addSortToQueryParams
+    addSortToQueryParams,
+    addExportToQueryParams
 };
