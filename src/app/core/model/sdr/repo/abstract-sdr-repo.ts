@@ -34,6 +34,12 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
         });
     }
 
+    public recentlyUpdated(limit: number): Observable<R[]> {
+        return this.restService.get<R []>(`${environment.service}/${this.path()}/search/recently-updated?limit=${limit}`, {
+            withCredentials: true
+        });
+    }
+
     public page(request: SdrRequest): Observable<SdrCollection> {
         return this.restService.get<SdrCollection>(`${environment.service}/${this.path()}${this.mapParameters(request)}`, {
             withCredentials: true

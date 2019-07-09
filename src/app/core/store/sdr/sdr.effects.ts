@@ -209,6 +209,19 @@ export class SdrEffects {
         map((action: fromSdr.CountResourcesFailureAction) => this.alert.countFailureAlert(action.payload))
     );
 
+    @Effect() recentlyUpdated = this.actions.pipe(
+        ofType(...this.buildActions(fromSdr.SdrActionTypes.RECENTLY_UPDATED)),
+        mergeMap((action: fromSdr.RecentlyUpdatedResourcesAction) => this.repos.get(action.name).recentlyUpdated(action.payload.limit).pipe(
+            map((recentlyUpdated: SdrResource[]) => new fromSdr.RecentlyUpdatedResourcesSuccessAction(action.name, { recentlyUpdated })),
+            catchError((response) => scheduled([new fromSdr.RecentlyUpdatedResourcesFailureAction(action.name, { response })], asap))
+        ))
+    );
+
+    @Effect() getRecentlyUpdatedFailure = this.actions.pipe(
+        ofType(...this.buildActions(fromSdr.SdrActionTypes.RECENTLY_UPDATED_FAILURE)),
+        map((action: fromSdr.RecentlyUpdatedResourcesFailureAction) => this.alert.recentlyUpdatedFailureAlert(action.payload))
+    );
+
     @Effect() clearResourceSubscription = this.actions.pipe(
         ofType(...this.buildActions(fromSdr.SdrActionTypes.CLEAR)),
         map((action: fromSdr.PageResourcesSuccessAction) => new fromStomp.UnsubscribeAction({ channel: `/queue/${action.name}` }))

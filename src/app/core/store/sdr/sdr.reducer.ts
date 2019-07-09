@@ -72,6 +72,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string) => {
             case getSdrAction(SdrActionTypes.FIND_BY_ID_IN, name):
             case getSdrAction(SdrActionTypes.PAGE, name):
             case getSdrAction(SdrActionTypes.SEARCH, name):
+            case getSdrAction(SdrActionTypes.RECENTLY_UPDATED, name):
                 return {
                     ...state,
                     loading: true,
@@ -88,6 +89,13 @@ export const getSdrReducer = <R extends SdrResource>(name: string) => {
                 return getSdrAdapter<R>(keys[name]).addAll(getResources(action, name), {
                     ...state,
                     links: action.payload.collection._links,
+                    loading: false,
+                    error: undefined
+                });
+            case getSdrAction(SdrActionTypes.RECENTLY_UPDATED_SUCCESS, name):
+                return getSdrAdapter<R>(keys[name]).addAll(action.payload.recentlyUpdated._embedded.persons, {
+                    ...state,
+                    links: undefined,
                     loading: false,
                     error: undefined
                 });
@@ -129,6 +137,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string) => {
             case getSdrAction(SdrActionTypes.PAGE_FAILURE, name):
             case getSdrAction(SdrActionTypes.SEARCH_FAILURE, name):
             case getSdrAction(SdrActionTypes.COUNT_FAILURE, name):
+            case getSdrAction(SdrActionTypes.RECENTLY_UPDATED_FAILURE, name):
                 console.error(action);
                 return {
                     ...state,
