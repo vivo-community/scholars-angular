@@ -44,7 +44,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
         this.persons.subscribe((persons: Person[]) => {
             this.items.next(persons.map((person: Person) => {
                 return {
-                    src: person['thumbnail'] ? `${environment.vivoUrl}${person['thumbnail']}` : 'assets/images/abcs-of-research.png',
+                    src: person['thumbnail'] ? `${environment.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
                     link: `/display/persons/${person['id']}`,
                     alt: !person['name'] ? person['name'] : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
                     hidden: true
