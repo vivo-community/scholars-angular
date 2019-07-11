@@ -46,7 +46,10 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
                 return {
                     src: person['thumbnail'] ? `${environment.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
                     link: `/display/persons/${person['id']}`,
-                    alt: !person['name'] ? person['name'] : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
+                    alt: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
+                    modTime: person['modTime'] ? person['modTime'] : '',
+                    name: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : '',
+                    preferredTitle: person['preferredTitle'] ? person['preferredTitle'] : '',
                     hidden: true
                 };
             }));
@@ -102,7 +105,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
 
     private getCount(): number {
         const size = this.scrollViewRef !== undefined ? this.scrollViewRef.nativeElement.clientWidth : 0;
-        return Math.floor(size / 80);
+        return Math.floor(size / 140);
     }
 
 }

@@ -17,21 +17,103 @@
       overflow: hidden;
       align-items: center;
       justify-content: center;
+
       .scroll-item {
+        box-sizing: border-box;
         flex-direction: column;
         margin: 8px;
         box-shadow: 2px 2px 2px 1px var(--gray);
-        img {
-          height: 100px;
-          width: 70px;
+        height: 102px;
+        width: 140px;
+        font-size: 0.7em;
+        text-align: left;
+        transition: all .35s ease-in-out;
+
+        .item-main {
+          box-sizing: border-box;
+          height: 90px;
+          width: 140px;
+          overflow: hidden;
+          transition: all .35s ease-in-out;
+
+          .item-image {
+            float: left;
+            width: 44px;
+            height: 90px;
+            margin-top: 4px;
+            margin-left: 4px;
+            transition: all .35s ease-in-out;
+
+            .image-link {
+              img {
+                float: left;
+                height: 50px;
+                width: 36px;
+                font-size: 0.7em;
+                box-shadow: 0.75px 0.75px 0.75px 0.5px var(--gray);
+                transition: all .35s ease-in-out;
+              }
+            }
+          }
+          .item-name {
+            box-sizing: border-box;
+            height: 90px;
+            width: 140px;
+            font-size: 0.8em;
+            padding: 4px;
+            transition: all .35s ease-in-out;
+
+            .name-person {
+              font-weight: bold;
+            }
+          }
+        }
+        .item-modtime {
+          clear: both;
+          height: 12px;
+          width: 140px;
+          padding: 2px;
+          font-size: 0.6em;
+          text-align: center;
           transition: all .35s ease-in-out;
         }
       }
       .scroll-item:hover {
         box-shadow: 2px 2px 2px 1px var(--secondary);
-        img {
-          height: 125px;
-          width: 87.5px;
+        height: 135px;
+        width: 185px;
+        transition: all .30s ease-in-out;
+
+        .item-main {
+          height: 115px;
+          width: 185px;
+          transition: all .30s ease-in-out;
+
+          .item-image {
+            width: 64px;
+            height: 115px;
+            transition: all .30s ease-in-out;
+
+            .image-link {
+              img {
+                height: 76px;
+                width: 55px;
+                font-size: 1.0em;
+                transition: all .30s ease-in-out;
+              }
+            }
+          }
+          .item-name {
+            height: 115px;
+            width: 185px;
+            font-size: 1.0em;
+            transition: all .30s ease-in-out;
+          }
+        }
+        .item-modtime {
+          height: 15px;
+          width: 185px;
+          font-size: 0.9em;
           transition: all .30s ease-in-out;
         }
       }
@@ -40,5 +122,5 @@
       }
     }
   }
-  
+
 }

@@ -26,6 +26,7 @@ import { UserEditComponent } from './dialog/user-edit/user-edit.component';
 
 import { LoaderDirective } from './loader/loader.directive';
 
+import { EllipsisPipe } from './utilities/ellipsis.pipe';
 import { FilterPipe } from './utilities/filter.pipe';
 import { FormalizePipe } from './utilities/formalize.pipe';
 import { SafeHtmlPipe } from './utilities/safe-html.pipe';
@@ -41,6 +42,7 @@ const MODULES = [
 ];
 
 const PIPES = [
+    EllipsisPipe,
     FilterPipe,
     FormalizePipe,
     SafeHtmlPipe,
