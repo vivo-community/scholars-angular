@@ -2,14 +2,16 @@
   <i class="fa fa-chevron-left my-auto mr-2" (click)="scrollLeft()"></i>
   <div class="scroll-view mx-auto" #scrollView>
     <div class="scroll-item" *ngFor="let item of getItems() | async" [ngClass]="{'hide': item.hidden}">
-      <div class="item-main">
-        <div class="item-image"><a href="{{item.link}}" class="image-link"><img [src]="item.src" alt="{{item.alt}}"></a></div>
-        <div class="item-name">
-          <div class="name-person">{{item.name}}</div>
-          <div class="name-title">{{item.preferredTitle | ellipsis: 145: item.name}}</div>
+      <a href="{{item.link}}" class="item-link">
+        <div class="item-main">
+          <div class="item-image"><img [src]="item.src" alt="{{item.alt}}"></div>
+          <div class="item-name">
+            <div class="name-person">{{item.name}}</div>
+            <div class="name-title">{{item.preferredTitle | ellipsis: 145: item.name}}</div>
+          </div>
         </div>
-      </div>
-      <div class="item-modtime">Updated: {{item.modTime | date: 'MMM d, y, h:mm a'}}</div>
+        <div class="item-modtime">Updated: {{item.modTime | date: 'MMM d, y, h:mm a'}}</div>
+      </a>
     </div>
   </div>
   <i class="fa fa-chevron-right my-auto ml-2" (click)="scrollRight()"></i>
