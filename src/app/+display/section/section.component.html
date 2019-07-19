@@ -1,7 +1,41 @@
-<div class="card-header font-weight-bold text-primary text-capitalize">{{section.name}}</div>
+<div class="card-header font-weight-bold text-primary text-capitalize">
+  {{section.name}}
+  <div class="float-right">
+    <div id="embedDropdown" class="dropdown d-inline-block" scholars-dropdown>
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <form>
+          <div class="form-group col-12">
+            <label>Embeddable Widget</label>
+            <div class="input-group">
+              <input class="form-control" type="text" ng-bind-html value="{{buildEmbedCode()}}" #embedCode/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" (click)="copyToClipBoard(embedCode)">Copy</button>
+              </span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="card-body">
   <div [innerHtml]="section.templateFunction(document) | safeHtml"></div>
   <div *ngFor="let subsection of section.subsections">
     <scholars-subsection [subsection]="subsection" [document]="document"></scholars-subsection>
   </div>
 </div>
+
+<style>
+#embedDropdown .dropdown-menu {
+  min-width: 30rem;
+}
+
+#embedDropdown .btn.dropdown-toggle {
+  padding: 0 .3rem;
+  color: var(--primary);
+  background-color: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.125);
+}
+</style>
