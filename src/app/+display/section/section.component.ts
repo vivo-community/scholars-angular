@@ -36,4 +36,8 @@ export class SectionComponent {
 	    document.execCommand('copy');
 	    copyElement.setSelectionRange(0, 0);
     }
+
+    public isShareable(): Boolean {
+		return this.displayViewName === 'People';
+    }
 }
