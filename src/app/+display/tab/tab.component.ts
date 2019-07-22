@@ -23,9 +23,9 @@ export class TabComponent implements OnDestroy, OnInit {
 
     public document: Observable<SolrDocument>;
 
-    public displayViewName: String;
+    public displayViewName: string;
 
-    public collection: String;
+    public collection: string;
 
     private subscriptions: Subscription[];
 

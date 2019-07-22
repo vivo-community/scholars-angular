@@ -1,7 +1,7 @@
 import { Directive, HostListener, HostBinding, ElementRef } from '@angular/core';
 
 @Directive({
-    selector: '[scholars-dropdown]',
+    selector: '[scholarsDropdown]',
 })
 
 export class DropdownDirective {
@@ -13,8 +13,8 @@ export class DropdownDirective {
 
     @HostListener('click')
     toggleOpen() {
-        this.isOpen=!this.isOpen;
-        if(this.isOpen) {
+        this.isOpen = !this.isOpen;
+        if (this.isOpen) {
             this._el.nativeElement.querySelector('.dropdown-menu').classList.add('show');
         } else {
             this._el.nativeElement.querySelector('.dropdown-menu').classList.remove('show');
