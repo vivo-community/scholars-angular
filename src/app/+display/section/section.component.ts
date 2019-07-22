@@ -27,7 +27,8 @@ export class SectionComponent {
 
     public buildEmbedCode(): String {
 		return '<div class="scholars-embed" data-id="'+this.document.id+'" data-collection="'+this.collection+'" data-displayview="'+this.displayViewName+'" data-sections="'+this.section.name+'"></div>'+
-				'<script type="text/javascript" src="'+environment.service+'/js/embed/dist/bundle.js"></script>';
+			   '<!-- This javascript only needs to be included once in your HTML -->'+
+			   '<script type="text/javascript" src="'+environment.service+'/js/embed/dist/bundle.js" async></script>';
     }
 
     public copyToClipBoard(copyElement: any) {
