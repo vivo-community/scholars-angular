@@ -7,7 +7,7 @@
           <div class="item-image"><img [src]="item.src" alt="{{item.alt}}"></div>
           <div class="item-name">
             <div class="name-person">{{item.name}}</div>
-            <div class="name-title">{{item.preferredTitle | ellipsis: 145: item.name}}</div>
+            <div class="name-title">{{item.preferredTitle}}</div>
           </div>
         </div>
         <div class="item-modtime">Updated: {{item.modTime | date: 'MMM d, y, h:mm a'}}</div>

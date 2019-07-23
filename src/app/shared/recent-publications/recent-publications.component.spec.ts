@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { StoreModule } from '@ngrx/store';
 import { metaReducers, reducers } from '../../core/store';
-import { EllipsisPipe } from '../../shared/utilities/ellipsis.pipe';
 
 import { RecentPublicationsComponent } from './recent-publications.component';
 
@@ -20,7 +19,6 @@ describe('RecentPublicationsComponent', () => {
                 TranslateModule.forRoot(),
             ],
             declarations: [
-                EllipsisPipe,
                 RecentPublicationsComponent
             ],
             schemas: [
