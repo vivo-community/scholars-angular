@@ -14,7 +14,7 @@
       height: 100%;
       width: 100%;
       display: flex;
-      overflow: hidden;
+      overflow-y: hidden;
       align-items: center;
       justify-content: center;
 
@@ -23,10 +23,11 @@
         flex-direction: column;
         margin: 8px;
         box-shadow: 2px 2px 2px 1px var(--gray);
-        height: 102px;
+        height: 80px;
         width: 140px;
         font-size: 0.7em;
         text-align: left;
+        line-height: 11px;
         transition: all .35s ease-in-out;
 
         .item-link {
@@ -36,23 +37,22 @@
 
         .item-main {
           box-sizing: border-box;
-          height: 90px;
+          height: 70px;
           width: 140px;
           overflow: hidden;
           transition: all .35s ease-in-out;
 
           .item-image {
             float: left;
-            width: 44px;
-            height: 90px;
+            width: 50px;
             margin-top: 4px;
             margin-left: 4px;
             transition: all .35s ease-in-out;
 
             img {
               float: left;
-              height: 50px;
-              width: 36px;
+              height: 45px;
+              width: 45px;
               font-size: 0.7em;
               box-shadow: 0.75px 0.75px 0.75px 0.5px var(--gray);
               transition: all .35s ease-in-out;
@@ -60,10 +60,10 @@
           }
           .item-name {
             box-sizing: border-box;
-            height: 90px;
+            height: 70px;
             width: 140px;
             font-size: 0.8em;
-            padding: 4px;
+            padding: 4px 4px 0px 4px;
             transition: all .35s ease-in-out;
 
             .name-person {
@@ -73,9 +73,9 @@
         }
         .item-modtime {
           clear: both;
-          height: 12px;
+          height: 10px;
           width: 140px;
-          padding: 2px;
+          padding: 0px 2px;
           font-size: 0.6em;
           text-align: center;
           transition: all .35s ease-in-out;
@@ -83,8 +83,9 @@
       }
       .scroll-item:hover {
         box-shadow: 2px 2px 2px 1px var(--secondary);
-        height: 135px;
+        height: 130px;
         width: 185px;
+        line-height: 14px;
         transition: all .30s ease-in-out;
 
         .item-main {
@@ -93,13 +94,12 @@
           transition: all .30s ease-in-out;
 
           .item-image {
-            width: 64px;
-            height: 115px;
+            width: 75px;
             transition: all .30s ease-in-out;
 
             img {
-              height: 76px;
-              width: 55px;
+              height: 70px;
+              width: 70px;
               font-size: 1.0em;
               transition: all .30s ease-in-out;
             }
