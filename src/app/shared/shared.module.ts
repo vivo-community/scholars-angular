@@ -24,7 +24,6 @@ import { TwitterComponent } from './twitter/twitter.component';
 import { YouTubeComponent } from './youtube/youtube.component';
 import { UserEditComponent } from './dialog/user-edit/user-edit.component';
 
-import { DropdownDirective } from './dropdown/dropdown.directive';
 import { LoaderDirective } from './loader/loader.directive';
 
 import { FilterPipe } from './utilities/filter.pipe';
@@ -68,7 +67,6 @@ const COMPONENTS = [
 ];
 
 const DIRECTIVES = [
-    DropdownDirective,
     LoaderDirective
 ];
 
