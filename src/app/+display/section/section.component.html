@@ -1,4 +1,23 @@
-<div class="card-header font-weight-bold text-primary text-capitalize">{{section.name}}</div>
+<div class="card-header font-weight-bold text-primary text-capitalize">
+  {{section.name}}
+  <div class="float-right" *ngIf="isShareable()">
+    <div class="embed-dropdown dropdown d-inline-block" ngbDropdown>
+      <button class="btn btn-secondary dropdown-toggle" type="button" ngbDropdownToggle>
+      </button>
+      <div class="dropdown-menu" [attr.aria-labelledby]="shareableDropdownMenuButton" ngbDropdownMenu>
+          <div class="form-group col-12">
+            <label>Embeddable Widget</label>
+            <div class="input-group">
+              <input class="form-control" type="text" ng-bind-html value="{{buildEmbedCode()}}" #embedCode/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" (click)="copyToClipBoard(embedCode)">Copy</button>
+              </span>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="card-body">
   <div [innerHtml]="section.templateFunction(document) | safeHtml"></div>
   <div *ngFor="let subsection of section.subsections">
