@@ -14,6 +14,9 @@ export enum SdrActionTypes {
     COUNT = 'count resources',
     COUNT_SUCCESS = 'sucessfully counted resources',
     COUNT_FAILURE = 'failed counting resources',
+    RECENTLY_UPDATED = 'get recently updated',
+    RECENTLY_UPDATED_SUCCESS = 'sucessfully got recently updated',
+    RECENTLY_UPDATED_FAILURE = 'failed getting recently updated',
     GET_ONE = 'get one resource by id',
     GET_ONE_SUCCESS = 'sucessfully got resource by id',
     GET_ONE_FAILURE = 'failed getting resource by id',
@@ -99,6 +102,21 @@ export class CountResourcesSuccessAction implements Action {
 
 export class CountResourcesFailureAction implements Action {
     readonly type = getSdrAction(SdrActionTypes.COUNT_FAILURE, this.name);
+    constructor(public name: string, public payload: any) { }
+}
+
+export class RecentlyUpdatedResourcesAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.RECENTLY_UPDATED, this.name);
+    constructor(public name: string, public payload: { limit: number }) { }
+}
+
+export class RecentlyUpdatedResourcesSuccessAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.RECENTLY_UPDATED_SUCCESS, this.name);
+    constructor(public name: string, public payload: any) { }
+}
+
+export class RecentlyUpdatedResourcesFailureAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.RECENTLY_UPDATED_FAILURE, this.name);
     constructor(public name: string, public payload: any) { }
 }
 
@@ -225,6 +243,9 @@ export type SdrActions =
     CountResourcesAction |
     CountResourcesSuccessAction |
     CountResourcesFailureAction |
+    RecentlyUpdatedResourcesAction |
+    RecentlyUpdatedResourcesSuccessAction |
+    RecentlyUpdatedResourcesFailureAction |
     GetOneResourceAction |
     GetOneResourceSuccessAction |
     GetOneResourceFailureAction |

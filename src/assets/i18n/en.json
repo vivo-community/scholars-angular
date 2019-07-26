@@ -146,6 +146,9 @@
       "LAST": "Last",
       "PAGE_SIZE": "Page Size {{size}}"
     },
+    "RECENT_PUBLICATIONS": {
+      "PERSON_IMAGE_ALT_FALLBACK": "Thumbnail of Person"
+    },
     "SEARCH_BOX": {
       "LABEL": "Find Research at {{organization}}",
       "SEARCH_TIPS": "Search Tips"

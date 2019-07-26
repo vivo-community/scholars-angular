@@ -1,5 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { StoreModule } from '@ngrx/store';
+import { metaReducers, reducers } from '../../core/store';
 
 import { RecentPublicationsComponent } from './recent-publications.component';
 
@@ -9,6 +12,12 @@ describe('RecentPublicationsComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [
+                StoreModule.forRoot(reducers, {
+                    metaReducers
+                }),
+                TranslateModule.forRoot(),
+            ],
             declarations: [
                 RecentPublicationsComponent
             ],

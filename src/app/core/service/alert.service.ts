@@ -109,6 +109,10 @@ export class AlertService {
         return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
     }
 
+    public recentlyUpdatedFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+        return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
+    }
+
     public searchFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
         return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
     }

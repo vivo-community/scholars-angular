@@ -1,5 +1,13 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { AppState } from '../../core/store';
+import * as fromSdr from '../../core/store/sdr/sdr.actions';
+import { selectAllResources } from '../../core/store/sdr';
+import { Person } from '../../core/model/discovery';
+import { environment } from '../../../environments/environment';
 
 interface ScrollItem {
     src: string;
@@ -13,21 +21,42 @@ interface ScrollItem {
     templateUrl: 'recent-publications.component.html',
     styleUrls: ['recent-publications.component.scss']
 })
-export class RecentPublicationsComponent implements AfterViewInit {
+export class RecentPublicationsComponent implements AfterViewInit, OnInit {
 
     @ViewChild('scrollView') scrollViewRef: ElementRef;
 
     private items: BehaviorSubject<ScrollItem[]>;
+    private persons: Observable<Person[]>;
 
-    constructor() {
-        this.items = new BehaviorSubject<ScrollItem[]>([
-            { src: 'assets/images/abcs-of-research.png', link: '#', alt: 'ABCs of Research', hidden: true },
-            { src: 'assets/images/advanced-scientific-research.png', link: '#', alt: 'Advanced Scientific Research', hidden: true },
-            { src: 'assets/images/educational-research.png', link: '#', alt: 'Educational Research', hidden: true },
-            { src: 'assets/images/research-methods.png', link: '#', alt: 'Research Methods', hidden: true },
-            { src: 'assets/images/social-research.jpg', link: '#', alt: 'Social Research', hidden: true },
-            { src: 'assets/images/thinking-in-research.png', link: '#', alt: 'Thinking in Research', hidden: true }
-        ]);
+    constructor(
+        private store: Store<AppState>,
+        private translate: TranslateService
+    ) {
+        this.items = new BehaviorSubject<ScrollItem[]>([]);
+    }
+
+    ngOnInit() {
+        this.persons = this.store.pipe(
+            select(selectAllResources('persons')),
+            filter((persons: Person[]) => persons.length > 0)
+        );
+
+        this.persons.subscribe((persons: Person[]) => {
+            this.items.next(persons.map((person: Person) => {
+                return {
+                    src: person['thumbnail'] ? `${environment.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
+                    link: `/display/persons/${person['id']}`,
+                    alt: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
+                    modTime: person['modTime'] ? person['modTime'] : '',
+                    name: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : '',
+                    preferredTitle: person['preferredTitle'] ? person['preferredTitle'] : '',
+                    hidden: true
+                };
+            }));
+            this.fitItems();
+        });
+
+        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', {limit: 10}));
     }
 
     ngAfterViewInit() {
@@ -76,7 +105,7 @@ export class RecentPublicationsComponent implements AfterViewInit {
 
     private getCount(): number {
         const size = this.scrollViewRef !== undefined ? this.scrollViewRef.nativeElement.clientWidth : 0;
-        return Math.floor(size / 80);
+        return Math.floor(size / 140);
     }
 
 }
