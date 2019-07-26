@@ -56,10 +56,11 @@ export class SubsectionComponent implements AfterViewInit, OnInit, OnDestroy {
             map((params: Params) => {
                 const pageSize = params[`${this.subsection.name}.size`] ? Number(params[`${this.subsection.name}.size`]) : this.subsection.pageSize;
                 const pageNumber = params[`${this.subsection.name}.page`] ? Number(params[`${this.subsection.name}.page`]) : 1;
+                const totalElements = this.resources.getValue().length;
                 return {
                     size: pageSize,
-                    totalElements: this.resources.getValue().length,
-                    totalPages: Math.ceil(this.resources.getValue().length / this.subsection.pageSize),
+                    totalElements: totalElements,
+                    totalPages: Math.ceil(totalElements / pageSize),
                     number: pageNumber,
                 };
             })
