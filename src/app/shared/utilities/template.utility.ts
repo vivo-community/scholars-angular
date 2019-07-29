@@ -2,11 +2,17 @@ import { ResourceView, CollectionView, DisplayView } from '../../core/model/view
 
 import { compileTemplate, getTemplateFunction, getParsedTemplateFunction, initializeTemplateHelpers } from 'scholars-embed-utilities';
 
+import { environment } from '../../../environments/environment';
+
+const additionalContext = {
+    vivoUrl: environment.vivoUrl
+};
+
 const getParsedResourceViewTemplateFunction = (view: ResourceView, template: string) => {
     compileTemplate(template);
     return (resource: any) => {
         resource.collection = view.collection;
-        const templateFunction = getTemplateFunction(template);
+        const templateFunction = getTemplateFunction(template, additionalContext);
         return templateFunction(resource);
     };
 };
@@ -21,22 +27,22 @@ const augmentCollectionViewTemplates = (view: CollectionView) => {
 };
 
 const augmentDisplayViewTemplates = (view: DisplayView) => {
-    view.mainContentTemplateFunction = getParsedTemplateFunction(view.mainContentTemplate);
-    view.leftScanTemplateFunction = getParsedTemplateFunction(view.leftScanTemplate);
-    view.rightScanTemplateFunction = getParsedTemplateFunction(view.rightScanTemplate);
-    view.asideTemplateFunction = getParsedTemplateFunction(view.asideTemplate);
+    view.mainContentTemplateFunction = getParsedTemplateFunction(view.mainContentTemplate, additionalContext);
+    view.leftScanTemplateFunction = getParsedTemplateFunction(view.leftScanTemplate, additionalContext);
+    view.rightScanTemplateFunction = getParsedTemplateFunction(view.rightScanTemplate, additionalContext);
+    view.asideTemplateFunction = getParsedTemplateFunction(view.asideTemplate, additionalContext);
     view.tabs.forEach(tab => {
         tab.sections.forEach(section => {
-            section.templateFunction = getParsedTemplateFunction(section.template);
+            section.templateFunction = getParsedTemplateFunction(section.template, additionalContext);
             section.subsections.forEach(subsection => {
-                subsection.templateFunction = getParsedTemplateFunction(subsection.template);
+                subsection.templateFunction = getParsedTemplateFunction(subsection.template, additionalContext);
             });
         });
     });
     view.metaTemplateFunctions = {};
     for (const k in view.metaTemplates) {
         if (view.metaTemplates.hasOwnProperty(k)) {
-            view.metaTemplateFunctions[k] = getParsedTemplateFunction(view.metaTemplates[k]);
+            view.metaTemplateFunctions[k] = getParsedTemplateFunction(view.metaTemplates[k], additionalContext);
         }
     }
 };
