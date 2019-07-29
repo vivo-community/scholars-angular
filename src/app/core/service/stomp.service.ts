@@ -11,7 +11,6 @@ import { StompSubscription } from '../model/stomp';
 
 import { environment } from '../../../environments/environment';
 
-
 @Injectable({
     providedIn: 'root',
 })
