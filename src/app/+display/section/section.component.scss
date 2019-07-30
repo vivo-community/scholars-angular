@@ -1,10 +1,20 @@
-.embed-dropdown .dropdown-menu {
-  min-width: 30rem;
-}
+:host {
+  .embed-dropdown {
+    .dropdown-menu {
+      min-width: 450px;
+    }
 
-.embed-dropdown .btn.dropdown-toggle {
-  padding: 0 .3rem;
-  color: var(--primary);
-  background-color: rgba(0, 0, 0, 0.03);
-  border-color: rgba(0, 0, 0, 0.125);
+    .dropdown-toggle::after {
+      display: none;
+    }
+
+    .fa-share-alt {
+      padding: 5px;
+    }
+
+    .fa-copy:hover,
+    .fa-share-alt:hover {
+      cursor: pointer;
+    }
+  }
 }

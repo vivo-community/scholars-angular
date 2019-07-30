@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+
 import { DisplayTabSectionView } from '../../core/model/view';
 import { SolrDocument } from '../../core/model/discovery';
 
@@ -19,25 +21,22 @@ export class SectionComponent {
     public document: SolrDocument;
 
     @Input()
-    public displayViewName: string;
+    public display: string;
 
     @Input()
     public collection: string;
 
-
-    public buildEmbedCode(): string {
-        return '<div class="scholars-embed" data-id="' + this.document.id + '" data-collection="' + this.collection + '" data-displayview="' + this.displayViewName + '" data-sections="' + this.section.name + '"></div>' +
-                '<!-- This javascript only needs to be included once in your HTML -->' +
-                '<script type="text/javascript" src="' + environment.service + '/js/embed/dist/bundle.js" async></script>';
+    public getEmbedSnippet(): string {
+        return `<div class="_scholars_embed_" data-collection="${this.collection}" data-individual="${this.document.id}" data-display="${this.display}" data-sections="${this.section.name}"></div>\n\n`
+            + '<!-- This JavaScript only needs to be included once in your HTML -->\n'
+            + `<script type="text/javascript" src="${environment.service}/embed/scholars-embed.min.js" async></script>`;
     }
 
-    public copyToClipBoard(copyElement: any) {
+    public copyToClipBoard(copyElement: any, tooltip: NgbTooltip) {
         copyElement.select();
         document.execCommand('copy');
         copyElement.setSelectionRange(0, 0);
+        setTimeout(() => tooltip.close(), 2000);
     }
 
-    public isShareable(): boolean {
-        return this.displayViewName === 'People';
-    }
 }
