@@ -28,7 +28,7 @@ export class StompService {
         if (isPlatformServer(this.platformId)) {
             return scheduled([false], asap);
         }
-        const socket = new SockJS(environment.service + '/connect');
+        const socket = new SockJS(environment.serviceUrl + '/connect');
         this.client = Stomp.over(socket);
 
         this.client.onreceipt = (receipt: any): void => {

@@ -5,7 +5,8 @@ import { compileTemplate, getTemplateFunction, getParsedTemplateFunction, initia
 import { environment } from '../../../environments/environment';
 
 const additionalContext = {
-    vivoUrl: environment.vivoUrl
+    vivoUrl: environment.vivoUrl,
+    serviceUrl: environment.serviceUrl
 };
 
 const getParsedResourceViewTemplateFunction = (view: ResourceView, template: string) => {
