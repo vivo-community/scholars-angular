@@ -23,37 +23,37 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     }
 
     public search(request: SdrRequest): Observable<SdrCollection> {
-        return this.restService.get<SdrCollection>(`${environment.service}/${this.path()}/search/facet${this.mapParameters(request)}`, {
+        return this.restService.get<SdrCollection>(`${environment.serviceUrl}/${this.path()}/search/facet${this.mapParameters(request)}`, {
             withCredentials: true
         });
     }
 
     public count(request: SdrRequest): Observable<Count> {
-        return this.restService.get<Count>(`${environment.service}/${this.path()}/search/count${this.mapParameters(request)}`, {
+        return this.restService.get<Count>(`${environment.serviceUrl}/${this.path()}/search/count${this.mapParameters(request)}`, {
             withCredentials: true
         });
     }
 
     public recentlyUpdated(limit: number): Observable<R[]> {
-        return this.restService.get<R []>(`${environment.service}/${this.path()}/search/recently-updated?limit=${limit}`, {
+        return this.restService.get<R[]>(`${environment.serviceUrl}/${this.path()}/search/recently-updated?limit=${limit}`, {
             withCredentials: true
         });
     }
 
     public page(request: SdrRequest): Observable<SdrCollection> {
-        return this.restService.get<SdrCollection>(`${environment.service}/${this.path()}${this.mapParameters(request)}`, {
+        return this.restService.get<SdrCollection>(`${environment.serviceUrl}/${this.path()}${this.mapParameters(request)}`, {
             withCredentials: true
         });
     }
 
     public getAll(): Observable<SdrCollection> {
-        return this.restService.get<SdrCollection>(`${environment.service}/${this.path()}`, {
+        return this.restService.get<SdrCollection>(`${environment.serviceUrl}/${this.path()}`, {
             withCredentials: true
         });
     }
 
     public getOne(id: string | number): Observable<R> {
-        return this.restService.get<R>(`${environment.service}/${this.path()}/${id}`, {
+        return this.restService.get<R>(`${environment.serviceUrl}/${this.path()}/${id}`, {
             withCredentials: true
         });
     }
@@ -63,7 +63,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
         const batches = ids.map((e, i) => i % chunkSize === 0 ? ids.slice(i, i + chunkSize) : null).filter((e) => e);
         const observables: Observable<SdrCollection>[] = [];
         batches.forEach((batch) => {
-            observables.push(this.restService.get<SdrCollection>(`${environment.service}/${this.path()}/search/findByIdIn?ids=${batch.join(',')}`, {
+            observables.push(this.restService.get<SdrCollection>(`${environment.serviceUrl}/${this.path()}/search/findByIdIn?ids=${batch.join(',')}`, {
                 withCredentials: true
             }));
         });
@@ -75,7 +75,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
                     },
                     _links: {
                         self: {
-                            href: `${environment.service}/${this.path()}/search/findByIdIn?ids=${ids.join(',')}`
+                            href: `${environment.serviceUrl}/${this.path()}/search/findByIdIn?ids=${ids.join(',')}`
                         }
                     },
                     page: {
@@ -94,13 +94,13 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     }
 
     public findByTypesIn(types: string[]): Observable<R> {
-        return this.restService.get<R>(`${environment.service}/${this.path()}/search/findByTypesIn?types=${types.join(',')}`, {
+        return this.restService.get<R>(`${environment.serviceUrl}/${this.path()}/search/findByTypesIn?types=${types.join(',')}`, {
             withCredentials: true
         });
     }
 
     public post(resource: R): Observable<R> {
-        return this.restService.post<R>(`${environment.service}/${this.path()}`, resource, { withCredentials: true });
+        return this.restService.post<R>(`${environment.serviceUrl}/${this.path()}`, resource, { withCredentials: true });
     }
 
     public put(resource: R): Observable<R> {

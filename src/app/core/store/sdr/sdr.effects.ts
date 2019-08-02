@@ -8,6 +8,8 @@ import { combineLatest, defer, Observable, scheduled } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
 import { map, switchMap, catchError, withLatestFrom, skipWhile, take, filter, mergeMap } from 'rxjs/operators';
 
+import { formalize } from 'scholars-embed-utilities';
+
 import { AlertService } from '../../service/alert.service';
 import { DialogService } from '../../service/dialog.service';
 
@@ -25,8 +27,6 @@ import { OperationKey, Facet, DiscoveryView, DirectoryView, FacetSort } from '..
 
 import { injectable, repos } from '../../model/repos';
 
-import { formalize } from '../../../shared/utilities/formalize.pipe';
-
 import { selectAllResources } from './';
 import { selectRouterState } from '../router';
 import { selectIsStompConnected, selectStompState } from '../stomp';
@@ -36,6 +36,8 @@ import * as fromRouter from '../router/router.actions';
 import * as fromStomp from '../stomp/stomp.actions';
 import * as fromSdr from './sdr.actions';
 import * as fromSidebar from '../sidebar/sidebar.actions';
+
+import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class SdrEffects {
@@ -435,7 +437,7 @@ export class SdrEffects {
 
                                 const sidebarItem: SidebarItem = {
                                     type: SidebarItemType.FACET,
-                                    label: scheduled([facet.field === 'type' ? formalize(facetEntry.value) : facetEntry.value], asap),
+                                    label: scheduled([facet.field === 'type' ? formalize(facetEntry.value, environment.formalize) : facetEntry.value], asap),
                                     facet: facet,
                                     selected: selected,
                                     parenthetical: facetEntry.count,

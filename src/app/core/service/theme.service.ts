@@ -27,7 +27,7 @@ export class ThemeService {
     }
 
     public getActiveTheme(): Observable<Theme> {
-        return this.restService.get<Theme>(environment.service + '/themes/search/active');
+        return this.restService.get<Theme>(environment.serviceUrl + '/themes/search/active');
     }
 
     public applyActiveTheme(theme: Theme): Observable<SafeStyle> {

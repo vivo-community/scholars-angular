@@ -1,6 +1,6 @@
-export interface SdrPage {
-    readonly size: number;
-    readonly totalElements: number;
-    readonly totalPages: number;
-    readonly number: number;
+import { Page } from 'scholars-embed-utilities';
+
+// tslint:disable-next-line: no-empty-interface
+export interface SdrPage extends Page {
+
 }

@@ -52,6 +52,12 @@
     "TITLE": "Discovery",
     "EXPORT": "Export Search Results"
   },
+  "DISPLAY": {
+    "EMBEDDABLE": {
+      "LABEL": "Embeddable",
+      "COPIED": "Embeddable snippet copied!"
+    }
+  },
   "HEADER": {
     "BANNER": {
       "LOGO_ALT": "Scholars at Texas A&M University logo"

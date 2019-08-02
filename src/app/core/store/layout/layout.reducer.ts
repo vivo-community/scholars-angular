@@ -1,9 +1,6 @@
-import { LayoutActions, LayoutActionTypes } from './layout.actions';
+import { WindowDimensions } from 'scholars-embed-utilities';
 
-export interface WindowDimensions {
-    width: number;
-    height: number;
-}
+import { LayoutActions, LayoutActionTypes } from './layout.actions';
 
 export type LayoutState = Readonly<{
     windowDimensions: WindowDimensions;
@@ -68,3 +65,7 @@ export const isSidebarCollapsed = (state: LayoutState) => state.sidebarCollapsed
 export const isNavbarExpanded = (state: LayoutState) => !state.navbarCollapsed;
 export const isNavigationExpanded = (state: LayoutState) => !state.navigationCollapsed;
 export const isSidebarExpanded = (state: LayoutState) => !state.sidebarCollapsed;
+
+export {
+    WindowDimensions
+};

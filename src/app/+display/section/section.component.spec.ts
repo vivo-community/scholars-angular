@@ -26,7 +26,8 @@ describe('SectionComponent', () => {
             requiredFields: [],
             lazyReferences: [],
             subsections: [],
-            hidden: false
+            hidden: false,
+            shared: false
         };
         fixture.detectChanges();
     });

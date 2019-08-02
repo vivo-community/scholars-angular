@@ -6,6 +6,8 @@ import { Store, select } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
 
+import { pagination } from 'scholars-embed-utilities';
+
 import { AppState } from '../../core/store';
 
 import { SdrPage } from '../../core/model/sdr';
@@ -51,52 +53,7 @@ export class PaginationComponent implements OnInit {
     }
 
     public getPages(page: SdrPage, windowDimensions: WindowDimensions): number[] {
-
-        let pages: number[] = [];
-
-        const maxSize = windowDimensions.width < 576 ? 1 : windowDimensions.width < 768 ? 3 : 5;
-
-        for (let i = 1; i <= page.totalPages; i++) {
-            pages.push(i);
-        }
-
-        // apply this.maxSize if necessary
-        if (maxSize > 0 && page.totalPages > maxSize) {
-            let start = 0;
-            let end = page.totalPages;
-
-            const leftOffset = Math.floor(maxSize / 2);
-            const rightOffset = maxSize % 2 === 0 ? leftOffset - 1 : leftOffset;
-
-            if (page.number <= leftOffset) {
-                // very beginning, no rotation -> [0..this.maxSize]
-                end = maxSize;
-            } else if (page.totalPages - page.number < leftOffset) {
-                // very end, no rotation -> [len-this.maxSize..len]
-                start = page.totalPages - maxSize;
-            } else {
-                // rotate
-                start = page.number - leftOffset - 1;
-                end = page.number + rightOffset;
-            }
-
-            pages = pages.slice(start, end);
-
-            if (start > 0) {
-                if (start > 1) {
-                    pages.unshift(-1);
-                }
-                pages.unshift(1);
-            }
-            if (end < page.totalPages) {
-                if (end < (page.totalPages - 1)) {
-                    pages.push(-1);
-                }
-                pages.push(page.totalPages);
-            }
-        }
-
-        return pages;
+        return pagination(page, windowDimensions);
     }
 
     public hasPrevious(pageNumber: number): boolean { return pageNumber > 1; }

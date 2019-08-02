@@ -140,7 +140,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         addExportToQueryParams(queryParams, discoveryView);
         const tree = this.router.createUrlTree([''], { queryParams });
         const query = tree.toString().substring(1);
-        return `${environment.service}/${discoveryView.collection}/search/export${query}`;
+        return `${environment.serviceUrl}/${discoveryView.collection}/search/export${query}`;
     }
 
     private equals(filterOne: Filter, filterTwo: Filter): boolean {
