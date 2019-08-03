@@ -28,7 +28,13 @@ describe('AppComponent', () => {
                 HeaderModule,
                 FooterModule,
                 StoreModule.forRoot(reducers, {
-                    metaReducers
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 NoopAnimationsModule,
                 TranslateModule.forRoot(),

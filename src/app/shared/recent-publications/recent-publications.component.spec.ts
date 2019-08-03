@@ -14,7 +14,13 @@ describe('RecentPublicationsComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 StoreModule.forRoot(reducers, {
-                    metaReducers
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 TranslateModule.forRoot(),
             ],

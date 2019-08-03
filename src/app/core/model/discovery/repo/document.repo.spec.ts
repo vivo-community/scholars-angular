@@ -19,7 +19,13 @@ describe('DocumentRepo', () => {
             imports: [
                 HttpClientTestingModule,
                 StoreModule.forRoot(reducers, {
-                    metaReducers
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 })
             ],
             providers: [
