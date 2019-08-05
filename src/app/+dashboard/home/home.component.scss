@@ -18,7 +18,7 @@
       @media (min-width: 768px) { padding-top: 50px; }
       @media (min-width: 992px) { padding-top: 100px; }
       .water-mark {
-          height: 175px;
+          height: 225px;
           background-size: contain;
           background-repeat: no-repeat;
           background-position: center center;
@@ -27,7 +27,7 @@
           color: var(--hero-color);
       }
       .home-stats {
-        margin: 25px 0px 75px 0px;
+        margin: 45px 0px 80px 0px;
       }
       .home-info {
         p {
@@ -45,6 +45,10 @@
       }
     }
   }
+  .carousel small a,
+  .carousel small span {
+    color: var(--hero-color);
+  }
 }
 .home-recent-published {
   height: 150px;
@@ -55,8 +59,3 @@
     color: #464646;
   }
 }
-
-.home-main .carousel #searchTipsLink a {
-  color: var(--hero-color);
-}
-
