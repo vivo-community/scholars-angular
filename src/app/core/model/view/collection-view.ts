@@ -8,7 +8,7 @@ export enum Layout {
 
 export enum FacetType {
     STRING = 'STRING',
-    DATE_TIME = 'DATE_TIME'
+    DATE_YEAR = 'DATE_YEAR'
 }
 
 export enum FacetSort {

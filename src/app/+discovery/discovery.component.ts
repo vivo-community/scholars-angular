@@ -8,7 +8,7 @@ import { filter, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
-import { DiscoveryView, Filter } from '../core/model/view';
+import { DiscoveryView, Filter, FacetType } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
@@ -103,6 +103,19 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
             }
         }
         return true;
+    }
+
+    public getFilterField(discoveryView: DiscoveryView, actualFilter: Filter): string {
+        return actualFilter.field;
+    }
+
+    public getFilterValue(discoveryView: DiscoveryView, actualFilter: Filter): string {
+        for (const facet of discoveryView.facets) {
+            if (facet.type === FacetType.DATE_YEAR && facet.field === actualFilter.field) {
+                return actualFilter.value.substring(1, actualFilter.value.length - 1).split(' TO ')[0];
+            }
+        }
+        return actualFilter.value;
     }
 
     public hasExport(discoveryView: DiscoveryView): boolean {
