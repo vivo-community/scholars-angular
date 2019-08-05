@@ -1820,7 +1820,7 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codelyzer@^5.1.0:
+codelyzer@5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/codelyzer/-/codelyzer-5.1.0.tgz#a0eb89497622679ea4c53b6974aa45598f06a4b5"
   integrity sha512-QiyY2/oDQnYx4mAVEDqr+z9MwrOto18tQFjExiuRChXCy0yvngS5fQpWIxvAGpbOmZFiR1PRTRLbEI71u10maA==
@@ -6227,10 +6227,10 @@ schema-utils@^2.0.0:
     ajv "^6.1.0"
     ajv-keywords "^3.1.0"
 
-scholars-embed-utilities@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.0.3.tgz#004ae13fe91820abd3e133e7276d622ed7b09d78"
-  integrity sha512-8JMLijE+NJzP2AXbr+W9AveSSdueNgz8hEsKea9U0FiIyMn75xElZjFjmWPGMQImr/+wMLLQNNF5ztYSaK++vA==
+scholars-embed-utilities@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.0.6.tgz#6f737978be289cce63d56e5997c777bd0c87cbfd"
+  integrity sha512-BzW0zNcvJQD6/owJhG4fcpSH/JEd0WtlqK/EUMDCevOqPhknK8swhCgQ/LJvVWWk4oUui42Y5Rp4HH9880WMdQ==
   dependencies:
     handlebars "4.1.2"
     handlebars-loader "1.7.1"
@@ -7792,7 +7792,7 @@ yn@^3.0.0:
   resolved "https://registry.yarnpkg.com/yn/-/yn-3.0.0.tgz#0073c6b56e92aed652fbdfd62431f2d6b9a7a091"
   integrity sha512-+Wo/p5VRfxUgBUGy2j/6KX2mj9AYJWOHuhMjMcbBFc3y54o9/4buK1ksBvuiK01C3kby8DH9lSmJdSxw+4G/2Q==
 
-zone.js@~0.9.1:
+zone.js@0.9.1:
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.9.1.tgz#e37c6e5c54c13fae4de26b5ffe8d8e9212da6d9b"
   integrity sha512-GkPiJL8jifSrKReKaTZ5jkhrMEgXbXYC+IPo1iquBjayRa0q86w3Dipjn8b415jpitMExe9lV8iTsv8tk3DGag==

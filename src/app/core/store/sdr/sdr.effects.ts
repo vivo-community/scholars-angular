@@ -8,8 +8,6 @@ import { combineLatest, defer, Observable, scheduled } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
 import { map, switchMap, catchError, withLatestFrom, skipWhile, take, filter, mergeMap } from 'rxjs/operators';
 
-import { formalize } from 'scholars-embed-utilities';
-
 import { AlertService } from '../../service/alert.service';
 import { DialogService } from '../../service/dialog.service';
 
@@ -23,7 +21,7 @@ import { SdrResource, SdrCollection, SdrFacet, SdrFacetEntry, Count } from '../.
 import { SidebarMenu, SidebarSection, SidebarItem, SidebarItemType } from '../../model/sidebar';
 import { SolrDocument } from '../../model/discovery';
 import { SdrRequest, Facetable, Indexable, Direction, Sort, Pageable } from '../../model/request';
-import { OperationKey, Facet, DiscoveryView, DirectoryView, FacetSort } from '../../model/view';
+import { OperationKey, Facet, DiscoveryView, DirectoryView, FacetSort, FacetType } from '../../model/view';
 
 import { injectable, repos } from '../../model/repos';
 
@@ -36,8 +34,6 @@ import * as fromRouter from '../router/router.actions';
 import * as fromStomp from '../stomp/stomp.actions';
 import * as fromSdr from './sdr.actions';
 import * as fromSidebar from '../sidebar/sidebar.actions';
-
-import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class SdrEffects {
@@ -420,24 +416,47 @@ export class SdrEffects {
                             collapsed: facet.collapsed
                         };
 
-                        Object.assign(sdrFacet, {
-                            entries: sdrFacet.entries.sort(this.getFacetSortFunction(facet))
-                        });
+                        let entries = sdrFacet.entries.sort(this.getFacetSortFunction(facet));
 
-                        sdrFacet.entries.slice(0, facet.limit).forEach((facetEntry: SdrFacetEntry) => {
+                        if (facet.type === FacetType.DATE_YEAR) {
+                            const mappedEntries = {};
+                            entries.map((entry) => {
+                                return { value: new Date(entry.value).getFullYear(), count: entry.count };
+                            }).forEach((entry) => {
+                                if (mappedEntries[entry.value] !== undefined) {
+                                    mappedEntries[entry.value].count += entry.count;
+                                } else {
+                                    mappedEntries[entry.value] = { count: entry.count };
+                                }
+                            });
+                            entries = Object.keys(mappedEntries).reverse().map((key) => {
+                                return { value: key, count: mappedEntries[key].count };
+                            });
+                        }
+
+                        entries.slice(0, facet.limit).forEach((facetEntry: SdrFacetEntry) => {
                             let selected = false;
 
                             if (facetEntry.value.length > 0) {
                                 for (const requestFacet of routerState.queryParams.facets.split(',')) {
-                                    if (routerState.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
-                                        selected = true;
-                                        break;
+                                    if (routerState.queryParams[`${requestFacet}.filter`] !== undefined) {
+                                        if (facet.type === FacetType.DATE_YEAR) {
+                                            if (routerState.queryParams[`${requestFacet}.filter`] === `[${facetEntry.value} TO ${Number(facetEntry.value) + 1}]`) {
+                                                selected = true;
+                                                break;
+                                            }
+                                        } else {
+                                            if (routerState.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
+                                                selected = true;
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
 
                                 const sidebarItem: SidebarItem = {
                                     type: SidebarItemType.FACET,
-                                    label: scheduled([facet.field === 'type' ? formalize(facetEntry.value, environment.formalize) : facetEntry.value], asap),
+                                    label: scheduled([facetEntry.value], asap),
                                     facet: facet,
                                     selected: selected,
                                     parenthetical: facetEntry.count,
@@ -445,7 +464,11 @@ export class SdrEffects {
                                     queryParams: {},
                                 };
 
-                                sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
+                                if (facet.type === FacetType.DATE_YEAR) {
+                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${facetEntry.value} TO ${Number(facetEntry.value) + 1}]` : undefined;
+                                } else {
+                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
+                                }
 
                                 sidebarItem.queryParams.page = 1;
 
@@ -457,7 +480,7 @@ export class SdrEffects {
                             }
                         });
 
-                        if (sdrFacet.entries.length > facet.limit) {
+                        if (entries.length > facet.limit) {
                             sidebarSection.items.push({
                                 type: SidebarItemType.ACTION,
                                 action: this.dialog.facetEntriesDialog(facet, sdrFacet),
