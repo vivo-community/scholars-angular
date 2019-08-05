@@ -23,7 +23,7 @@ interface ScrollItem {
 })
 export class RecentPublicationsComponent implements AfterViewInit, OnInit {
 
-    @ViewChild('scrollView') scrollViewRef: ElementRef;
+    @ViewChild('scrollView', { static: true }) scrollViewRef: ElementRef;
 
     private items: BehaviorSubject<ScrollItem[]>;
     private persons: Observable<Person[]>;

@@ -28,7 +28,13 @@ describe('SubsectionComponent', () => {
             imports: [
                 DisplayModule,
                 StoreModule.forRoot(reducers, {
-                    metaReducers
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 RouterTestingModule.withRoutes(routes[0].children)
             ],

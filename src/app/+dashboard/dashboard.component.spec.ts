@@ -28,7 +28,13 @@ describe('DashboardComponent', () => {
             imports: [
                 SharedModule,
                 StoreModule.forRoot(reducers, {
-                    metaReducers
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 TranslateModule.forRoot(),
                 RouterTestingModule.withRoutes(routes)

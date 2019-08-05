@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { StoreRouterConnectingModule, NavigationActionTiming } from '@ngrx/router-store';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 import { CustomRouterStateSerializer } from './router/router.reducer';
 
@@ -29,7 +29,13 @@ import { environment } from '../../../environments/environment';
     imports: [
         CommonModule,
         StoreModule.forRoot(reducerToken, {
-            metaReducers
+            metaReducers,
+            runtimeChecks: {
+                strictStateImmutability: false,
+                strictActionImmutability: false,
+                strictStateSerializability: false,
+                strictActionSerializability: false
+            }
         }),
         StoreRouterConnectingModule.forRoot({
             serializer: CustomRouterStateSerializer
