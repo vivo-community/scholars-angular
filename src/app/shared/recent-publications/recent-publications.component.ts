@@ -45,7 +45,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
             this.items.next(persons.map((person: Person) => {
                 return {
                     src: person['thumbnail'] ? `${environment.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
-                    link: `/display/persons/${person['id']}`,
+                    link: `display/persons/${person['id']}`,
                     alt: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
                     modTime: person['modTime'] ? person['modTime'] : '',
                     name: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : '',
@@ -56,7 +56,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
             this.fitItems();
         });
 
-        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', {limit: 10}));
+        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', { limit: 10 }));
     }
 
     ngAfterViewInit() {
