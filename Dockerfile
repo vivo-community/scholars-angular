@@ -1,5 +1,11 @@
 FROM node:latest
 
+ARG host=localhost
+ENV HOST=$host
+
+ARG port=4200
+ENV PORT=$port
+
 COPY . /var/app/scholars-angular
 
 WORKDIR /var/app/scholars-angular
