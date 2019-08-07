@@ -421,7 +421,9 @@ export class SdrEffects {
                         if (facet.type === FacetType.DATE_YEAR) {
                             const mappedEntries = {};
                             entries.map((entry) => {
-                                return { value: new Date(entry.value).getFullYear(), count: entry.count };
+                                const date = new Date(entry.value);
+                                date.setSeconds(date.getSeconds() + 1);
+                                return { value: date.getFullYear(), count: entry.count };
                             }).forEach((entry) => {
                                 if (mappedEntries[entry.value] !== undefined) {
                                     mappedEntries[entry.value].count += entry.count;
