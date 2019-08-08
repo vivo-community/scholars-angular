@@ -40,8 +40,8 @@
       "ABOUT_PROJECT": "About the Project"
     },
     "HOME": {
-      "LATEST_PUBLICATIONS_TEXT": "Latest published books by {{organization}} faculty",
-      "CLICK_PUBLICATION_TEXT": "Click to see the author faculty page"
+      "LATEST_PUBLICATIONS_TEXT": "Most recently updated faculty profiles by {{organization}}",
+      "CLICK_PUBLICATION_TEXT": "Click to see the faculty profile"
     }
   },
   "DIRECTORY": {
