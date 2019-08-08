@@ -112,7 +112,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
     public getFilterValue(discoveryView: DiscoveryView, actualFilter: Filter): string {
         for (const facet of discoveryView.facets) {
             if (facet.type === FacetType.DATE_YEAR && facet.field === actualFilter.field) {
-                return actualFilter.value.substring(1, actualFilter.value.length - 1).split(' TO ')[0];
+                return actualFilter.value.substring(1, actualFilter.value.length - 1).split(' TO ')[1];
             }
         }
         return actualFilter.value;

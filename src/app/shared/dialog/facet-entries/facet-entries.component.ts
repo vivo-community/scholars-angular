@@ -9,7 +9,7 @@ import { queue } from 'rxjs/internal/scheduler/queue';
 
 import { AppState } from '../../../core/store';
 import { DialogButtonType, DialogControl } from '../../../core/model/dialog';
-import { Facet } from '../../../core/model/view';
+import { Facet, FacetType } from '../../../core/model/view';
 import { SdrFacet } from '../../../core/model/sdr';
 
 import * as fromDialog from '../../../core/store/dialog/dialog.actions';
@@ -71,9 +71,13 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
         return this.sdrFacet.entries.slice(start, start + this.size);
     }
 
-    public getQueryParams(facet: SdrFacet, entry: any): Params {
+    public getQueryParams(entry: any): Params {
         const queryParams: Params = {};
-        queryParams[`${facet.field}.filter`] = entry.value;
+        if (this.facet.type === FacetType.DATE_YEAR) {
+            queryParams[`${this.sdrFacet.field}.filter`] = `[${entry.value - 1} TO ${entry.value}]`;
+        } else {
+            queryParams[`${this.sdrFacet.field}.filter`] = entry.value;
+        }
         return queryParams;
     }
 
