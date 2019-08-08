@@ -58,6 +58,6 @@ router.get('*', (req, res) => {
 server.use('/', router);
 
 // Start up the Node server
-server.listen(PORT, HOST, () => {
+server.listen(PORT, () => {
     console.log(`Node Express server listening on http://${HOST}:${PORT}${BASE_HREF}`);
 });
