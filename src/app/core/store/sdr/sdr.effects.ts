@@ -422,7 +422,6 @@ export class SdrEffects {
                             const mappedEntries = {};
                             sdrFacet.entries.map((entry) => {
                                 const date = new Date(entry.value);
-                                date.setSeconds(date.getSeconds() + 1);
                                 return { value: Number(date.getFullYear()) + 1, count: entry.count };
                             }).forEach((entry) => {
                                 if (mappedEntries[entry.value] !== undefined) {
