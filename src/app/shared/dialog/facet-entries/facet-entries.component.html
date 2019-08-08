@@ -4,7 +4,7 @@
       <tr *ngFor="let entry of getFacetEntryPage()">
         <td scope="row" [ngSwitch]="facet.type">
           <span *ngSwitchCase="'STRING'">
-            <a [routerLink]="routerLink" [queryParams]="getQueryParams(sdrFacet, entry)" queryParamsHandling="merge">
+            <a [routerLink]="routerLink" [queryParams]="getQueryParams(entry)" queryParamsHandling="merge">
               <span>
                 <span>{{entry.value | formalize}}</span>
               </span>
@@ -12,9 +12,9 @@
             <span> ({{entry.count}})</span>
           </span>
           <span *ngSwitchCase="'DATE_YEAR'">
-            <a [routerLink]="routerLink" [queryParams]="getQueryParams(sdrFacet, entry)" queryParamsHandling="merge">
+            <a [routerLink]="routerLink" [queryParams]="getQueryParams(entry)" queryParamsHandling="merge">
               <span>
-                <span>{{entry.value | date:'yyyy'}}</span>
+                <span>{{entry.value}}</span>
               </span>
             </a>
             <span> ({{entry.count}})</span>

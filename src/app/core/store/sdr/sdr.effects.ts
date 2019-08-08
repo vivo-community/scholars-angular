@@ -416,12 +416,14 @@ export class SdrEffects {
                             collapsed: facet.collapsed
                         };
 
-                        let entries = sdrFacet.entries.sort(this.getFacetSortFunction(facet));
+                        sdrFacet.entries = sdrFacet.entries.sort(this.getFacetSortFunction(facet));
 
                         if (facet.type === FacetType.DATE_YEAR) {
                             const mappedEntries = {};
-                            entries.map((entry) => {
-                                return { value: new Date(entry.value).getFullYear(), count: entry.count };
+                            sdrFacet.entries.map((entry) => {
+                                const date = new Date(entry.value);
+                                date.setSeconds(date.getSeconds() + 1);
+                                return { value: Number(date.getFullYear()) + 1, count: entry.count };
                             }).forEach((entry) => {
                                 if (mappedEntries[entry.value] !== undefined) {
                                     mappedEntries[entry.value].count += entry.count;
@@ -429,19 +431,19 @@ export class SdrEffects {
                                     mappedEntries[entry.value] = { count: entry.count };
                                 }
                             });
-                            entries = Object.keys(mappedEntries).reverse().map((key) => {
+                            sdrFacet.entries = Object.keys(mappedEntries).reverse().map((key) => {
                                 return { value: key, count: mappedEntries[key].count };
                             });
                         }
 
-                        entries.slice(0, facet.limit).forEach((facetEntry: SdrFacetEntry) => {
+                        sdrFacet.entries.slice(0, facet.limit).forEach((facetEntry: SdrFacetEntry) => {
                             let selected = false;
 
                             if (facetEntry.value.length > 0) {
                                 for (const requestFacet of routerState.queryParams.facets.split(',')) {
                                     if (routerState.queryParams[`${requestFacet}.filter`] !== undefined) {
                                         if (facet.type === FacetType.DATE_YEAR) {
-                                            if (routerState.queryParams[`${requestFacet}.filter`] === `[${facetEntry.value} TO ${Number(facetEntry.value) + 1}]`) {
+                                            if (routerState.queryParams[`${requestFacet}.filter`] === `[${facetEntry.value - 1} TO ${facetEntry.value}]`) {
                                                 selected = true;
                                                 break;
                                             }
@@ -465,7 +467,7 @@ export class SdrEffects {
                                 };
 
                                 if (facet.type === FacetType.DATE_YEAR) {
-                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${facetEntry.value} TO ${Number(facetEntry.value) + 1}]` : undefined;
+                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${facetEntry.value - 1} TO ${facetEntry.value}]` : undefined;
                                 } else {
                                     sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
                                 }
@@ -480,7 +482,7 @@ export class SdrEffects {
                             }
                         });
 
-                        if (entries.length > facet.limit) {
+                        if (sdrFacet.entries.length > facet.limit) {
                             sidebarSection.items.push({
                                 type: SidebarItemType.ACTION,
                                 action: this.dialog.facetEntriesDialog(facet, sdrFacet),
