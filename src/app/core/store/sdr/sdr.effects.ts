@@ -422,7 +422,7 @@ export class SdrEffects {
                             const mappedEntries = {};
                             sdrFacet.entries.map((entry) => {
                                 const date = new Date(entry.value);
-                                return { value: Number(date.getFullYear()) + 1, count: entry.count };
+                                return { value: date.getUTCFullYear(), count: entry.count };
                             }).forEach((entry) => {
                                 if (mappedEntries[entry.value] !== undefined) {
                                     mappedEntries[entry.value].count += entry.count;
@@ -442,7 +442,7 @@ export class SdrEffects {
                                 for (const requestFacet of routerState.queryParams.facets.split(',')) {
                                     if (routerState.queryParams[`${requestFacet}.filter`] !== undefined) {
                                         if (facet.type === FacetType.DATE_YEAR) {
-                                            if (routerState.queryParams[`${requestFacet}.filter`] === `[${facetEntry.value - 1} TO ${facetEntry.value}]`) {
+                                            if (routerState.queryParams[`${requestFacet}.filter`] === `[${facetEntry.value} TO ${Number(facetEntry.value) + 1}]`) {
                                                 selected = true;
                                                 break;
                                             }
@@ -466,7 +466,7 @@ export class SdrEffects {
                                 };
 
                                 if (facet.type === FacetType.DATE_YEAR) {
-                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${facetEntry.value - 1} TO ${facetEntry.value}]` : undefined;
+                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${facetEntry.value} TO ${Number(facetEntry.value) + 1}]` : undefined;
                                 } else {
                                     sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
                                 }

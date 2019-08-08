@@ -74,7 +74,7 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
     public getQueryParams(entry: any): Params {
         const queryParams: Params = {};
         if (this.facet.type === FacetType.DATE_YEAR) {
-            queryParams[`${this.sdrFacet.field}.filter`] = `[${entry.value - 1} TO ${entry.value}]`;
+            queryParams[`${this.sdrFacet.field}.filter`] = `[${entry.value} TO ${Number(entry.value) + 1}]`;
         } else {
             queryParams[`${this.sdrFacet.field}.filter`] = entry.value;
         }
