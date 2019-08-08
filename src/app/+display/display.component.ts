@@ -10,18 +10,32 @@ import { filter, tap, map, mergeMap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
-import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, LazyReference } from '../core/model/view';
+import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, LazyReference, Filter } from '../core/model/view';
 
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
 
 import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
-import { Side } from '../core/model/view/display-view';
+import { Side, Subsection } from '../core/model/view/display-view';
 
 import { selectResourceById, selectDefaultDiscoveryView, selectDisplayViewByTypes, selectResourceIsLoading, selectAllResources } from '../core/store/sdr';
 
 import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
+
+const hasDataAfterFilter = (section: DisplayTabSectionView, document: SolrDocument): boolean => {
+    const filteredSubsections = section.subsections.filter((subsection: Subsection) => subsection.filters.length);
+    for (const filteredSubsection of filteredSubsections) {
+        // tslint:disable-next-line: no-shadowed-variable
+        return filteredSubsection.filters.filter((filter: Filter) => {
+            return document[filteredSubsection.field].filter((resource: any) => {
+                const value = resource[filter.field];
+                return Array.isArray(value) ? value.indexOf(filter.value) >= 0 : value === filter.value;
+            }).length > 0;
+        }).length > 0;
+    }
+    return true;
+};
 
 const hasRequiredFields = (requiredFields: string[], document: SolrDocument): boolean => {
     for (const requiredField of requiredFields) {
@@ -33,7 +47,7 @@ const hasRequiredFields = (requiredFields: string[], document: SolrDocument): bo
 };
 
 export const sectionsToShow = (sections: DisplayTabSectionView[], document: SolrDocument): DisplayTabSectionView[] => {
-    return sections.filter((section: DisplayTabSectionView) => !section.hidden && hasRequiredFields(section.requiredFields, document));
+    return sections.filter((section: DisplayTabSectionView) => !section.hidden && hasRequiredFields(section.requiredFields, document) && hasDataAfterFilter(section, document));
 };
 
 @Component({
@@ -87,7 +101,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
                     select(selectResourceById(params.collection, params.id)),
                     filter((document: SolrDocument) => document !== undefined),
                     tap((document: SolrDocument) => {
-                        console.log(document);
                         this.displayView = this.store.pipe(
                             select(selectDisplayViewByTypes(document.type)),
                             tap(([displayView, isLoading]) => {
