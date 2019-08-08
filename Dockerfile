@@ -1,7 +1,5 @@
-FROM node:latest
-
-ARG host=localhost
-ENV HOST=$host
+#Build the app, Step 1#
+FROM node:12.7.0-alpine
 
 ARG port=4200
 ENV PORT=$port
@@ -10,10 +8,11 @@ COPY . /var/app/scholars-angular
 
 WORKDIR /var/app/scholars-angular
 
-RUN yarn install
+#install needed packages
+RUN yarn install && npm install pm2 -g
 
+#builds the app
 RUN yarn build:ssr:prod
 
-RUN npm install pm2 -g
-
+#CMD ran when the container is deployed.
 CMD ["pm2-docker", "/var/app/scholars-angular/dist/server.js", "--name='scholars-angular'"]
