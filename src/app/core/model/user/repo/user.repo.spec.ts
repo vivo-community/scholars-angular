@@ -11,6 +11,7 @@ import { UserRepo } from './user.repo';
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
+import { testAppConfig } from '../../../../../test';
 
 describe('UserRepo', () => {
 
@@ -18,7 +19,7 @@ describe('UserRepo', () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -30,6 +31,7 @@ describe('UserRepo', () => {
             ],
             providers: [
                 { provide: REQUEST, useFactory: (getRequest) },
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 UserRepo
             ]

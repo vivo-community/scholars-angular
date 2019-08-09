@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Store, select } from '@ngrx/store';
@@ -16,8 +16,6 @@ import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectR
 import { selectRouterQueryParams } from '../core/store/router';
 
 import { addFacetsToQueryParams, addFiltersToQueryParams, addExportToQueryParams } from '../shared/utilities/view.utility';
-
-import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'scholars-directory',
@@ -42,6 +40,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
     private subscriptions: Subscription[];
 
     constructor(
+        @Inject('APP_CONFIG') private appConfig: any,
         private store: Store<AppState>,
         private router: Router,
         private route: ActivatedRoute
@@ -111,7 +110,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
         addExportToQueryParams(queryParams, directoryView);
         const tree = this.router.createUrlTree([''], { queryParams });
         const query = tree.toString().substring(1);
-        return `${environment.serviceUrl}/${directoryView.collection}/search/export${query}`;
+        return `${this.appConfig.serviceUrl}/${directoryView.collection}/search/export${query}`;
     }
 
     private getQueryParams(directoryView: DirectoryView): Params {

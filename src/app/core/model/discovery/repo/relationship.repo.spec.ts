@@ -11,6 +11,7 @@ import { RelationshipRepo } from './relationship.repo';
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
+import { testAppConfig } from '../../../../../test';
 
 describe('RelationshipRepo', () => {
 
@@ -18,7 +19,7 @@ describe('RelationshipRepo', () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -30,6 +31,7 @@ describe('RelationshipRepo', () => {
             ],
             providers: [
                 { provide: REQUEST, useFactory: (getRequest) },
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 RelationshipRepo
             ]

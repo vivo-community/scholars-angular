@@ -17,6 +17,7 @@ import { UsersComponent } from './users/users.component';
 import { routes } from './admin.routes';
 
 import { metaReducers, reducers } from '../core/store';
+import { testAppConfig } from '../../test';
 
 describe('AdminComponent', () => {
     let component: AdminComponent;
@@ -34,7 +35,7 @@ describe('AdminComponent', () => {
             ],
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -47,10 +48,8 @@ describe('AdminComponent', () => {
                 RouterTestingModule.withRoutes(routes)
             ],
             providers: [
-                {
-                    provide: APP_BASE_HREF,
-                    useValue: '/'
-                }
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
+                { provide: APP_BASE_HREF, useValue: '/' }
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA

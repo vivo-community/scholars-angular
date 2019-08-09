@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared.module';
 import { RegistrationComponent, RegistrationStep } from './registration.component';
 
 import { metaReducers, reducers } from '../../../core/store';
+import { testAppConfig } from '../../../../test';
 
 describe('RegistrationComponent', () => {
     let component: RegistrationComponent;
@@ -18,7 +19,7 @@ describe('RegistrationComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

@@ -15,6 +15,7 @@ import { TabComponent } from './tab.component';
 import { metaReducers, reducers } from '../../core/store';
 
 import { routes } from '../display.routes';
+import { testAppConfig } from '../../../test';
 
 describe('TabComponent', () => {
     let component: TabComponent;
@@ -27,7 +28,7 @@ describe('TabComponent', () => {
             ],
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

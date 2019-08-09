@@ -16,6 +16,7 @@ import { initializeTemplateHelpers } from './shared/utilities/template.utility';
 
 import * as fromLayout from './core/store/layout/layout.actions';
 import * as fromRouter from './core/store/router/router.actions';
+
 import { environment } from '../environments/environment.hmr';
 
 @Component({

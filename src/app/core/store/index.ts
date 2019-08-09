@@ -60,36 +60,44 @@ export interface AppState {
   router: fromRouter.RouterReducerState;
 }
 
-export const reducers: ActionReducerMap<AppState> = {
-  alert: fromAlert.reducer,
-  auth: fromAuth.reducer,
-  dialog: fromDialog.reducer,
-  language: fromLanguage.reducer,
-  layout: fromLayout.reducer,
-  metadata: fromMetadata.reducer,
-  sidebar: fromSidebar.reducer,
-  stomp: fromStomp.reducer,
-  theme: fromTheme.reducer,
-  collections: fromSdr.getSdrReducer<Collection>('collections'),
-  concepts: fromSdr.getSdrReducer<Concept>('concepts'),
-  documents: fromSdr.getSdrReducer<Document>('documents'),
-  organizations: fromSdr.getSdrReducer<Organization>('organizations'),
-  persons: fromSdr.getSdrReducer<Person>('persons'),
-  processes: fromSdr.getSdrReducer<Process>('processes'),
-  relationships: fromSdr.getSdrReducer<Relationship>('relationships'),
-  themes: fromSdr.getSdrReducer<Theme>('themes'),
-  users: fromSdr.getSdrReducer<User>('users'),
-  directoryViews: fromSdr.getSdrReducer<DirectoryView>('directoryViews'),
-  discoveryViews: fromSdr.getSdrReducer<DiscoveryView>('discoveryViews'),
-  displayViews: fromSdr.getSdrReducer<DisplayView>('displayViews'),
-  router: fromRouter.routerReducer
+export const reducers = (appConfig: any): ActionReducerMap<AppState> => {
+  const additionalContext = {
+    vivoUrl: appConfig.vivoUrl,
+    serviceUrl: appConfig.serviceUrl
+  };
+  return {
+    alert: fromAlert.reducer,
+    auth: fromAuth.reducer,
+    dialog: fromDialog.reducer,
+    language: fromLanguage.reducer,
+    layout: fromLayout.reducer,
+    metadata: fromMetadata.reducer,
+    sidebar: fromSidebar.reducer,
+    stomp: fromStomp.reducer,
+    theme: fromTheme.reducer,
+    collections: fromSdr.getSdrReducer<Collection>('collections', additionalContext),
+    concepts: fromSdr.getSdrReducer<Concept>('concepts', additionalContext),
+    documents: fromSdr.getSdrReducer<Document>('documents', additionalContext),
+    organizations: fromSdr.getSdrReducer<Organization>('organizations', additionalContext),
+    persons: fromSdr.getSdrReducer<Person>('persons', additionalContext),
+    processes: fromSdr.getSdrReducer<Process>('processes', additionalContext),
+    relationships: fromSdr.getSdrReducer<Relationship>('relationships', additionalContext),
+    themes: fromSdr.getSdrReducer<Theme>('themes', additionalContext),
+    users: fromSdr.getSdrReducer<User>('users', additionalContext),
+    directoryViews: fromSdr.getSdrReducer<DirectoryView>('directoryViews', additionalContext),
+    discoveryViews: fromSdr.getSdrReducer<DiscoveryView>('discoveryViews', additionalContext),
+    displayViews: fromSdr.getSdrReducer<DisplayView>('displayViews', additionalContext),
+    router: fromRouter.routerReducer
+  };
 };
 
 export const reducerToken = new InjectionToken<ActionReducerMap<AppState>>('Registered Reducers');
 
-export const reducerProvider = [
-  { provide: reducerToken, useValue: reducers }
-];
+export const reducerProvider = {
+  provide: reducerToken,
+  useFactory: reducers,
+  deps: ['APP_CONFIG']
+};
 
 export const metaReducers: MetaReducer<AppState>[] = [
   fromRootStore.universalMetaReducer

@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { metaReducers, reducers } from './core/store';
 
 import { routes } from './app.routes';
+import { testAppConfig } from '../test';
 
 describe('AppComponent', () => {
     let component: AppComponent;
@@ -27,7 +28,7 @@ describe('AppComponent', () => {
                 SharedModule,
                 HeaderModule,
                 FooterModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -39,6 +40,9 @@ describe('AppComponent', () => {
                 NoopAnimationsModule,
                 TranslateModule.forRoot(),
                 RouterTestingModule.withRoutes(routes)
+            ],
+            providers: [
+                { provide: 'APP_CONFIG', useValue: testAppConfig }
             ]
         }).compileComponents();
     }));

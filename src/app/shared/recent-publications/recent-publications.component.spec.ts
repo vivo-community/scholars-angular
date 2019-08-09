@@ -5,6 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import { metaReducers, reducers } from '../../core/store';
 
 import { RecentPublicationsComponent } from './recent-publications.component';
+import { testAppConfig } from '../../../test';
 
 describe('RecentPublicationsComponent', () => {
     let component: RecentPublicationsComponent;
@@ -13,7 +14,7 @@ describe('RecentPublicationsComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -26,6 +27,9 @@ describe('RecentPublicationsComponent', () => {
             ],
             declarations: [
                 RecentPublicationsComponent
+            ],
+            providers: [
+                { provide: 'APP_CONFIG', useValue: testAppConfig }
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA

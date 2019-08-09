@@ -6,6 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { StatsBoxComponent } from './stats-box.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test';
 
 describe('StatsBoxComponent', () => {
     let component: StatsBoxComponent;
@@ -17,7 +18,7 @@ describe('StatsBoxComponent', () => {
                 StatsBoxComponent
             ],
             imports: [
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

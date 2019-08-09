@@ -13,6 +13,7 @@ import { TabComponent } from './tab/tab.component';
 import { routes } from './display.routes';
 
 import { metaReducers, reducers } from '../core/store';
+import { testAppConfig } from '../../test';
 
 describe('DisplayComponent', () => {
     let component: DisplayComponent;
@@ -26,7 +27,7 @@ describe('DisplayComponent', () => {
             ],
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -39,10 +40,8 @@ describe('DisplayComponent', () => {
                 RouterTestingModule.withRoutes(routes)
             ],
             providers: [
-                {
-                    provide: APP_BASE_HREF,
-                    useValue: '/'
-                }
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
+                { provide: APP_BASE_HREF, useValue: '/' }
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA

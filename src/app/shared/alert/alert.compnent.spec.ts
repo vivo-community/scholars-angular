@@ -6,6 +6,7 @@ import { SharedModule } from '../shared.module';
 import { AlertComponent } from './alert.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test';
 
 describe('AlertComponent', () => {
     let component: AlertComponent;
@@ -15,7 +16,7 @@ describe('AlertComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

@@ -7,6 +7,7 @@ import { AboutComponent } from './about.component';
 import { LoaderDirective } from '../../shared/loader/loader.directive';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test';
 
 describe('AboutComponent', () => {
     let component: AboutComponent;
@@ -19,7 +20,7 @@ describe('AboutComponent', () => {
                 LoaderDirective
             ],
             imports: [
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

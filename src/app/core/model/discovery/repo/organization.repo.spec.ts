@@ -11,6 +11,7 @@ import { OrganizationRepo } from './organization.repo';
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
+import { testAppConfig } from '../../../../../test';
 
 describe('OrganizationRepo', () => {
 
@@ -18,7 +19,7 @@ describe('OrganizationRepo', () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -30,6 +31,7 @@ describe('OrganizationRepo', () => {
             ],
             providers: [
                 { provide: REQUEST, useFactory: (getRequest) },
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 OrganizationRepo
             ]

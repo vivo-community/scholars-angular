@@ -12,6 +12,7 @@ import { DiscoveryComponent } from './discovery.component';
 import { routes } from './discovery.routes';
 
 import { metaReducers, reducers } from '../core/store';
+import { testAppConfig } from '../../test';
 
 describe('DiscoveryComponent', () => {
     let component: DiscoveryComponent;
@@ -24,7 +25,7 @@ describe('DiscoveryComponent', () => {
             ],
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -37,10 +38,8 @@ describe('DiscoveryComponent', () => {
                 RouterTestingModule.withRoutes(routes)
             ],
             providers: [
-                {
-                    provide: APP_BASE_HREF,
-                    useValue: '/'
-                }
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
+                { provide: APP_BASE_HREF, useValue: '/' }
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA

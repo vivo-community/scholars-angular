@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared.module';
 import { NotificationComponent } from './notification.component';
 
 import { metaReducers, reducers } from '../../../core/store';
+import { testAppConfig } from '../../../../test';
 
 describe('NotificationComponent', () => {
     let component: NotificationComponent;
@@ -18,7 +19,7 @@ describe('NotificationComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

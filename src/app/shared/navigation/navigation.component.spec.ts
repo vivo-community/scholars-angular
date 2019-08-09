@@ -9,6 +9,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { NavigationComponent } from './navigation.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test';
 
 describe('NavigationComponent', () => {
     let component: NavigationComponent;
@@ -18,7 +19,7 @@ describe('NavigationComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -29,6 +30,11 @@ describe('NavigationComponent', () => {
                 }),
                 TranslateModule.forRoot(),
                 RouterTestingModule.withRoutes([])
+            ],
+            providers: [
+                {
+                    provide: 'APP_CONFIG', useValue: testAppConfig
+                }
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA

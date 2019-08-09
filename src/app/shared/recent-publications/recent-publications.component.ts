@@ -1,13 +1,15 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
+
 import { AppState } from '../../core/store';
-import * as fromSdr from '../../core/store/sdr/sdr.actions';
-import { selectAllResources } from '../../core/store/sdr';
 import { Person } from '../../core/model/discovery';
-import { environment } from '../../../environments/environment';
+
+import { selectAllResources } from '../../core/store/sdr';
+
+import * as fromSdr from '../../core/store/sdr/sdr.actions';
 
 interface ScrollItem {
     src: string;
@@ -29,6 +31,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
     private persons: Observable<Person[]>;
 
     constructor(
+        @Inject('APP_CONFIG') private appConfig: any,
         private store: Store<AppState>,
         private translate: TranslateService
     ) {
@@ -44,7 +47,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
         this.persons.subscribe((persons: Person[]) => {
             this.items.next(persons.map((person: Person) => {
                 return {
-                    src: person['thumbnail'] ? `${environment.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
+                    src: person['thumbnail'] ? `${this.appConfig.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
                     link: `display/persons/${person['id']}`,
                     alt: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
                     modTime: person['modTime'] ? person['modTime'] : '',

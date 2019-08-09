@@ -1,13 +1,5 @@
 FROM node:current-alpine
 
-# host build argument used to template angular.json
-ARG host=localhost
-ENV HOST=$host
-
-# port build argument used to template angular.json and server.ts
-ARG port=4200
-ENV PORT=$port
-
 # copy project to build excluding node_modules and dist
 COPY . /var/app/scholars-angular
 

@@ -11,8 +11,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "baseHref": "/",
-            "deployUrl": "/",
             "outputPath": "dist/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -25,7 +23,8 @@
                 "output": "/"
               },
               "src/assets/images",
-              "src/assets/i18n"
+              "src/assets/i18n",
+              "src/assets/appConfig.json"
             ],
             "scripts": [
               "src/assets/scripts/badge.js",
@@ -69,9 +68,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "scholars-discovery:build",
-            "hmrWarning": false,
-            "host": "localhost",
-            "port": 4200
+            "hmrWarning": false
           },
           "configurations": {
             "hmr": {

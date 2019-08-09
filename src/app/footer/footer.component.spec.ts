@@ -9,6 +9,7 @@ import { DialogService } from '../core/service/dialog.service';
 import { FooterComponent } from './footer.component';
 
 import { metaReducers, reducers } from '../core/store';
+import { testAppConfig } from '../../test';
 
 describe('FooterComponent', () => {
     let component: FooterComponent;
@@ -23,7 +24,7 @@ describe('FooterComponent', () => {
                 DialogService
             ],
             imports: [
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

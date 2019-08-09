@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { NavbarComponent } from './navbar.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test';
 
 describe('NavbarComponent', () => {
     let component: NavbarComponent;
@@ -20,7 +21,7 @@ describe('NavbarComponent', () => {
             ],
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 import { Observable, scheduled } from 'rxjs';
@@ -11,14 +11,13 @@ import { Theme, Style } from '../model/theme';
 
 import { hexToRgb, luminance, mix, yiq } from '../../shared/utilities/color.utility';
 
-import { environment } from '../../../environments/environment';
-
 @Injectable({
     providedIn: 'root',
 })
 export class ThemeService {
 
     constructor(
+        @Inject('APP_CONFIG') private appConfig: any,
         private sanitizer: DomSanitizer,
         private restService: RestService,
         private styleLoader: ComputedStyleLoader
@@ -27,7 +26,7 @@ export class ThemeService {
     }
 
     public getActiveTheme(): Observable<Theme> {
-        return this.restService.get<Theme>(environment.serviceUrl + '/themes/search/active');
+        return this.restService.get<Theme>(this.appConfig.serviceUrl + '/themes/search/active');
     }
 
     public applyActiveTheme(theme: Theme): Observable<SafeStyle> {

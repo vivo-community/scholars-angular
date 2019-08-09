@@ -10,6 +10,7 @@ import { SearchBoxComponent } from './search-box.component';
 import { metaReducers, reducers } from '../../core/store';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from '../shared.module';
+import { testAppConfig } from '../../../test';
 
 describe('SearchBoxComponent', () => {
     let component: SearchBoxComponent;
@@ -20,7 +21,7 @@ describe('SearchBoxComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

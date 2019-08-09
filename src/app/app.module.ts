@@ -25,10 +25,11 @@ import * as fromStore from './core/store/root-store.actions';
 
 export const NGRX_STATE = makeStateKey('NGRX_STATE');
 
-export function getBaseHref(document: Document): string {
+const getBaseHref = (document: Document, config: any): string => {
     const baseTag = document.querySelector('head > base');
+    baseTag.setAttribute('href', config.baseHref);
     return baseTag.getAttribute('href');
-}
+};
 
 @NgModule({
     declarations: [
@@ -54,8 +55,8 @@ export function getBaseHref(document: Document): string {
     providers: [
         {
             provide: APP_BASE_HREF,
-            useFactory: (getBaseHref),
-            deps: [DOCUMENT]
+            useFactory: getBaseHref,
+            deps: [DOCUMENT, 'APP_CONFIG']
         }
     ]
 })

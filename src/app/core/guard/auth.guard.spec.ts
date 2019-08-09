@@ -10,6 +10,7 @@ import { AlertService } from '../service/alert.service';
 import { DialogService } from '../service/dialog.service';
 
 import { metaReducers, reducers } from '../store';
+import { testAppConfig } from '../../../test';
 
 describe('AuthGuard', () => {
 
@@ -22,7 +23,7 @@ describe('AuthGuard', () => {
                 TranslateService
             ],
             imports: [
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

@@ -13,24 +13,23 @@ import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
 
 import { ComputedStyleLoader } from './core/computed-style-loader';
-
 import { CustomMissingTranslationHandler } from './core/handler/custom-missing-translation.handler';
 
-export function createTranslateLoader(http: HttpClient) {
-    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
-}
-
-export function getRequest() {
+export const getRequest = (): any => {
     return { headers: { cookie: document.cookie } };
-}
+};
 
-export function createStyleLoader(document: Document): ComputedStyleLoader {
+export const createTranslateLoader = (http: HttpClient): TranslateLoader => {
+    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+};
+
+export const createStyleLoader = (document: Document): ComputedStyleLoader => {
     return {
         getComputedStyle(): any {
             return getComputedStyle(document.body);
         }
     } as ComputedStyleLoader;
-}
+};
 
 @NgModule({
     imports: [
@@ -43,7 +42,7 @@ export function createStyleLoader(document: Document): ComputedStyleLoader {
             },
             loader: {
                 provide: TranslateLoader,
-                useFactory: (createTranslateLoader),
+                useFactory: createTranslateLoader,
                 deps: [HttpClient, APP_BASE_HREF]
             }
         })
@@ -56,11 +55,11 @@ export function createStyleLoader(document: Document): ComputedStyleLoader {
     providers: [
         {
             provide: REQUEST,
-            useFactory: (getRequest)
+            useFactory: getRequest
         },
         {
             provide: ComputedStyleLoader,
-            useFactory: (createStyleLoader),
+            useFactory: createStyleLoader,
             deps: [DOCUMENT]
         }
     ]
