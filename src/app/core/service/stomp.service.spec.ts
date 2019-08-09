@@ -1,13 +1,15 @@
 import { inject, TestBed } from '@angular/core/testing';
 
 import { StompService } from './stomp.service';
+import { testAppConfig } from '../../../test.config';
 
 describe('StompService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
-                StompService
+                StompService,
+                { provide: 'APP_CONFIG', useValue: testAppConfig }
             ]
         });
     });

@@ -7,10 +7,11 @@ import { StoreModule } from '@ngrx/store';
 import { SharedModule } from '../../shared.module';
 
 import { FacetEntriesComponent } from './facet-entries.component';
-
-import { metaReducers, reducers } from '../../../core/store';
 import { FacetType, FacetSort } from '../../../core/model/view';
 import { Direction } from '../../../core/model/request';
+
+import { metaReducers, reducers } from '../../../core/store';
+import { testAppConfig } from '../../../../test.config';
 
 describe('FacetEntriesComponent', () => {
     let component: FacetEntriesComponent;
@@ -21,7 +22,7 @@ describe('FacetEntriesComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

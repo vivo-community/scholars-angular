@@ -11,6 +11,7 @@ import { ConceptRepo } from './concept.repo';
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
+import { testAppConfig } from '../../../../../test.config';
 
 describe('ConceptRepo', () => {
 
@@ -18,7 +19,7 @@ describe('ConceptRepo', () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
@@ -29,7 +30,8 @@ describe('ConceptRepo', () => {
                 })
             ],
             providers: [
-                { provide: REQUEST, useFactory: (getRequest) },
+                { provide: REQUEST, useFactory: getRequest },
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 ConceptRepo
             ]

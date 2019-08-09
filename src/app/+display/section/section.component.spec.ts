@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DisplayModule } from '../display.module';
 
 import { SectionComponent } from './section.component';
+import { testAppConfig } from '../../../test.config';
 
 describe('SectionComponent', () => {
     let component: SectionComponent;
@@ -12,6 +13,9 @@ describe('SectionComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 DisplayModule
+            ],
+            providers: [
+                { provide: 'APP_CONFIG', useValue: testAppConfig }
             ]
         }).compileComponents();
     }));

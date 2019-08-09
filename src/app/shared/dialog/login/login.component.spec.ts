@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared.module';
 import { LoginComponent } from './login.component';
 
 import { metaReducers, reducers } from '../../../core/store';
+import { testAppConfig } from '../../../../test.config';
 
 describe('LoginComponent', () => {
     let component: LoginComponent;
@@ -18,7 +19,7 @@ describe('LoginComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

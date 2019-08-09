@@ -15,7 +15,7 @@ describe('RestService', () => {
                 HttpClientTestingModule
             ],
             providers: [
-                { provide: REQUEST, useFactory: (getRequest) },
+                { provide: REQUEST, useFactory: getRequest },
                 RestService
             ]
         });

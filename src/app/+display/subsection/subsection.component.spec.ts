@@ -13,6 +13,7 @@ import { SubsectionComponent } from './subsection.component';
 import { metaReducers, reducers } from '../../core/store';
 
 import { routes } from '../display.routes';
+import { testAppConfig } from '../../../test.config';
 
 describe('SubsectionComponent', () => {
     let component: SubsectionComponent;
@@ -27,7 +28,7 @@ describe('SubsectionComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 DisplayModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

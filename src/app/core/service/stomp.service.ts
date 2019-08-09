@@ -7,6 +7,7 @@ import { asap } from 'rxjs/internal/scheduler/asap';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 
+import { AppConfig } from '../../app.config';
 import { StompSubscription } from '../model/stomp';
 
 import { environment } from '../../../environments/environment';
@@ -20,7 +21,10 @@ export class StompService {
 
     private pending: Map<string, { observer: Observer<StompSubscription>, subscription: StompSubscription }>;
 
-    constructor(@Inject(PLATFORM_ID) private platformId: string) {
+    constructor(
+        @Inject('APP_CONFIG') private appConfig: AppConfig,
+        @Inject(PLATFORM_ID) private platformId: string
+    ) {
         this.pending = new Map<string, { observer: Observer<StompSubscription>, subscription: StompSubscription }>();
     }
 
@@ -28,7 +32,7 @@ export class StompService {
         if (isPlatformServer(this.platformId)) {
             return scheduled([false], asap);
         }
-        const socket = new SockJS(environment.serviceUrl + '/connect');
+        const socket = new SockJS(this.appConfig.serviceUrl + '/connect');
         this.client = Stomp.over(socket);
 
         this.client.onreceipt = (receipt: any): void => {

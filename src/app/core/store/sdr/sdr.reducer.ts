@@ -37,16 +37,16 @@ export const getSdrInitialState = <R extends SdrResource>(key: string) => {
     });
 };
 
-export const getSdrReducer = <R extends SdrResource>(name: string) => {
+export const getSdrReducer = <R extends SdrResource>(name: string, additionalContext: any) => {
     const getResources = (action: SdrActions, key: string): R[] => {
         const resources = action.payload.collection._embedded !== undefined ? action.payload.collection._embedded[key] : [];
         switch (key) {
             case 'directoryViews':
             case 'discoveryViews':
-                resources.forEach(view => augmentCollectionViewTemplates(view));
+                resources.forEach(view => augmentCollectionViewTemplates(view, additionalContext));
                 break;
             case 'displayViews':
-                resources.forEach(view => augmentDisplayViewTemplates(view));
+                resources.forEach(view => augmentDisplayViewTemplates(view, additionalContext));
                 break;
         }
         return resources;
@@ -56,10 +56,10 @@ export const getSdrReducer = <R extends SdrResource>(name: string) => {
         switch (key) {
             case 'directoryViews':
             case 'discoveryViews':
-                augmentCollectionViewTemplates(resource);
+                augmentCollectionViewTemplates(resource, additionalContext);
                 break;
             case 'displayViews':
-                augmentDisplayViewTemplates(resource);
+                augmentDisplayViewTemplates(resource, additionalContext);
                 break;
         }
         return resource;

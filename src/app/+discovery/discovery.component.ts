@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Store, select } from '@ngrx/store';
@@ -7,7 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
-
+import { AppConfig } from '../app.config';
 import { DiscoveryView, Filter, FacetType } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
@@ -18,8 +18,6 @@ import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectR
 import { selectWindowDimensions } from '../core/store/layout';
 
 import { addFacetsToQueryParams, addFiltersToQueryParams, addSortToQueryParams, addExportToQueryParams } from '../shared/utilities/view.utility';
-
-import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'scholars-discovery',
@@ -52,6 +50,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
     private subscriptions: Subscription[];
 
     constructor(
+        @Inject('APP_CONFIG') private appConfig: AppConfig,
         private store: Store<AppState>,
         private router: Router,
         private route: ActivatedRoute
@@ -153,7 +152,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         addExportToQueryParams(queryParams, discoveryView);
         const tree = this.router.createUrlTree([''], { queryParams });
         const query = tree.toString().substring(1);
-        return `${environment.serviceUrl}/${discoveryView.collection}/search/export${query}`;
+        return `${this.appConfig.serviceUrl}/${discoveryView.collection}/search/export${query}`;
     }
 
     private equals(filterOne: Filter, filterTwo: Filter): boolean {

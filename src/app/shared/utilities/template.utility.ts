@@ -2,14 +2,7 @@ import { ResourceView, CollectionView, DisplayView } from '../../core/model/view
 
 import { compileTemplate, getTemplateFunction, getParsedTemplateFunction, initializeTemplateHelpers } from 'scholars-embed-utilities';
 
-import { environment } from '../../../environments/environment';
-
-const additionalContext = {
-    vivoUrl: environment.vivoUrl,
-    serviceUrl: environment.serviceUrl
-};
-
-const getParsedResourceViewTemplateFunction = (view: ResourceView, template: string) => {
+const getParsedResourceViewTemplateFunction = (view: ResourceView, template: string, additionalContext: any) => {
     compileTemplate(template);
     return (resource: any) => {
         resource.collection = view.collection;
@@ -18,16 +11,16 @@ const getParsedResourceViewTemplateFunction = (view: ResourceView, template: str
     };
 };
 
-const augmentCollectionViewTemplates = (view: CollectionView) => {
+const augmentCollectionViewTemplates = (view: CollectionView, additionalContext: any) => {
     view.templateFunctions = {};
     for (const k in view.templates) {
         if (view.templates.hasOwnProperty(k)) {
-            view.templateFunctions[k] = getParsedResourceViewTemplateFunction(view, view.templates[k]);
+            view.templateFunctions[k] = getParsedResourceViewTemplateFunction(view, view.templates[k], additionalContext);
         }
     }
 };
 
-const augmentDisplayViewTemplates = (view: DisplayView) => {
+const augmentDisplayViewTemplates = (view: DisplayView, additionalContext: any) => {
     view.mainContentTemplateFunction = getParsedTemplateFunction(view.mainContentTemplate, additionalContext);
     view.leftScanTemplateFunction = getParsedTemplateFunction(view.leftScanTemplate, additionalContext);
     view.rightScanTemplateFunction = getParsedTemplateFunction(view.rightScanTemplate, additionalContext);

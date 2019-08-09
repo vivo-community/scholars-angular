@@ -10,6 +10,7 @@ import { ThemeService } from './theme.service';
 import { getRequest, createStyleLoader } from '../../app.browser.module';
 
 import { ComputedStyleLoader } from '../computed-style-loader';
+import { testAppConfig } from '../../../test.config';
 
 describe('ThemeService', () => {
 
@@ -19,7 +20,8 @@ describe('ThemeService', () => {
                 HttpClientTestingModule
             ],
             providers: [
-                { provide: REQUEST, useFactory: (getRequest) },
+                { provide: REQUEST, useFactory: getRequest },
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
                 {
                     provide: ComputedStyleLoader,
                     useFactory: (createStyleLoader),

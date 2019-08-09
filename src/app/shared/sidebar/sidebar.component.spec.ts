@@ -8,6 +8,7 @@ import { SharedModule } from '../shared.module';
 import { SidebarComponent } from './sidebar.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test.config';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -17,7 +18,7 @@ describe('SidebarComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,

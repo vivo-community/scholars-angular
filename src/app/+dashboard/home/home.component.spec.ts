@@ -10,6 +10,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { HomeComponent } from './home.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test.config';
 
 describe('HomeComponent', () => {
     let component: HomeComponent;
@@ -23,7 +24,7 @@ describe('HomeComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
+                StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
                         strictStateImmutability: false,
