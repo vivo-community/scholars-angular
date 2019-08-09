@@ -13,7 +13,7 @@ import { DialogService } from '../../core/service/dialog.service';
 import { DiscoveryViewsComponent } from './discovery-views.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('DiscoveryViewsComponent', () => {
     let component: DiscoveryViewsComponent;

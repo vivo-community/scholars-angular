@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { RestService } from './rest.service';
 
 import { getRequest } from '../../app.browser.module';
+import { testAppConfig } from '../../../test.config';
 
 describe('AuthService', () => {
 
@@ -16,17 +17,8 @@ describe('AuthService', () => {
                 HttpClientTestingModule
             ],
             providers: [
-                { provide: REQUEST, useFactory: (getRequest) },
-                {
-                    provide: 'APP_CONFIG', useValue: {
-                        host: 'localhost',
-                        port: 4200,
-                        baseHref: '/',
-                        serviceUrl: 'http://localhost:9000',
-                        vivoUrl: 'https://scholars.library.tamu.edu/vivo',
-                        vivoEditorUrl: 'https://scholars.library.tamu.edu/vivo_editor'
-                    }
-                },
+                { provide: REQUEST, useFactory: getRequest },
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 AuthService
             ]

@@ -10,7 +10,7 @@ import { SearchBoxComponent } from './search-box.component';
 import { metaReducers, reducers } from '../../core/store';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from '../shared.module';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('SearchBoxComponent', () => {
     let component: SearchBoxComponent;

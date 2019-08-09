@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
+import { AppConfig } from '../../app.config';
 import { Person } from '../../core/model/discovery';
 
 import { selectAllResources } from '../../core/store/sdr';
@@ -31,7 +32,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
     private persons: Observable<Person[]>;
 
     constructor(
-        @Inject('APP_CONFIG') private appConfig: any,
+        @Inject('APP_CONFIG') private appConfig: AppConfig,
         private store: Store<AppState>,
         private translate: TranslateService
     ) {

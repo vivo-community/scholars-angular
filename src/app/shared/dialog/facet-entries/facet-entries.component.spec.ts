@@ -11,8 +11,7 @@ import { FacetType, FacetSort } from '../../../core/model/view';
 import { Direction } from '../../../core/model/request';
 
 import { metaReducers, reducers } from '../../../core/store';
-
-import { testAppConfig } from '../../../../test';
+import { testAppConfig } from '../../../../test.config';
 
 describe('FacetEntriesComponent', () => {
     let component: FacetEntriesComponent;

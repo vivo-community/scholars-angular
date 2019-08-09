@@ -1,6 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 
 import { StompService } from './stomp.service';
+import { testAppConfig } from '../../../test.config';
 
 describe('StompService', () => {
 
@@ -8,16 +9,7 @@ describe('StompService', () => {
         TestBed.configureTestingModule({
             providers: [
                 StompService,
-                {
-                    provide: 'APP_CONFIG', useValue: {
-                        host: 'localhost',
-                        port: 4200,
-                        baseHref: '/',
-                        serviceUrl: 'http://localhost:9000',
-                        vivoUrl: 'https://scholars.library.tamu.edu/vivo',
-                        vivoEditorUrl: 'https://scholars.library.tamu.edu/vivo_editor'
-                    }
-                }
+                { provide: 'APP_CONFIG', useValue: testAppConfig }
             ]
         });
     });

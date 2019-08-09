@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DisplayModule } from '../display.module';
 
 import { SectionComponent } from './section.component';
+import { testAppConfig } from '../../../test.config';
 
 describe('SectionComponent', () => {
     let component: SectionComponent;
@@ -14,16 +15,7 @@ describe('SectionComponent', () => {
                 DisplayModule
             ],
             providers: [
-                {
-                    provide: 'APP_CONFIG', useValue: {
-                        host: 'localhost',
-                        port: 4200,
-                        baseHref: '/',
-                        serviceUrl: 'http://localhost:9000',
-                        vivoUrl: 'https://scholars.library.tamu.edu/vivo',
-                        vivoEditorUrl: 'https://scholars.library.tamu.edu/vivo_editor'
-                    }
-                }
+                { provide: 'APP_CONFIG', useValue: testAppConfig }
             ]
         }).compileComponents();
     }));

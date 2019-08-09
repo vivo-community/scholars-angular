@@ -12,7 +12,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { ThemesComponent } from './themes.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('ThemesComponent', () => {
     let component: ThemesComponent;

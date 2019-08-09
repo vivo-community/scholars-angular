@@ -17,7 +17,7 @@ import { UsersComponent } from './users/users.component';
 import { routes } from './admin.routes';
 
 import { metaReducers, reducers } from '../core/store';
-import { testAppConfig } from '../../test';
+import { testAppConfig } from '../../test.config';
 
 describe('AdminComponent', () => {
     let component: AdminComponent;

@@ -3,6 +3,7 @@ import { HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
+import { AppConfig } from '../../app.config';
 import { User } from '../model/user';
 import { LoginRequest, RegistrationRequest } from '../model/request';
 
@@ -14,7 +15,7 @@ import { RestService } from './rest.service';
 export class AuthService {
 
     constructor(
-        @Inject('APP_CONFIG') private appConfig: any,
+        @Inject('APP_CONFIG') private appConfig: AppConfig,
         private restService: RestService
     ) {
 

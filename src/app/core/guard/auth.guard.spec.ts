@@ -10,7 +10,7 @@ import { AlertService } from '../service/alert.service';
 import { DialogService } from '../service/dialog.service';
 
 import { metaReducers, reducers } from '../store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('AuthGuard', () => {
 

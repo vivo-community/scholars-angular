@@ -9,7 +9,7 @@ import { DialogService } from '../core/service/dialog.service';
 import { FooterComponent } from './footer.component';
 
 import { metaReducers, reducers } from '../core/store';
-import { testAppConfig } from '../../test';
+import { testAppConfig } from '../../test.config';
 
 describe('FooterComponent', () => {
     let component: FooterComponent;

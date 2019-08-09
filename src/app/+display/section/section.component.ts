@@ -2,6 +2,7 @@ import { Component, Input, Inject } from '@angular/core';
 
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
+import { AppConfig } from '../../app.config';
 import { DisplayTabSectionView } from '../../core/model/view';
 import { SolrDocument } from '../../core/model/discovery';
 
@@ -24,7 +25,7 @@ export class SectionComponent {
     @Input()
     public collection: string;
 
-    constructor(@Inject('APP_CONFIG') private appConfig: any) {
+    constructor(@Inject('APP_CONFIG') private appConfig: AppConfig) {
 
     }
 

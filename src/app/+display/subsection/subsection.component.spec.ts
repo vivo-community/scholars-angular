@@ -13,7 +13,7 @@ import { SubsectionComponent } from './subsection.component';
 import { metaReducers, reducers } from '../../core/store';
 
 import { routes } from '../display.routes';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('SubsectionComponent', () => {
     let component: SubsectionComponent;

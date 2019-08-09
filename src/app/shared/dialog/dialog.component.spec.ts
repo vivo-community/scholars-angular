@@ -12,7 +12,7 @@ import { DialogComponent } from './dialog.component';
 import { DialogButtonType } from '../../core/model/dialog';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('DialogComponent', () => {
     let component: DialogComponent;

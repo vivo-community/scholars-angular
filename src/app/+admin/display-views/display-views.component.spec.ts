@@ -13,7 +13,7 @@ import { DialogService } from '../../core/service/dialog.service';
 import { DisplayViewsComponent } from './display-views.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('DisplayViewsComponent', () => {
     let component: DisplayViewsComponent;

@@ -9,7 +9,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { NavigationComponent } from './navigation.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('NavigationComponent', () => {
     let component: NavigationComponent;

@@ -8,7 +8,7 @@ import { SharedModule } from '../../shared.module';
 import { RegistrationComponent, RegistrationStep } from './registration.component';
 
 import { metaReducers, reducers } from '../../../core/store';
-import { testAppConfig } from '../../../../test';
+import { testAppConfig } from '../../../../test.config';
 
 describe('RegistrationComponent', () => {
     let component: RegistrationComponent;

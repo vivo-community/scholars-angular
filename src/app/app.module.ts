@@ -21,13 +21,15 @@ import { RootStoreModule } from './core/store/root-store.module';
 
 import { AppState } from './core/store';
 
+import { AppConfig } from './app.config';
+
 import * as fromStore from './core/store/root-store.actions';
 
 export const NGRX_STATE = makeStateKey('NGRX_STATE');
 
-const getBaseHref = (document: Document, config: any): string => {
+const getBaseHref = (document: Document, appConfig: AppConfig): string => {
     const baseTag = document.querySelector('head > base');
-    baseTag.setAttribute('href', config.baseHref);
+    baseTag.setAttribute('href', appConfig.baseHref);
     return baseTag.getAttribute('href');
 };
 

@@ -2,6 +2,8 @@ import { InjectionToken } from '@angular/core';
 
 import { ActionReducerMap, MetaReducer } from '@ngrx/store';
 
+import { AppConfig } from '../../app.config';
+
 import {
   Collection,
   Concept,
@@ -35,6 +37,7 @@ import * as fromStomp from './stomp/stomp.reducer';
 import * as fromTheme from './theme/theme.reducer';
 import * as fromRootStore from './root-store.reducer';
 
+
 export interface AppState {
   alert: fromAlert.AlertState;
   auth: fromAuth.AuthState;
@@ -60,7 +63,7 @@ export interface AppState {
   router: fromRouter.RouterReducerState;
 }
 
-export const reducers = (appConfig: any): ActionReducerMap<AppState> => {
+export const reducers = (appConfig: AppConfig): ActionReducerMap<AppState> => {
   const additionalContext = {
     vivoUrl: appConfig.vivoUrl,
     serviceUrl: appConfig.serviceUrl

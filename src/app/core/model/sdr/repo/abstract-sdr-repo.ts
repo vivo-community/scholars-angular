@@ -1,16 +1,16 @@
 import { Injectable, Inject } from '@angular/core';
 
 import { Observable, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { RestService } from '../../../service/rest.service';
 import { SdrRepo } from './sdr-repo';
 
+import { AppConfig } from '../../../../app.config';
 import { Sort, Facetable, SdrRequest } from '../../request';
 import { Count } from '../count';
 import { SdrResource } from '../sdr-resource';
 import { SdrCollection } from '../sdr-collection';
-
-import { map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
@@ -18,7 +18,7 @@ import { map } from 'rxjs/operators';
 export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<R> {
 
     constructor(
-        @Inject('APP_CONFIG') private appConfig: any,
+        @Inject('APP_CONFIG') private appConfig: AppConfig,
         protected restService: RestService
     ) {
 

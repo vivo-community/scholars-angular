@@ -16,6 +16,8 @@ import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 
 import { renderModuleFactory } from '@angular/platform-server';
 
+import { AppConfig } from './src/app/app.config';
+
 import { ROUTES } from './static.paths';
 
 const PORT = Number(process.env.PORT) || 4200;
@@ -26,7 +28,7 @@ const SERVICE_URL = process.env.SERVICE_URL || 'http://localhost:9000';
 const VIVO_URL = process.env.VIVO_URL || 'https://scholars.library.tamu.edu/vivo';
 const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'https://scholars.library.tamu.edu/vivo_editor';
 
-const appConfig = {
+const appConfig: AppConfig = {
     host: HOST,
     port: PORT,
     baseHref: BASE_HREF,

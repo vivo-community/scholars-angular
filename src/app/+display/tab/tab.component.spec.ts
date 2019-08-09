@@ -15,7 +15,7 @@ import { TabComponent } from './tab.component';
 import { metaReducers, reducers } from '../../core/store';
 
 import { routes } from '../display.routes';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('TabComponent', () => {
     let component: TabComponent;

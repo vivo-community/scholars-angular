@@ -8,7 +8,7 @@ import { SharedModule } from '../../shared.module';
 import { LoginComponent } from './login.component';
 
 import { metaReducers, reducers } from '../../../core/store';
-import { testAppConfig } from '../../../../test';
+import { testAppConfig } from '../../../../test.config';
 
 describe('LoginComponent', () => {
     let component: LoginComponent;

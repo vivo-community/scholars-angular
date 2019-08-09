@@ -5,6 +5,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { AppState } from '../../core/store';
+import { AppConfig } from '../../app.config';
 import { DirectoryView } from '../../core/model/view';
 
 import { selectIsNavigationCollapsed, selectIsSidebarExpanded, selectIsNavigationExpanded } from '../../core/store/layout';
@@ -39,7 +40,7 @@ export class NavigationComponent implements OnInit {
     public directoryViews: Observable<DirectoryView[]>;
 
     constructor(
-        @Inject('APP_CONFIG') appConfig: any,
+        @Inject('APP_CONFIG') appConfig: AppConfig,
         private store: Store<AppState>
     ) {
         this.vivoEditorUrl = appConfig.vivoEditorUrl;

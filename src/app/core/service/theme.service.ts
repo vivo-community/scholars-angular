@@ -7,6 +7,7 @@ import { asap } from 'rxjs/internal/scheduler/asap';
 import { ComputedStyleLoader } from '../computed-style-loader';
 import { RestService } from './rest.service';
 
+import { AppConfig } from '../../app.config';
 import { Theme, Style } from '../model/theme';
 
 import { hexToRgb, luminance, mix, yiq } from '../../shared/utilities/color.utility';
@@ -17,7 +18,7 @@ import { hexToRgb, luminance, mix, yiq } from '../../shared/utilities/color.util
 export class ThemeService {
 
     constructor(
-        @Inject('APP_CONFIG') private appConfig: any,
+        @Inject('APP_CONFIG') private appConfig: AppConfig,
         private sanitizer: DomSanitizer,
         private restService: RestService,
         private styleLoader: ComputedStyleLoader

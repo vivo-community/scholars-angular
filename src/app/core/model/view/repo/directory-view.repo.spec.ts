@@ -11,7 +11,7 @@ import { DirectoryViewRepo } from './directory-view.repo';
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
-import { testAppConfig } from '../../../../../test';
+import { testAppConfig } from '../../../../../test.config';
 
 describe('DirectoryViewRepo', () => {
 
@@ -30,7 +30,7 @@ describe('DirectoryViewRepo', () => {
                 })
             ],
             providers: [
-                { provide: REQUEST, useFactory: (getRequest) },
+                { provide: REQUEST, useFactory: getRequest },
                 { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 DirectoryViewRepo

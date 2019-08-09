@@ -13,7 +13,7 @@ import { HomeComponent } from './home/home.component';
 import { routes } from './dashboard.routes';
 
 import { metaReducers, reducers } from '../core/store';
-import { testAppConfig } from '../../test';
+import { testAppConfig } from '../../test.config';
 
 describe('DashboardComponent', () => {
     let component: DashboardComponent;

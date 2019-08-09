@@ -13,7 +13,8 @@ import { DialogService } from '../../core/service/dialog.service';
 import { DirectoryViewsComponent } from './directory-views.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
+
 
 describe('DirectoryViewsComponent', () => {
     let component: DirectoryViewsComponent;

@@ -10,7 +10,7 @@ import { UserEditComponent } from './user-edit.component';
 import { Role } from '../../../core/model/user';
 
 import { metaReducers, reducers } from '../../../core/store';
-import { testAppConfig } from '../../../../test';
+import { testAppConfig } from '../../../../test.config';
 
 describe('UserEditComponent', () => {
     let component: UserEditComponent;

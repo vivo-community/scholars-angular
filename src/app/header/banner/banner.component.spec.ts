@@ -8,7 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { BannerComponent } from './banner.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('BannerComponent', () => {
     let component: BannerComponent;

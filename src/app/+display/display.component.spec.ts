@@ -13,7 +13,7 @@ import { TabComponent } from './tab/tab.component';
 import { routes } from './display.routes';
 
 import { metaReducers, reducers } from '../core/store';
-import { testAppConfig } from '../../test';
+import { testAppConfig } from '../../test.config';
 
 describe('DisplayComponent', () => {
     let component: DisplayComponent;

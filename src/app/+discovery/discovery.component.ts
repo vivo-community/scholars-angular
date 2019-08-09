@@ -7,7 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
-
+import { AppConfig } from '../app.config';
 import { DiscoveryView, Filter, FacetType } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
@@ -50,7 +50,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
     private subscriptions: Subscription[];
 
     constructor(
-        @Inject('APP_CONFIG') private appConfig: any,
+        @Inject('APP_CONFIG') private appConfig: AppConfig,
         private store: Store<AppState>,
         private router: Router,
         private route: ActivatedRoute

@@ -6,7 +6,7 @@ import { SharedModule } from '../shared.module';
 import { AlertComponent } from './alert.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('AlertComponent', () => {
     let component: AlertComponent;

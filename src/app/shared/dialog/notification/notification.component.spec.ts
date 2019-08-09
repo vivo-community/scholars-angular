@@ -8,7 +8,7 @@ import { SharedModule } from '../../shared.module';
 import { NotificationComponent } from './notification.component';
 
 import { metaReducers, reducers } from '../../../core/store';
-import { testAppConfig } from '../../../../test';
+import { testAppConfig } from '../../../../test.config';
 
 describe('NotificationComponent', () => {
     let component: NotificationComponent;

@@ -13,7 +13,7 @@ import { DialogService } from '../../core/service/dialog.service';
 import { UsersComponent } from './users.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('UsersComponent', () => {
     let component: UsersComponent;

@@ -11,7 +11,7 @@ import { DisplayViewRepo } from './display-view.repo';
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
-import { testAppConfig } from '../../../../../test';
+import { testAppConfig } from '../../../../../test.config';
 
 describe('DisplayViewRepo', () => {
 
@@ -30,7 +30,7 @@ describe('DisplayViewRepo', () => {
                 })
             ],
             providers: [
-                { provide: REQUEST, useFactory: (getRequest) },
+                { provide: REQUEST, useFactory: getRequest },
                 { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 DisplayViewRepo

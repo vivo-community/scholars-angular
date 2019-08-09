@@ -8,7 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { NavbarComponent } from './navbar.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('NavbarComponent', () => {
     let component: NavbarComponent;

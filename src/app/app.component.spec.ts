@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { metaReducers, reducers } from './core/store';
 
 import { routes } from './app.routes';
-import { testAppConfig } from '../test';
+import { testAppConfig } from '../test.config';
 
 describe('AppComponent', () => {
     let component: AppComponent;

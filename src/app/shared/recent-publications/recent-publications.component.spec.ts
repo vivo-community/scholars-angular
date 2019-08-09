@@ -5,7 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import { metaReducers, reducers } from '../../core/store';
 
 import { RecentPublicationsComponent } from './recent-publications.component';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('RecentPublicationsComponent', () => {
     let component: RecentPublicationsComponent;

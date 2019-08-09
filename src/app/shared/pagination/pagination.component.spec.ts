@@ -11,7 +11,7 @@ import { SharedModule } from '../shared.module';
 import { PaginationComponent } from './pagination.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('PaginationComponent', () => {
     let component: PaginationComponent;

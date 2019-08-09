@@ -6,7 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { StatsBoxComponent } from './stats-box.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('StatsBoxComponent', () => {
     let component: StatsBoxComponent;

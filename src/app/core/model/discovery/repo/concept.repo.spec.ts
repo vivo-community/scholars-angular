@@ -11,7 +11,7 @@ import { ConceptRepo } from './concept.repo';
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
-import { testAppConfig } from '../../../../../test';
+import { testAppConfig } from '../../../../../test.config';
 
 describe('ConceptRepo', () => {
 
@@ -30,7 +30,7 @@ describe('ConceptRepo', () => {
                 })
             ],
             providers: [
-                { provide: REQUEST, useFactory: (getRequest) },
+                { provide: REQUEST, useFactory: getRequest },
                 { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 ConceptRepo

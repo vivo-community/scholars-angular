@@ -11,7 +11,7 @@ import { OrganizationRepo } from './organization.repo';
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
-import { testAppConfig } from '../../../../../test';
+import { testAppConfig } from '../../../../../test.config';
 
 describe('OrganizationRepo', () => {
 
@@ -30,7 +30,7 @@ describe('OrganizationRepo', () => {
                 })
             ],
             providers: [
-                { provide: REQUEST, useFactory: (getRequest) },
+                { provide: REQUEST, useFactory: getRequest },
                 { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 OrganizationRepo

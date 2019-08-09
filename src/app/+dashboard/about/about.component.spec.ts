@@ -7,7 +7,7 @@ import { AboutComponent } from './about.component';
 import { LoaderDirective } from '../../shared/loader/loader.directive';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('AboutComponent', () => {
     let component: AboutComponent;

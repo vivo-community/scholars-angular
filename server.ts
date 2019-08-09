@@ -15,6 +15,8 @@ import * as express from 'express';
 
 import { join } from 'path';
 
+import { AppConfig } from './src/app/app.config';
+
 // Faster server renders w/ Prod mode (dev mode never needed)
 enableProdMode();
 
@@ -32,7 +34,7 @@ const SERVICE_URL = process.env.SERVICE_URL || 'http://localhost:9000';
 const VIVO_URL = process.env.VIVO_URL || 'https://scholars.library.tamu.edu/vivo';
 const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'https://scholars.library.tamu.edu/vivo_editor';
 
-const appConfig = {
+const appConfig: AppConfig = {
     host: HOST,
     port: PORT,
     baseHref: BASE_HREF,

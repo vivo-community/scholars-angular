@@ -12,7 +12,7 @@ import { DiscoveryComponent } from './discovery.component';
 import { routes } from './discovery.routes';
 
 import { metaReducers, reducers } from '../core/store';
-import { testAppConfig } from '../../test';
+import { testAppConfig } from '../../test.config';
 
 describe('DiscoveryComponent', () => {
     let component: DiscoveryComponent;

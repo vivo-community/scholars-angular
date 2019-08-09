@@ -8,7 +8,7 @@ import { SharedModule } from '../shared.module';
 import { SidebarComponent } from './sidebar.component';
 
 import { metaReducers, reducers } from '../../core/store';
-import { testAppConfig } from '../../../test';
+import { testAppConfig } from '../../../test.config';
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;

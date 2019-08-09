@@ -12,7 +12,7 @@ import { DirectoryComponent } from './directory.component';
 import { routes } from './directory.routes';
 
 import { metaReducers, reducers } from '../core/store';
-import { testAppConfig } from '../../test';
+import { testAppConfig } from '../../test.config';
 
 describe('DirectoryComponent', () => {
     let component: DirectoryComponent;
