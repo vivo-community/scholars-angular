@@ -70,11 +70,11 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
             }));
         });
         return forkJoin(observables).pipe(
-            map((collection) => {
+            map((resources) => {
+                const embedded = {};
+                embedded[this.path()] = [];
                 const response = {
-                    _embedded: {
-                        documents: []
-                    },
+                    _embedded: embedded,
                     _links: {
                         self: {
                             href: `${this.appConfig.serviceUrl}/${this.path()}/search/findByIdIn?ids=${ids.join(',')}`
@@ -87,8 +87,8 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
                         number: 1
                     }
                 };
-                collection.forEach((result) => {
-                    response._embedded.documents = response._embedded.documents.concat(result._embedded.documents);
+                resources.forEach((result) => {
+                    response._embedded[this.path()] = response._embedded[this.path()].concat(result._embedded[this.path()]);
                 });
                 return response;
             })
