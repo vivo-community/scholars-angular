@@ -101,6 +101,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
                     select(selectResourceById(params.collection, params.id)),
                     filter((document: SolrDocument) => document !== undefined),
                     tap((document: SolrDocument) => {
+                        console.log(document);
                         this.displayView = this.store.pipe(
                             select(selectDisplayViewByTypes(document.type)),
                             tap(([displayView, isLoading]) => {
@@ -136,7 +137,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
                                     tab.sections.forEach((section: DisplayTabSectionView) => {
                                         section.lazyReferences.forEach((lazyReference: LazyReference) => {
                                             if (document[lazyReference.field] !== undefined) {
-                                                if (document[lazyReference.field] instanceof Array) {
+                                                if (Array.isArray(document[lazyReference.field])) {
                                                     const ids = document[lazyReference.field].map((property) => property.id);
                                                     if (ids.length > 0) {
                                                         this.store.dispatch(new fromSdr.FindByIdInResourceAction(lazyReference.collection, { ids }));

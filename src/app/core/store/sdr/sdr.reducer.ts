@@ -93,7 +93,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
                     error: undefined
                 });
             case getSdrAction(SdrActionTypes.RECENTLY_UPDATED_SUCCESS, name):
-                return getSdrAdapter<R>(keys[name]).addAll(action.payload.recentlyUpdated._embedded.persons, {
+                return getSdrAdapter<R>(keys[name]).addAll(action.payload.recentlyUpdated._embedded[name], {
                     ...state,
                     links: undefined,
                     loading: false,
