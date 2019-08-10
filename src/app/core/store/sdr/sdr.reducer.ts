@@ -14,6 +14,7 @@ export interface SdrState<R extends SdrResource> extends EntityState<R> {
     links: SdrCollectionLinks;
     counting: boolean;
     loading: boolean;
+    dereferencing: boolean;
     updating: boolean;
     error: any;
 }
@@ -32,6 +33,7 @@ export const getSdrInitialState = <R extends SdrResource>(key: string) => {
         links: undefined,
         counting: false,
         loading: false,
+        dereferencing: false,
         updating: false,
         error: undefined
     });
@@ -78,13 +80,27 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
                     loading: true,
                     error: undefined
                 };
+            case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE, name):
+                return {
+                    ...state,
+                    dereferencing: true,
+                    error: undefined
+                };
             case getSdrAction(SdrActionTypes.COUNT, name):
                 return {
                     ...state,
                     counting: true,
                     error: undefined
                 };
-            case getSdrAction(SdrActionTypes.FIND_BY_ID_IN_SUCCESS, name):
+            case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, name):
+                const changes = {};
+                const id = action.payload.document.id;
+                changes[action.payload.field] = action.payload.resources._embedded[action.payload.collection];
+                return getSdrAdapter<R>(keys[name]).updateOne({ id, changes }, {
+                    ...state,
+                    dereferencing: false,
+                    error: undefined
+                });
             case getSdrAction(SdrActionTypes.GET_ALL_SUCCESS, name):
                 return getSdrAdapter<R>(keys[name]).addAll(getResources(action, name), {
                     ...state,
@@ -92,6 +108,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
                     loading: false,
                     error: undefined
                 });
+            case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE, name):
             case getSdrAction(SdrActionTypes.RECENTLY_UPDATED_SUCCESS, name):
                 return getSdrAdapter<R>(keys[name]).addAll(action.payload.recentlyUpdated._embedded[name], {
                     ...state,
@@ -134,6 +151,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
             case getSdrAction(SdrActionTypes.GET_ONE_FAILURE, name):
             case getSdrAction(SdrActionTypes.FIND_BY_ID_IN_FAILURE, name):
             case getSdrAction(SdrActionTypes.FIND_BY_TYPES_IN_FAILURE, name):
+            case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_FAILURE, name):
             case getSdrAction(SdrActionTypes.PAGE_FAILURE, name):
             case getSdrAction(SdrActionTypes.SEARCH_FAILURE, name):
             case getSdrAction(SdrActionTypes.COUNT_FAILURE, name):
@@ -192,6 +210,7 @@ export const selectTotal = <R extends SdrResource>(name: string) => getSdrAdapte
 
 export const getError = <R extends SdrResource>(state: SdrState<R>) => state.error;
 export const isLoading = <R extends SdrResource>(state: SdrState<R>) => state.loading;
+export const isDereferencing = <R extends SdrResource>(state: SdrState<R>) => state.dereferencing;
 export const isUpdating = <R extends SdrResource>(state: SdrState<R>) => state.updating;
 export const isCounting = <R extends SdrResource>(state: SdrState<R>) => state.counting;
 

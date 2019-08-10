@@ -129,9 +129,28 @@ export class SdrEffects {
         map(([combination, stomp]) => this.subscribeToResourceQueue(combination[0], stomp))
     );
 
-    @Effect() gfindByTypesInFailure = this.actions.pipe(
+    @Effect() findByTypesInFailure = this.actions.pipe(
         ofType(...this.buildActions(fromSdr.SdrActionTypes.FIND_BY_TYPES_IN_FAILURE)),
         map((action: fromSdr.FindByTypesInResourceFailureAction) => this.alert.findByTypesInFailureAlert(action.payload))
+    );
+
+    @Effect() fetchLazyReference = this.actions.pipe(
+        ofType(...this.buildActions(fromSdr.SdrActionTypes.FETCH_LAZY_REFERENCE)),
+        switchMap((action: fromSdr.FetchLazyReferenceAction) => {
+            const field = action.payload.field;
+            const collection = action.payload.collection;
+            const document = action.payload.document;
+            const ids = document[field].map((property) => property.id);
+            return this.repos.get(collection).findByIdIn(ids).pipe(
+                map((resources: SdrCollection) => new fromSdr.FetchLazyReferenceSuccessAction(action.name, { document, collection, field, resources })),
+                catchError((response) => scheduled([new fromSdr.FetchLazyReferenceFailureAction(action.name, { response })], asap))
+            );
+        })
+    );
+
+    @Effect() fetchLazyReferenceFailure = this.actions.pipe(
+        ofType(...this.buildActions(fromSdr.SdrActionTypes.FETCH_LAZY_REFERENCE_FAILURE)),
+        map((action: fromSdr.FetchLazyReferenceFailureAction) => this.alert.fetchLazyRefernceFailureAlert(action.payload))
     );
 
     @Effect() page = this.actions.pipe(

@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { SdrRequest } from '../../model/request';
+import { SdrCollection } from '../../model/sdr';
 
 export enum SdrActionTypes {
     GET_ALL = 'get all resources',
@@ -26,6 +27,9 @@ export enum SdrActionTypes {
     FIND_BY_TYPES_IN = 'find resource by types in',
     FIND_BY_TYPES_IN_SUCCESS = 'sucessfully found resource by types in',
     FIND_BY_TYPES_IN_FAILURE = 'failed finding resource by types is',
+    FETCH_LAZY_REFERENCE = 'fetch lazy reference',
+    FETCH_LAZY_REFERENCE_SUCCESS = 'sucessfully fetched lazy reference',
+    FETCH_LAZY_REFERENCE_FAILURE = 'failed fetching lazy reference',
     POST = 'post resource',
     POST_SUCCESS = 'sucessfully posted resource',
     POST_FAILURE = 'failed posting resource',
@@ -165,6 +169,21 @@ export class FindByTypesInResourceFailureAction implements Action {
     constructor(public name: string, public payload: any) { }
 }
 
+export class FetchLazyReferenceAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE, this.name);
+    constructor(public name: string, public payload: { document: any, collection: string, field: string }) { }
+}
+
+export class FetchLazyReferenceSuccessAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, this.name);
+    constructor(public name: string, public payload: { document: any, collection: string, field: string, resources: SdrCollection }) { }
+}
+
+export class FetchLazyReferenceFailureAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_FAILURE, this.name);
+    constructor(public name: string, public payload: any) { }
+}
+
 export class PostResourceAction implements Action {
     readonly type = getSdrAction(SdrActionTypes.POST, this.name);
     constructor(public name: string, public payload: any) { }
@@ -255,6 +274,9 @@ export type SdrActions =
     FindByTypesInResourceAction |
     FindByTypesInResourceSuccessAction |
     FindByTypesInResourceFailureAction |
+    FetchLazyReferenceAction |
+    FetchLazyReferenceSuccessAction |
+    FetchLazyReferenceFailureAction |
     PostResourceAction |
     PostResourceSuccessAction |
     PostResourceFailureAction |
