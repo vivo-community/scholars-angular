@@ -112,6 +112,48 @@ export class DisplayComponent implements OnDestroy, OnInit {
                             filter((displayView: DisplayView) => displayView !== undefined),
                             mergeMap((displayView: DisplayView) => {
 
+                                if (this.route.children.length === 0) {
+                                    let tabName = 'View All';
+                                    if (displayView.name !== 'Persons') {
+                                        for (const tab of this.getTabsToShow(displayView.tabs, document)) {
+                                            if (!tab.hidden) {
+                                                tabName = tab.name;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    this.router.navigate([displayView.name, tabName], {
+                                        relativeTo: this.route,
+                                        replaceUrl: true
+                                    });
+                                }
+
+                                this.store.dispatch(new fromMetadata.AddMetadataTagsAction({
+                                    tags: this.buildDisplayMetaTags(displayView, document)
+                                }));
+
+                                const tabCount = displayView.tabs.length - 1;
+
+                                if (displayView.tabs[tabCount].name === 'View All') {
+                                    displayView.tabs.splice(tabCount, 1);
+                                }
+
+                                const viewAllTabSections = [];
+
+                                const viewAllTab: DisplayTabView = {
+                                    name: 'View All',
+                                    hidden: false,
+                                    sections: viewAllTabSections
+                                };
+
+                                this.getTabsToShow(displayView.tabs, document).forEach((tab: DisplayTabView) => {
+                                    this.getSectionsToShow(tab.sections, document).forEach((section: DisplayTabSectionView) => {
+                                        viewAllTabSections.push(section);
+                                    });
+                                });
+
+                                displayView.tabs.push(viewAllTab);
+
                                 return combineLatest([scheduled([displayView], asap), new Observable((observer: Observer<boolean>) => {
 
                                     const dereference = (lazyReference: LazyReference): Promise<void> => {
@@ -145,47 +187,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
                                         observer.complete();
                                     });
 
-                                    if (this.route.children.length === 0) {
-                                        let tabName = 'View All';
-                                        if (displayView.name !== 'People') {
-                                            for (const tab of this.getTabsToShow(displayView.tabs, document)) {
-                                                if (!tab.hidden) {
-                                                    tabName = tab.name;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        this.router.navigate([displayView.name, tabName], {
-                                            relativeTo: this.route,
-                                            replaceUrl: true
-                                        });
-                                    }
-
-                                    this.store.dispatch(new fromMetadata.AddMetadataTagsAction({
-                                        tags: this.buildDisplayMetaTags(displayView, document)
-                                    }));
-
-                                    const tabCount = displayView.tabs.length - 1;
-
-                                    if (displayView.tabs[tabCount].name === 'View All') {
-                                        displayView.tabs.splice(tabCount, 1);
-                                    }
-
-                                    const viewAllTabSections = [];
-
-                                    const viewAllTab: DisplayTabView = {
-                                        name: 'View All',
-                                        hidden: false,
-                                        sections: viewAllTabSections
-                                    };
-
-                                    this.getTabsToShow(displayView.tabs, document).forEach((tab: DisplayTabView) => {
-                                        this.getSectionsToShow(tab.sections, document).forEach((section: DisplayTabSectionView) => {
-                                            viewAllTabSections.push(section);
-                                        });
-                                    });
-
-                                    displayView.tabs.push(viewAllTab);
                                 })]);
                             }),
                             filter(([displayView, isReady]) => isReady),
