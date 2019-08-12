@@ -7,8 +7,6 @@ import { StoreModule } from '@ngrx/store';
 import { SharedModule } from '../../shared.module';
 
 import { FacetEntriesComponent } from './facet-entries.component';
-import { FacetType, FacetSort } from '../../../core/model/view';
-import { Direction } from '../../../core/model/request';
 
 import { metaReducers, reducers } from '../../../core/store';
 import { testAppConfig } from '../../../../test.config';
@@ -40,20 +38,8 @@ describe('FacetEntriesComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(FacetEntriesComponent);
         component = fixture.componentInstance;
-        component.facet = {
-            name: 'Test',
-            field: 'test',
-            type: FacetType.STRING,
-            sort: FacetSort.COUNT,
-            direction: Direction.ASC,
-            limit: 10,
-            hidden: false,
-            collapsed: false
-        };
-        component.sdrFacet = {
-            field: 'test',
-            entries: []
-        };
+        component.name = 'Test';
+        component.field = 'test';
         fixture.detectChanges();
     });
 

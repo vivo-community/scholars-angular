@@ -1,5 +1,4 @@
 import { Injectable, Injector } from '@angular/core';
-import { Params } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,10 +19,11 @@ import { AbstractSdrRepo } from '../../model/sdr/repo/abstract-sdr-repo';
 import { SdrResource, SdrCollection, SdrFacet, SdrFacetEntry, Count } from '../../model/sdr';
 import { SidebarMenu, SidebarSection, SidebarItem, SidebarItemType } from '../../model/sidebar';
 import { SolrDocument } from '../../model/discovery';
-import { SdrRequest, Facetable, Indexable, Direction, Sort, Pageable } from '../../model/request';
-import { OperationKey, Facet, DiscoveryView, DirectoryView, FacetSort, FacetType } from '../../model/view';
+import { Facet, DiscoveryView, DirectoryView, FacetType } from '../../model/view';
 
 import { injectable, repos } from '../../model/repos';
+
+import { createSdrRequest } from '../../../shared/utilities/discovery.utility';
 
 import { selectAllResources } from './';
 import { selectRouterState } from '../router';
@@ -345,7 +345,7 @@ export class SdrEffects {
                 collection = router.state.queryParams.collection;
             }
             if (collection) {
-                const request = this.createSdrRequest(router.state);
+                const request = createSdrRequest(router.state);
                 if (router.state.url.startsWith('/directory') || router.state.url.startsWith('/discovery')) {
                     this.store.dispatch(new fromSdr.SearchResourcesAction(collection, { request }));
                 } else {
@@ -435,33 +435,16 @@ export class SdrEffects {
                             collapsed: facet.collapsed
                         };
 
-                        sdrFacet.entries = sdrFacet.entries.sort(this.getFacetSortFunction(facet));
-
-                        if (facet.type === FacetType.DATE_YEAR) {
-                            const mappedEntries = {};
-                            sdrFacet.entries.map((entry) => {
-                                const date = new Date(entry.value);
-                                return { value: date.getUTCFullYear(), count: entry.count };
-                            }).forEach((entry) => {
-                                if (mappedEntries[entry.value] !== undefined) {
-                                    mappedEntries[entry.value].count += entry.count;
-                                } else {
-                                    mappedEntries[entry.value] = { count: entry.count };
-                                }
-                            });
-                            sdrFacet.entries = Object.keys(mappedEntries).reverse().map((key) => {
-                                return { value: key, count: mappedEntries[key].count };
-                            });
-                        }
-
-                        sdrFacet.entries.slice(0, facet.limit).forEach((facetEntry: SdrFacetEntry) => {
+                        sdrFacet.entries.content.forEach((facetEntry: SdrFacetEntry) => {
                             let selected = false;
 
                             if (facetEntry.value.length > 0) {
                                 for (const requestFacet of routerState.queryParams.facets.split(',')) {
                                     if (routerState.queryParams[`${requestFacet}.filter`] !== undefined) {
                                         if (facet.type === FacetType.DATE_YEAR) {
-                                            if (routerState.queryParams[`${requestFacet}.filter`] === `[${facetEntry.value} TO ${Number(facetEntry.value) + 1}]`) {
+                                            const date = new Date(facetEntry.value);
+                                            const year = date.getUTCFullYear();
+                                            if (routerState.queryParams[`${requestFacet}.filter`] === `[${year} TO ${year + 1}]`) {
                                                 selected = true;
                                                 break;
                                             }
@@ -485,7 +468,9 @@ export class SdrEffects {
                                 };
 
                                 if (facet.type === FacetType.DATE_YEAR) {
-                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${facetEntry.value} TO ${Number(facetEntry.value) + 1}]` : undefined;
+                                    const date = new Date(facetEntry.value);
+                                    const year = date.getUTCFullYear();
+                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${year} TO ${year + 1}]` : undefined;
                                 } else {
                                     sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
                                 }
@@ -500,10 +485,10 @@ export class SdrEffects {
                             }
                         });
 
-                        if (sdrFacet.entries.length > facet.limit) {
+                        if (sdrFacet.entries.page.totalPages > 1) {
                             sidebarSection.items.push({
                                 type: SidebarItemType.ACTION,
-                                action: this.dialog.facetEntriesDialog(facet, sdrFacet),
+                                action: this.dialog.facetEntriesDialog(facet.name, sdrFacet.field),
                                 label: this.translate.get('SHARED.SIDEBAR.ACTION.MORE'),
                                 classes: 'font-weight-bold'
                             });
@@ -518,82 +503,6 @@ export class SdrEffects {
             this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
         }
         this.subscribeToResourceQueue(action.name, store.stomp);
-    }
-
-    private getFacetSortFunction(facet: Facet): (f1: SdrFacetEntry, f2: SdrFacetEntry) => number {
-        const sort = FacetSort.COUNT === FacetSort[facet.sort] ? 'count' : 'value';
-        const direction = Direction.ASC === Direction[facet.direction] ? [1, -1] : [-1, 1];
-        return (f1: SdrFacetEntry, f2: SdrFacetEntry) => {
-            if (f1[sort] > f2[sort]) {
-                return direction[0];
-            }
-            if (f1[sort] < f2[sort]) {
-                return direction[1];
-            }
-            return 0;
-        };
-    }
-
-    private createSdrRequest(routerState: CustomRouterState): SdrRequest {
-        const queryParams = routerState.queryParams;
-        return {
-            pageable: this.buildPageable(queryParams),
-            facets: this.buildFacets(queryParams),
-            indexable: this.buildIndexable(queryParams),
-            query: queryParams.query
-        };
-    }
-
-    private buildPageable(queryParams: Params): Pageable {
-        return {
-            number: queryParams.page,
-            size: queryParams.size,
-            sort: this.buildSort(queryParams.sort)
-        };
-    }
-
-    private buildSort(sortParams: string): Sort[] {
-        const sort: Sort[] = [];
-        if (sortParams !== undefined) {
-            if (Array.isArray(sortParams)) {
-                sortParams.forEach((currentSortParam) => sort.push(this.splitSort(currentSortParam)));
-            } else {
-                sort.push(this.splitSort(sortParams));
-            }
-        }
-        return sort;
-    }
-
-    private splitSort(sortParam: string): Sort {
-        const sortSplit = sortParam.split(',');
-        return {
-            name: sortSplit[0],
-            direction: Direction[sortSplit[1] !== undefined ? sortSplit[1].toUpperCase() : 'ASC']
-        };
-    }
-
-    private buildFacets(queryParams: Params): Facetable[] {
-        const facets: Facetable[] = [];
-        const fields: string[] = queryParams.facets !== undefined ? queryParams.facets.split(',') : [];
-        fields.forEach((field: string) => {
-            const facet: Facetable = { field };
-            if (queryParams[`${field}.filter`]) {
-                facet.filter = queryParams[`${field}.filter`];
-            }
-            facets.push(facet);
-        });
-        return facets;
-    }
-
-    private buildIndexable(queryParams: Params): Indexable {
-        if (queryParams.index) {
-            const indexSplit: string[] = queryParams.index.split(',');
-            return {
-                field: indexSplit[0],
-                operationKey: OperationKey[indexSplit[1]],
-                option: indexSplit[2]
-            };
-        }
     }
 
 }

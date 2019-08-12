@@ -1,27 +1,29 @@
-<scholars-dialog [dialog]="dialog">
-  <table class="table table-striped table-hover">
-    <tbody>
-      <tr *ngFor="let entry of getFacetEntryPage()">
-        <td scope="row" [ngSwitch]="facet.type">
-          <span *ngSwitchCase="'STRING'">
-            <a [routerLink]="routerLink" [queryParams]="getQueryParams(entry)" queryParamsHandling="merge">
-              <span>
-                <span>{{entry.value | formalize}}</span>
-              </span>
-            </a>
-            <span> ({{entry.count}})</span>
-          </span>
-          <span *ngSwitchCase="'DATE_YEAR'">
-            <a [routerLink]="routerLink" [queryParams]="getQueryParams(entry)" queryParamsHandling="merge">
-              <span>
-                <span>{{entry.value}}</span>
-              </span>
-            </a>
-            <span> ({{entry.count}})</span>
-          </span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <ngb-pagination [collectionSize]="sdrFacet.entries.length" [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="true" [boundaryLinks]="true"></ngb-pagination>
+<scholars-dialog [dialog]="dialog" *ngIf="routerState | async; let routerState">
+  <div *ngIf="sdrFacet | async; let sdrFacet">
+    <table class="table table-striped table-hover" *ngIf="facet | async; let facet">
+      <tbody>
+        <tr *ngFor="let entry of sdrFacet.entries.content">
+          <td scope="row" [ngSwitch]="facet.type">
+            <span *ngSwitchCase="'STRING'">
+              <a [routerLink]="routerLink" [queryParams]="getQueryParams(facet, entry)" queryParamsHandling="merge">
+                <span>
+                  <span>{{entry.value | formalize}}</span>
+                </span>
+              </a>
+              <span> ({{entry.count}})</span>
+            </span>
+            <span *ngSwitchCase="'DATE_YEAR'">
+              <a [routerLink]="routerLink" [queryParams]="getQueryParams(facet, entry)" queryParamsHandling="merge">
+                <span>
+                  <span>{{entry.value | date:'yyyy':'UTC'}}</span>
+                </span>
+              </a>
+              <span> ({{entry.count}})</span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ngb-pagination [collectionSize]="sdrFacet.entries.page.totalElements" [pageSize]="sdrFacet.entries.page.size" [page]="sdrFacet.entries.page.number" [maxSize]="3" [rotate]="true" [ellipses]="true" [boundaryLinks]="true" (pageChange)="onPageChange($event, routerState)"></ngb-pagination>
+  </div>
 </scholars-dialog>

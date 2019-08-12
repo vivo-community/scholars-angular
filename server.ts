@@ -52,7 +52,8 @@ writeFile('./dist/browser/assets/appConfig.json', JSON.stringify(appConfig), (er
     if (err) {
         console.log(err);
     } else {
-        console.log('Static runtime app config created:', appConfig);
+        console.log('Static runtime app config created:');
+        console.log(appConfig);
     }
 });
 

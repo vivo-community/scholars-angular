@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DiscoveryView, DisplayView, DirectoryView } from '../../model/view';
+import { DiscoveryView, DisplayView, DirectoryView, CollectionView } from '../../model/view';
 import { SdrResource } from '../../model/sdr';
 
 import * as fromSdr from './sdr.reducer';
@@ -32,6 +32,11 @@ export const selectDefaultDiscoveryView = createSelector(
     selectResourceIds<DiscoveryView>('discoveryViews'),
     selectResourceEntities<DiscoveryView>('discoveryViews'),
     (ids, resources) => resources[ids[0]] ? resources[ids[0]] : undefined
+);
+
+export const selectCollectionViewByName = (collection: string, name: string) => createSelector(
+    selectResourceEntities<CollectionView>(collection),
+    (directoryViews) => directoryViews[name]
 );
 
 export const selectDirectoryViewByCollection = (collection: string) => createSelector(
