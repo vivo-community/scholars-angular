@@ -59,8 +59,10 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
     ngOnInit() {
         this.routerState = this.store.pipe(
             select(selectRouterState),
+            filter((router: any) => router !== undefined),
             map((router: any) => router.state)
         );
+
         this.subscriptions.push(this.routerState.subscribe((routerState: CustomRouterState) => {
 
             this.dialog = {
