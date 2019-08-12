@@ -36,7 +36,7 @@ export const selectDefaultDiscoveryView = createSelector(
 
 export const selectCollectionViewByName = (collection: string, name: string) => createSelector(
     selectResourceEntities<CollectionView>(collection),
-    (directoryViews) => directoryViews[name]
+    (collectionViews) => collectionViews[name]
 );
 
 export const selectDirectoryViewByCollection = (collection: string) => createSelector(
