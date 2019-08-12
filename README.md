@@ -5,14 +5,12 @@
 
 ## Docker Deployment
 
-1. Configure [environment.prod.ts](https://github.com/vivo-community/scholars-angular/blob/master/src/environments/environment.prod.ts)
-
-2. Build the image
+1. Build the image
 ```bash
   docker build -t scholars-angular .
 ```
 
-3. Deploy the container
+2. Deploy the container
 ```bash
   docker run -d -p 4200:4200 \
   -e HOST=localhost \
