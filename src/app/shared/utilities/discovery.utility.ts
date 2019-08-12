@@ -47,21 +47,11 @@ const buildFacets = (queryParams: Params): Facetable[] => {
     const fields: string[] = queryParams.facets !== undefined ? queryParams.facets.split(',') : [];
     fields.forEach((field: string) => {
         const facet: Facetable = { field };
-        if (queryParams[`${field}.type`]) {
-            facet.type = queryParams[`${field}.type`];
-        }
-        if (queryParams[`${field}.pageSize`]) {
-            facet.pageSize = queryParams[`${field}.pageSize`];
-        }
-        if (queryParams[`${field}.pageNumber`]) {
-            facet.pageNumber = queryParams[`${field}.pageNumber`];
-        }
-        if (queryParams[`${field}.sort`]) {
-            facet.sort = queryParams[`${field}.sort`];
-        }
-        if (queryParams[`${field}.filter`]) {
-            facet.filter = queryParams[`${field}.filter`];
-        }
+        ['type', 'pageSize', 'pageNumber', 'sort', 'filter'].forEach((key: string) => {
+            if (queryParams[`${field}.${key}`]) {
+                facet[key] = queryParams[`${field}.${key}`];
+            }
+        });
         facets.push(facet);
     });
     return facets;

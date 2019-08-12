@@ -7,9 +7,9 @@ const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionV
         let facets = '';
         collectionView.facets.forEach((facet: Facet) => {
             facets += facets.length > 0 ? `,${facet.field}` : facet.field;
-            queryParams[`${facet.field}.type`] = facet.type;
-            queryParams[`${facet.field}.pageNumber`] = facet.pageNumber;
-            queryParams[`${facet.field}.pageSize`] = facet.pageSize;
+            ['type', 'pageSize', 'pageNumber'].forEach((key: string) => {
+                queryParams[`${facet.field}.${key}`] = facet[key];
+            });
             queryParams[`${facet.field}.sort`] = `${facet.sort},${facet.direction}`;
         });
         queryParams.facets = facets;
