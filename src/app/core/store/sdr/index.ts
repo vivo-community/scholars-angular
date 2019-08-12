@@ -1,4 +1,4 @@
-import { createSelector, createFeatureSelector, Selector } from '@ngrx/store';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DiscoveryView, DisplayView, DirectoryView } from '../../model/view';
 import { SdrResource } from '../../model/sdr';
@@ -15,6 +15,7 @@ export const selectResourcesTotal = <R extends SdrResource>(name: string) => cre
 export const selectResourceError = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getError);
 export const selectResourceIsCounting = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.isCounting);
 export const selectResourceIsLoading = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.isLoading);
+export const selectResourceIsDereferencing = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.isDereferencing);
 export const selectResourceIsUpdating = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.isUpdating);
 
 export const selectResourcesCount = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getCount);
@@ -48,15 +49,14 @@ export const selectDirectoryViewByCollection = (collection: string) => createSel
 
 export const selectDisplayViewByTypes = (types: string[]) => createSelector(
     selectResourceEntities<DisplayView>('displayViews'),
-    selectResourceIsLoading<DisplayView>('displayViews'),
-    (displayViews, isLoading) => {
+    (displayViews) => {
         let defaultDisplayView;
         for (const key in displayViews) {
             if (displayViews.hasOwnProperty(key)) {
                 for (const i in types) {
                     if (displayViews.hasOwnProperty(key)) {
                         if (displayViews[key].types.indexOf(types[i]) >= 0) {
-                            return [displayViews[key], isLoading];
+                            return displayViews[key];
                         }
                     }
                 }
@@ -65,7 +65,7 @@ export const selectDisplayViewByTypes = (types: string[]) => createSelector(
                 }
             }
         }
-        return [defaultDisplayView, isLoading];
+        return defaultDisplayView;
     }
 );
 
