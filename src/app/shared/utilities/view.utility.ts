@@ -7,6 +7,10 @@ const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionV
         let facets = '';
         collectionView.facets.forEach((facet: Facet) => {
             facets += facets.length > 0 ? `,${facet.field}` : facet.field;
+            ['type', 'pageSize', 'pageNumber'].forEach((key: string) => {
+                queryParams[`${facet.field}.${key}`] = facet[key];
+            });
+            queryParams[`${facet.field}.sort`] = `${facet.sort},${facet.direction}`;
         });
         queryParams.facets = facets;
     }
@@ -33,7 +37,7 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
     if (collectionView.export && collectionView.export.length > 0) {
         queryParams.export = [];
         collectionView.export.forEach((exp: Export) => {
-            queryParams.export.push(`${exp.valuePath},${exp.columnHeader}${exp.delimiter !== '||' ? ',' + exp.delimiter : '' }`);
+            queryParams.export.push(`${exp.valuePath},${exp.columnHeader}`);
         });
     }
 };

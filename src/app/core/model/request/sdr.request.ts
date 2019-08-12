@@ -24,6 +24,10 @@ export interface Indexable {
 
 export interface Facetable {
     readonly field: string;
+    type?: string;
+    pageSize?: number;
+    pageNumber?: number;
+    sort?: string;
     filter?: string;
 }
 
