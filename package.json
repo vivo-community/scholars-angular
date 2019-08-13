@@ -1,15 +1,16 @@
 {
-  "name": "scholars-discovery",
+  "name": "scholars-angular",
   "version": "0.7.0",
+  "description": "Angular Universal client for Scholars Discovery",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TAMULib/Scholars.git"
+    "url": "https://github.com/vivo-community/scholars-angular.git"
   },
   "contributors": [
     "William Welling <wwelling@library.tamu.edu>"
   ],
-  "private": true,
+  "private": false,
   "scripts": {
     "ng": "ng",
     "clean": "rimraf .cache dist coverage",
