@@ -5,6 +5,7 @@ export const testAppConfig: AppConfig = {
     port: 4200,
     baseHref: '/',
     serviceUrl: 'http://localhost:9000',
+    embedUrl: 'http://localhost:4201',
     vivoUrl: 'https://scholars.library.tamu.edu/vivo',
     vivoEditorUrl: 'https://scholars.library.tamu.edu/vivo_editor'
 };

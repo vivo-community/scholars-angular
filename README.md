@@ -17,6 +17,7 @@
   -e PORT=4200 \
   -e BASE_HREF=/ \
   -e SERVICE_URL="http://localhost:9000" \
+  -e EMBED_URL="http://localhost:4201" \
   -e VIVO_URL="http://scholars.library.tamu.edu/vivo" \
   -e VIVO_EDITOR_URL="http://scholars.library.tamu.edu/vivo_editor" \
   scholars-angular

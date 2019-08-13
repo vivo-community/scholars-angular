@@ -28,7 +28,7 @@
     "build:prerender": "yarn build && ng run scholars-discovery:server && yarn compile:server && yarn generate:prerender",
     "build:prerender:prod": "yarn build:prod && ng run scholars-discovery:server:production && yarn compile:server && yarn generate:prerender",
     "generate:prerender": "cd dist && node prerender",
-    "compile:server": "tsc -p tsconfig.server-compile.json",
+    "compile:server": "tsc -p tsconfig.server.json",
     "serve:ssr": "node dist/server",
     "serve:prerender": "cd dist/browser && http-server",
     "lint": "ng lint scholars-discovery",

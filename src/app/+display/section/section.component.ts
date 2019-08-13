@@ -32,7 +32,7 @@ export class SectionComponent {
     public getEmbedSnippet(): string {
         return `<div class="_scholars_embed_" data-collection="${this.collection}" data-individual="${this.document.id}" data-display="${this.display}" data-sections="${this.section.name}"></div>\n\n`
             + '<!-- This JavaScript only needs to be included once in your HTML -->\n'
-            + `<script type="text/javascript" src="${this.appConfig.serviceUrl}/embed/scholars-embed.min.js" async></script>`;
+            + `<script type="text/javascript" src="${this.appConfig.embedUrl}/scholars-embed.min.js" async></script>`;
     }
 
     public copyToClipBoard(copyElement: any, tooltip: NgbTooltip) {
