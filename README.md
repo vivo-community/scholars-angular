@@ -7,7 +7,7 @@
 
 1. Build the image
 ```bash
-  docker build -t scholars-angular .
+  docker build -t scholars/angular .
 ```
 
 2. Deploy the container
@@ -20,7 +20,7 @@
   -e EMBED_URL="http://localhost:4201" \
   -e VIVO_URL="http://scholars.library.tamu.edu/vivo" \
   -e VIVO_EDITOR_URL="http://scholars.library.tamu.edu/vivo_editor" \
-  scholars-angular
+  scholars/angular
 ```
 
 > Above environment variables passed into the container are defaults. URLs must be enclosed in double quotes. BASE_HREF must start and end with a forward slash.
