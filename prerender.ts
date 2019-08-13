@@ -25,6 +25,7 @@ const HOST = process.env.HOST || 'localhost';
 const BASE_HREF = process.env.BASE_HREF || '/';
 
 const SERVICE_URL = process.env.SERVICE_URL || 'http://localhost:9000';
+const EMBED_URL = process.env.EMBED_URL || 'http://localhost:4201';
 const VIVO_URL = process.env.VIVO_URL || 'https://scholars.library.tamu.edu/vivo';
 const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'https://scholars.library.tamu.edu/vivo_editor';
 
@@ -33,6 +34,7 @@ const appConfig: AppConfig = {
     port: PORT,
     baseHref: BASE_HREF,
     serviceUrl: SERVICE_URL,
+    embedUrl: EMBED_URL,
     vivoUrl: VIVO_URL,
     vivoEditorUrl: VIVO_EDITOR_URL
 };

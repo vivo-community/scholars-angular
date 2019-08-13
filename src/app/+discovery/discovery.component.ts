@@ -146,7 +146,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
 
     public getDiscoveryExportUrl(discoveryView: DiscoveryView, params: Params): string {
         const queryParams: Params = Object.assign({}, params);
-        queryParams.fields = queryParams.facets;
+        queryParams.filters = queryParams.facets;
         queryParams.facets = null;
         queryParams.collection = null;
         addExportToQueryParams(queryParams, discoveryView);
