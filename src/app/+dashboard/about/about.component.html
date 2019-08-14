@@ -26,9 +26,37 @@
     <li><a href="http://scholars.library.tamu.edu/pdf/Scholars%20Faculty%20Info%20Sheet.pdf">Benefits for Faculty</a></li>
   </ul>
 
-  <div id="about-iframe-video" class="container mb-2">
-    <iframe allowfullscreen="allowfullscreen" frameborder="0" height="300" src="https://www.youtube.com/embed/XTs0LmChNWM?rel=0"></iframe>
+  <div>
+    <h4 class="text-primary">Enhanced Features for an Authoritative System of Record for Expertise and Scholarly Reputation</h4>
+    <p>Scholars@TAMU v2 is in development. We plan to release this version on September to the public.&#160; Along with a new interface, the enhancement includes new data and additional features.&#160;&#160; We continue to host faculty profiles that contain accurate, authoritative, and up-to-date information to serve three use cases: (i) enhanced discovery of TAMU expertise to help form collaborative teams or highlight TAMU research to society, (ii) support accreditation and other organizational activities through the generation of custom reports using our SQL database, and (iii) characterize research at Texas A&amp;M, such as identifying areas of strength in interdisciplinary research, that can be used for strategic decision making.</p>
+    <p><img alt="New Scholars Homepage Design" class="img-responsive" src="https://library.tamu.edu/services/scholarly_communication/scholars/images/interface1.png" style="display: block; margin-left: auto; margin-right: auto;" width="460" /></p>
   </div>
+  <div>
+    <h4 class="text-primary">New Features</h4>
+    <ol>
+      <li><strong>Enhanced User Experience.</strong> Scholars@TAMU now has a modern, mobile- and user-friendly interface.&#160; Added data, menu and export options are now available to the user.</li>
+      <li><strong>Enhanced search functions to support research collaboration.&#160;</strong>Users can now browse and narrow search results using different categories (e.g., departments, research areas, etc.). This allows users to easily find potential collaborators for researchers and centers.</li>
+    </ol>
+    <p><br /> <img alt="New People Search Interface" class="img-responsive" src="https://library.tamu.edu/services/scholarly_communication/scholars/images/people-search1.png" style="display: block; margin-left: auto; margin-right: auto;" width="461" /></p>
+  </div>
+  <div>
+    <h4 class="text-primary">New Data</h4>
+    <ol>
+      <li><strong>Awards data.</strong> Prestigious awards (from Academic Analytics) have been added to faculty profiles.&#160; Faculty can also add their awards and honors via the Scholars@TAMU editor.</li>
+      <li><strong>Grant data.</strong> The Scholars@TAMU team is currently working with Sponsored Research Services (SRS) and Maestro team to add public domain grant data to faculty profiles.</li>
+    </ol>
+    <p><br /> <img alt="New Publications Search Interface" class="img-responsive" src="https://library.tamu.edu/services/scholarly_communication/scholars/images/publication1.png" style="display: block; margin-left: auto; margin-right: auto;" width="459" /></p>
+  </div>
+  <div>
+    <h4 class="text-primary">Data Re-use</h4>
+    <ol>
+      <li><strong>Application Programming Interface (API).</strong> The Scholars@TAMU team is now working with Colleges and Departments to dynamically provide current and accurate data via the API, facilitating the re-use of data for websites, and institutional reports.</li>
+      <li><strong>Embed script.</strong> Faculty and web developers will have the capability to copy and paste script from Scholars@TAMU to embed a list of selected publications to their web pages. Faculty can dynamically edit their selected publications list within the Scholars@TAMU editor.</li>
+      <li><strong>One-page bio.</strong> Users will have access to export and print a one-page bio, which includes their photo and profile overview that can be used for speaker introductions and publication bios.</li>
+      <li><strong>Export Search results.</strong> Results from the Scholars@TAMU search can now be exported in csv format that can be used in creating reports, analyses, and pre-populate forms.</li>
+    </ol>
+  </div>
+  <p>The Scholars@TAMU team continue to provide a system of aggregate services, outreach and training to the TAMU community, add data to profiles, and explore new features for Scholars@TAMU as we try to meet the diverse needs of the Texas A&amp;M University scholarly community.</p>
 
   <span class="h3 text-primary">{{ 'DASHBOARD.ABOUT.NEW_SCHOLARS_TITLE' | translate }}</span>
 
@@ -47,11 +75,11 @@
   <p><strong>Explore Scholars@TAMU</strong></p>
   <ul>
     <li>Search by keywords to identify potential collaborators</li>
-    <li>Find scholars by&#160;<a href="http://scholars.library.tamu.edu/vivo/people/">name</a></li>
-    <li>Browse&#160;<a href="http://scholars.library.tamu.edu/vivo/organizations#http://vivoweb.org/ontology/core#College">colleges</a>,&#160;
-      <a href="http://scholars.library.tamu.edu/vivo/organizations/">departments</a>, and&#160;
-      <a href="http://scholars.library.tamu.edu/vivo/organizations#http://vivoweb.org/ontology/core#Institute">institutes</a></li>
-    <li>Discover teaching and&#160;<a href="http://scholars.library.tamu.edu/vivo/research/">research</a>&#160;areas</li>
+    <li>Find scholars by&#160;<a href="directory/People?collection=persons&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=COUNT,DESC&positionOrganization.type=STRING&positionOrganization.pageSize=10&positionOrganization.pageNumber=1&positionOrganization.sort=COUNT,DESC&researchAreas.type=STRING&researchAreas.pageSize=10&researchAreas.pageNumber=1&researchAreas.sort=COUNT,DESC&facets=type,positionOrganization,researchAreas&sort=name,asc">name</a></li>
+    <li>Browse&#160;<a href="directory/Organizations?collection=organizations&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=INDEX,ASC&facets=type&sort=name,asc&type.filter=College&page=1">colleges</a>,&#160;
+      <a href="directory/Organizations?collection=organizations&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=INDEX,ASC&facets=type&sort=name,asc&page=1&type.filter=Department">departments</a>, and&#160;
+      <a href="directory/Organizations?collection=organizations&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=INDEX,ASC&facets=type&sort=name,asc&page=1&type.filter=Institute">institutes</a></li>
+    <li>Discover teaching and&#160;<a href="directory/Research?collection=documents&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=COUNT,DESC&publicationDate.type=DATE_YEAR&publicationDate.pageSize=10&publicationDate.pageNumber=1&publicationDate.sort=INDEX,DESC&authorOrganization.type=STRING&authorOrganization.pageSize=10&authorOrganization.pageNumber=1&authorOrganization.sort=COUNT,DESC&facets=type,publicationDate,authorOrganization&sort=title,asc">research</a>&#160;areas</li>
   </ul>
   <p id="searchTips"><strong>Search Tips</strong></p>
   <ul>
@@ -91,5 +119,11 @@
     <li><i class='fa fa-user mr-1'></i><span>Ethel Mejia, Data Analyst, Office of Scholarly Communications</span></li>
     <li><i class='fa fa-user mr-1'></i><span>Doug Hahn, Senior IT Manager, Applications, Digital Initiatives</span></li>
   </ul>
+
+  <span class="h4 text-primary">Early Beta Version in 2016</span>
+
+  <div id="about-iframe-video" class="container mt-4 mb-4">
+    <iframe allowfullscreen="allowfullscreen" frameborder="0" height="300" src="https://www.youtube.com/embed/XTs0LmChNWM?rel=0"></iframe>
+  </div>
 
 </div>
