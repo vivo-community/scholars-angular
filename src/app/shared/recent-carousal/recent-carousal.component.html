@@ -1,0 +1,13 @@
+<div class="scroll">
+  <i class="fa fa-chevron-left my-auto mr-1" (click)="scrollLeft()"></i>
+  <div class="scroll-view mx-auto" #scrollView>
+    <div class="card scroll-item" *ngFor="let item of getItems() | async" [ngClass]="{'hide': item.hidden}" [ngStyle]="{'background-image': getBackgroundImage(item)}">
+      <a class="card-body p-1" [routerLink]="item.link">
+        <div class="item-footer mt-1">Updated: {{item.modTime | date: 'MMM d, y'}}</div>
+        <div class="item-subtitle">{{item.preferredTitle}}</div>
+        <div class="item-title">{{item.name}}</div>
+      </a>
+    </div>
+  </div>
+  <i class="fa fa-chevron-right my-auto ml-1" (click)="scrollRight()"></i>
+</div>

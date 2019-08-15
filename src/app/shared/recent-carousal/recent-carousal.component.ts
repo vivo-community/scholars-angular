@@ -1,4 +1,5 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
+import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -14,25 +15,32 @@ import * as fromSdr from '../../core/store/sdr/sdr.actions';
 
 interface ScrollItem {
     src: string;
-    link: string;
+    link: string[];
     alt: string;
     hidden: boolean;
 }
 
 @Component({
-    selector: 'scholars-recent-publications',
-    templateUrl: 'recent-publications.component.html',
-    styleUrls: ['recent-publications.component.scss']
+    selector: 'scholars-recent-carousal',
+    templateUrl: 'recent-carousal.component.html',
+    styleUrls: ['recent-carousal.component.scss']
 })
-export class RecentPublicationsComponent implements AfterViewInit, OnInit {
+export class RecentCarousalComponent implements AfterViewInit, OnInit {
 
-    @ViewChild('scrollView', { static: true }) scrollViewRef: ElementRef;
+    private collection = 'persons';
+
+    private limit = 10;
+
+    @ViewChild('scrollView', { static: true })
+    private scrollViewRef: ElementRef;
 
     private items: BehaviorSubject<ScrollItem[]>;
+
     private persons: Observable<Person[]>;
 
     constructor(
         @Inject('APP_CONFIG') private appConfig: AppConfig,
+        @Inject(PLATFORM_ID) private platformId: string,
         private store: Store<AppState>,
         private translate: TranslateService
     ) {
@@ -41,7 +49,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
 
     ngOnInit() {
         this.persons = this.store.pipe(
-            select(selectAllResources('persons')),
+            select(selectAllResources(this.collection)),
             filter((persons: Person[]) => persons.length > 0)
         );
 
@@ -49,7 +57,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
             this.items.next(persons.map((person: Person) => {
                 return {
                     src: person['thumbnail'] ? `${this.appConfig.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
-                    link: `display/persons/${person['id']}`,
+                    link: [`display/persons/${person['id']}`],
                     alt: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
                     modTime: person['modTime'] ? person['modTime'] : '',
                     name: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : '',
@@ -60,7 +68,7 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
             this.fitItems();
         });
 
-        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', { limit: 10 }));
+        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', { limit: this.limit }));
     }
 
     ngAfterViewInit() {
@@ -98,6 +106,10 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
         }
     }
 
+    public getBackgroundImage(item: ScrollItem): string {
+        return `linear-gradient(rgba(255,255,255,.15) 70%, rgba(100,100,100,.6) 80%,  rgba(50,50,50,.7) 90%, rgba(0,0,0,.8)), url('${item.src}')`;
+    }
+
     private fitItems(): void {
         const count = this.getCount();
         const items = this.items.getValue();
@@ -108,8 +120,11 @@ export class RecentPublicationsComponent implements AfterViewInit, OnInit {
     }
 
     private getCount(): number {
+        if (isPlatformServer(this.platformId)) {
+            return 3;
+        }
         const size = this.scrollViewRef !== undefined ? this.scrollViewRef.nativeElement.clientWidth : 0;
-        return Math.floor(size / 140);
+        return Math.floor(size / 150);
     }
 
 }

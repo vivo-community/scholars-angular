@@ -28,16 +28,16 @@
     </div>
   </div>
 </div>
-<div class="home-recent-published" *ngIf="home | async; let home">
-  <div class="container h-100">
-    <div class="row h-100">
-      <div class="col-3 my-auto text-center">
+<div class="home-recent mt-2 mb-2" *ngIf="home | async; let home">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-2 my-auto text-center">
         <span class="gallery-info">{{ 'DASHBOARD.HOME.LATEST_PUBLICATIONS_TEXT' | translate:{organization: (organization|async)} }}</span>
       </div>
-      <div class="col-6 my-auto text-center">
-        <scholars-recent-publications></scholars-recent-publications>
+      <div class="col-md-8 my-auto text-center">
+        <scholars-recent-carousal></scholars-recent-carousal>
       </div>
-      <div class="col-3 my-auto text-center">
+      <div class="col-md-2 my-auto text-center">
         <span class="gallery-info">{{ 'DASHBOARD.HOME.CLICK_PUBLICATION_TEXT' | translate }}</span>
       </div>
     </div>

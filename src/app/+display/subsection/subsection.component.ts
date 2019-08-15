@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, PLATFORM_ID, Input, AfterViewInit, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, Input, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
