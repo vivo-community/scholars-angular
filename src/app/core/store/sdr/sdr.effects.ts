@@ -410,12 +410,12 @@ export class SdrEffects {
     private searchSuccessHandler(action: fromSdr.SearchResourcesSuccessAction, routerState: CustomRouterState, store: AppState): void {
         if (routerState.queryParams.collection) {
 
-            let facets: Facet[] = [];
+            let viewFacets: Facet[] = [];
 
             if (routerState.url.startsWith('/directory')) {
-                facets = store['directoryViews'].entities[routerState.params.view].facets;
+                viewFacets = store['directoryViews'].entities[routerState.params.view].facets;
             } else if (routerState.url.startsWith('/discovery')) {
-                facets = store['discoveryViews'].entities[routerState.params.view].facets;
+                viewFacets = store['discoveryViews'].entities[routerState.params.view].facets;
             }
 
             const sdrFacets: SdrFacet[] = action.payload.collection.facets;
@@ -424,83 +424,76 @@ export class SdrEffects {
                 sections: []
             };
 
-            facets.filter((facet: Facet) => !facet.hidden).forEach((facet: Facet) => {
-                for (const sdrFacet of sdrFacets) {
-                    if (sdrFacet.field === facet.field) {
+            this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
 
-                        const sidebarSection: SidebarSection = {
-                            title: scheduled([facet.name], asap),
-                            items: [],
-                            collapsible: true,
-                            collapsed: facet.collapsed
-                        };
+            viewFacets.filter((viewFacet: Facet) => !viewFacet.hidden).forEach((viewFacet: Facet) => {
+                const sdrFacet = sdrFacets.find((sdrFacet: SdrFacet) => sdrFacet.field === viewFacet.field);
+                if (sdrFacet) {
+                    const sidebarSection: SidebarSection = {
+                        title: scheduled([viewFacet.name], asap),
+                        items: [],
+                        collapsible: true,
+                        collapsed: viewFacet.collapsed
+                    };
 
-                        sdrFacet.entries.content.forEach((facetEntry: SdrFacetEntry) => {
-                            let selected = false;
+                    sidebarMenu.sections.push(sidebarSection);
 
-                            if (facetEntry.value.length > 0) {
-                                for (const requestFacet of routerState.queryParams.facets.split(',')) {
-                                    if (routerState.queryParams[`${requestFacet}.filter`] !== undefined) {
-                                        if (facet.type === FacetType.DATE_YEAR) {
-                                            const date = new Date(facetEntry.value);
-                                            const year = date.getUTCFullYear();
-                                            if (routerState.queryParams[`${requestFacet}.filter`] === `[${year} TO ${year + 1}]`) {
-                                                selected = true;
-                                                break;
-                                            }
-                                        } else {
-                                            if (routerState.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
-                                                selected = true;
-                                                break;
-                                            }
-                                        }
-                                    }
+                    sdrFacet.entries.content.filter((facetEntry: SdrFacetEntry) => facetEntry.value.length > 0).forEach((facetEntry: SdrFacetEntry) => {
+                        let selected = false;
+
+                        const requestFacet = routerState.queryParams.facets.split(',').find((requestFacet: string) => requestFacet === sdrFacet.field);
+
+                        if (requestFacet && routerState.queryParams[`${requestFacet}.filter`] !== undefined) {
+                            if (viewFacet.type === FacetType.DATE_YEAR) {
+                                const date = new Date(facetEntry.value);
+                                const year = date.getUTCFullYear();
+                                if (routerState.queryParams[`${requestFacet}.filter`] === `[${year} TO ${year + 1}]`) {
+                                    selected = true;
                                 }
-
-                                const sidebarItem: SidebarItem = {
-                                    type: SidebarItemType.FACET,
-                                    label: scheduled([facetEntry.value], asap),
-                                    facet: facet,
-                                    selected: selected,
-                                    parenthetical: facetEntry.count,
-                                    route: [],
-                                    queryParams: {},
-                                };
-
-                                if (facet.type === FacetType.DATE_YEAR) {
-                                    const date = new Date(facetEntry.value);
-                                    const year = date.getUTCFullYear();
-                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${year} TO ${year + 1}]` : undefined;
-                                } else {
-                                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
+                            } else {
+                                if (routerState.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
+                                    selected = true;
                                 }
-
-                                sidebarItem.queryParams.page = 1;
-
-                                if (selected) {
-                                    sidebarSection.collapsed = false;
-                                }
-
-                                sidebarSection.items.push(sidebarItem);
                             }
-                        });
-
-                        if (sdrFacet.entries.page.totalPages > 1) {
-                            sidebarSection.items.push({
-                                type: SidebarItemType.ACTION,
-                                action: this.dialog.facetEntriesDialog(facet.name, sdrFacet.field),
-                                label: this.translate.get('SHARED.SIDEBAR.ACTION.MORE'),
-                                classes: 'font-weight-bold'
-                            });
                         }
 
-                        sidebarMenu.sections.push(sidebarSection);
-                        break;
+                        const sidebarItem: SidebarItem = {
+                            type: SidebarItemType.FACET,
+                            label: scheduled([facetEntry.value], asap),
+                            facet: viewFacet,
+                            selected: selected,
+                            parenthetical: facetEntry.count,
+                            route: [],
+                            queryParams: {},
+                        };
+
+                        if (viewFacet.type === FacetType.DATE_YEAR) {
+                            const date = new Date(facetEntry.value);
+                            const year = date.getUTCFullYear();
+                            sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${year} TO ${year + 1}]` : undefined;
+                        } else {
+                            sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
+                        }
+
+                        sidebarItem.queryParams.page = 1;
+
+                        if (selected) {
+                            sidebarSection.collapsed = false;
+                        }
+
+                        sidebarSection.items.push(sidebarItem);
+                    });
+
+                    if (sdrFacet.entries.page.totalPages > 1) {
+                        sidebarSection.items.push({
+                            type: SidebarItemType.ACTION,
+                            action: this.dialog.facetEntriesDialog(viewFacet.name, sdrFacet.field),
+                            label: this.translate.get('SHARED.SIDEBAR.ACTION.MORE'),
+                            classes: 'font-weight-bold'
+                        });
                     }
                 }
             });
-
-            this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
         }
         this.subscribeToResourceQueue(action.name, store.stomp);
     }
