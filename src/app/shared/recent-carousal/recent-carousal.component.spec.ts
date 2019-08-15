@@ -7,6 +7,7 @@ import { metaReducers, reducers } from '../../core/store';
 import { RecentCarousalComponent } from './recent-carousal.component';
 import { testAppConfig } from '../../../test.config';
 import { SharedModule } from '../shared.module';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('RecentCarousalComponent', () => {
     let component: RecentCarousalComponent;
@@ -15,6 +16,7 @@ describe('RecentCarousalComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
+                NoopAnimationsModule,
                 SharedModule,
                 StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
