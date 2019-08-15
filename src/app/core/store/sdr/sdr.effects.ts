@@ -427,7 +427,7 @@ export class SdrEffects {
             this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
 
             viewFacets.filter((viewFacet: Facet) => !viewFacet.hidden).forEach((viewFacet: Facet) => {
-                const sdrFacet = sdrFacets.find((sdrFacet: SdrFacet) => sdrFacet.field === viewFacet.field);
+                const sdrFacet = sdrFacets.find((sf: SdrFacet) => sf.field === viewFacet.field);
                 if (sdrFacet) {
                     const sidebarSection: SidebarSection = {
                         title: scheduled([viewFacet.name], asap),
@@ -441,7 +441,7 @@ export class SdrEffects {
                     sdrFacet.entries.content.filter((facetEntry: SdrFacetEntry) => facetEntry.value.length > 0).forEach((facetEntry: SdrFacetEntry) => {
                         let selected = false;
 
-                        const requestFacet = routerState.queryParams.facets.split(',').find((requestFacet: string) => requestFacet === sdrFacet.field);
+                        const requestFacet = routerState.queryParams.facets.split(',').find((rf: string) => rf === sdrFacet.field);
 
                         if (requestFacet && routerState.queryParams[`${requestFacet}.filter`] !== undefined) {
                             if (viewFacet.type === FacetType.DATE_YEAR) {
