@@ -4,16 +4,20 @@ import { TranslateModule } from '@ngx-translate/core';
 import { StoreModule } from '@ngrx/store';
 import { metaReducers, reducers } from '../../core/store';
 
-import { RecentPublicationsComponent } from './recent-publications.component';
+import { RecentCarousalComponent } from './recent-carousal.component';
 import { testAppConfig } from '../../../test.config';
+import { SharedModule } from '../shared.module';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('RecentPublicationsComponent', () => {
-    let component: RecentPublicationsComponent;
-    let fixture: ComponentFixture<RecentPublicationsComponent>;
+describe('RecentCarousalComponent', () => {
+    let component: RecentCarousalComponent;
+    let fixture: ComponentFixture<RecentCarousalComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
+                NoopAnimationsModule,
+                SharedModule,
                 StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,
                     runtimeChecks: {
@@ -25,9 +29,6 @@ describe('RecentPublicationsComponent', () => {
                 }),
                 TranslateModule.forRoot(),
             ],
-            declarations: [
-                RecentPublicationsComponent
-            ],
             providers: [
                 { provide: 'APP_CONFIG', useValue: testAppConfig }
             ],
@@ -38,7 +39,7 @@ describe('RecentPublicationsComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(RecentPublicationsComponent);
+        fixture = TestBed.createComponent(RecentCarousalComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
