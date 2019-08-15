@@ -1,3 +1,4 @@
+import { trigger, style, transition, animate } from '@angular/animations';
 import { isPlatformServer } from '@angular/common';
 import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Store, select } from '@ngrx/store';
@@ -23,7 +24,14 @@ interface ScrollItem {
 @Component({
     selector: 'scholars-recent-carousal',
     templateUrl: 'recent-carousal.component.html',
-    styleUrls: ['recent-carousal.component.scss']
+    styleUrls: ['recent-carousal.component.scss'],
+    animations: [
+        trigger('fadeIn', [
+            transition(':enter', [
+                style({ opacity: 0 }), animate('1s ease-out', style({ opacity: 1 }))
+            ])
+        ])
+    ]
 })
 export class RecentCarousalComponent implements AfterViewInit, OnInit {
 
@@ -121,7 +129,7 @@ export class RecentCarousalComponent implements AfterViewInit, OnInit {
 
     private getCount(): number {
         if (isPlatformServer(this.platformId)) {
-            return 3;
+            return 4;
         }
         const size = this.scrollViewRef !== undefined ? this.scrollViewRef.nativeElement.clientWidth : 0;
         return Math.floor(size / 150);

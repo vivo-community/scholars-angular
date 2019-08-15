@@ -1,4 +1,4 @@
-<div class="scroll">
+<div class="scroll" [@fadeIn]>
   <i class="fa fa-chevron-left my-auto mr-1" (click)="scrollLeft()"></i>
   <div class="scroll-view mx-auto" #scrollView>
     <div class="card scroll-item" *ngFor="let item of getItems() | async" [ngClass]="{'hide': item.hidden}" [ngStyle]="{'background-image': getBackgroundImage(item)}">

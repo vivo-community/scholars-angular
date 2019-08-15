@@ -10,6 +10,14 @@
       cursor: pointer;
       color: var(--primary);
     }
+    .fa-chevron-left {
+      @media (max-width: 376px) { margin-left: 10px }
+      @media (max-width: 576px) { margin-left: 25px; }
+    }
+    .fa-chevron-right {
+      @media (max-width: 376px) { margin-right: 10px }
+      @media (max-width: 576px) { margin-right: 25px; }
+    }
     .scroll-view {
       height: 100%;
       width: 100%;
