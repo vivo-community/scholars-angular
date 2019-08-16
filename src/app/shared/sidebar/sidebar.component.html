@@ -8,7 +8,7 @@
       <div class="card-items" [ngbCollapse]="section.collapsed">
         <ul class="list-group list-group-flush" *ngFor="let item of section.items">
 
-          <li [ngSwitch]="item.type" class="list-group-item list-group-item-action list-group-item-light link {{item.classes}}" aria-role="link" attr.aria-label="{{ 'SHARED.SIDEBAR.LINK.ARIA_LABEL' | translate }}">
+          <li [ngSwitch]="item.type" class="list-group-item {{item.classes}}" [ngClass]="{'list-group-item-action link': item.type !== 'INFO'}" aria-role="link" attr.aria-label="{{ 'SHARED.SIDEBAR.LINK.ARIA_LABEL' | translate }}">
 
             <span *ngSwitchCase="'FACET'" [ngSwitch]="item.facet.type">
               <span *ngSwitchCase="'STRING'" class="d-flex flex-nowrap justify-content-between">
@@ -34,6 +34,10 @@
 
             <span *ngSwitchCase="'ACTION'">
               <span class="link" (click)="dispatchAction(item.action)">{{item.label | async }}</span>
+            </span>
+
+            <span *ngSwitchCase="'INFO'">
+              <span>{{item.label | async }}</span>
             </span>
 
           </li>

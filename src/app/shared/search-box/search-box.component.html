@@ -1,32 +1,25 @@
 <div *ngIf="view">
   <div *ngIf="setupForm()">
+
     <form *ngIf="isBrowserRendered()" (ngSubmit)="onSearch()" novalidate>
-      <div [formGroup]="form" class="form-group search-box text-center">
+      <div [formGroup]="form" class="form-group search-box text-center clearfix">
         <ng-container *ngTemplateOutlet="searchLabel"></ng-container>
         <label for="search" class="d-none">Search</label>
-        <input id="search" type="text" class="form-control" placeholder="Search..." name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />
-        <small class="d-block text-muted text-right">
-          <a [routerLink]="['/discovery']" [queryParams]="getDiscoveryQueryParams('')" queryParamsHandling="merge">{{ 'SHARED.SEARCH_BOX.DISCOVERY' | translate }}</a>
-          <span> | </span>
-          <a [routerLink]="['/about']" fragment="searchTips">{{ 'SHARED.SEARCH_BOX.SEARCH_TIPS' | translate }}</a>
-        </small>
+        <input id="search" type="text" class="form-control" placeholder="Search {{view.name}}..." name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />
+        <ng-container *ngTemplateOutlet="helpLinks"></ng-container>
       </div>
     </form>
 
     <form *ngIf="isServerRendered()" [action]="getAction()" method="get" novalidate>
-      <div [formGroup]="form" class="form-group search-box text-center">
+      <div [formGroup]="form" class="form-group search-box text-center clearfix">
         <ng-container *ngTemplateOutlet="searchLabel"></ng-container>
         <label for="search" class="d-none">Search</label>
-        <input id="search" type="text" class="form-control" placeholder="Search..." name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />
+        <input id="search" type="text" class="form-control" placeholder="Search {{view.name}}..." name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />
         <input type="text" class="form-control invisible" name="collection" formControlName="collection" />
         <input type="text" class="form-control invisible" name="facets" formControlName="facets" />
         <input *ngFor="let filter of view.filters" type="text" class="form-control invisible" [name]="getFilterName(filter)" [formControlName]="getFilterName(filter)" />
         <input type="submit" class="d-none" />
-        <small class="d-block text-muted text-right">
-          <a [routerLink]="['/discovery']" [queryParams]="getDiscoveryQueryParams('')" queryParamsHandling="merge">{{ 'SHARED.SEARCH_BOX.DISCOVERY' | translate }}</a>
-          <span> | </span>
-          <a [routerLink]="['/about']" fragment="searchTips">{{ 'SHARED.SEARCH_BOX.SEARCH_TIPS' | translate }}</a>
-        </small>
+        <ng-container *ngTemplateOutlet="helpLinks"></ng-container>
       </div>
     </form>
 
@@ -34,5 +27,14 @@
       <span class="search-label d-inline-block" [ngStyle]="styles?.label">{{ 'SHARED.SEARCH_BOX.LABEL' | translate:{organization: (organization | async)} }}</span>
       <span class="fa fa-search form-control-feedback"></span>
     </ng-template>
+
+    <ng-template #helpLinks>
+      <small class="d-block text-muted text-right">
+        <a [routerLink]="['/discovery']" [queryParams]="getDiscoveryQueryParams('')" queryParamsHandling="merge">{{ 'SHARED.SEARCH_BOX.DISCOVERY' | translate }}</a>
+        <span> | </span>
+        <a [routerLink]="['/about']" fragment="searchTips">{{ 'SHARED.SEARCH_BOX.SEARCH_TIPS' | translate }}</a>
+      </small>
+    </ng-template>
+
   </div>
 </div>
