@@ -101,11 +101,19 @@ export class AlertService {
         return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
     }
 
+    public fetchLazyRefernceFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+        return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
+    }
+
     public pageFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
         return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
     }
 
     public countFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+        return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
+    }
+
+    public recentlyUpdatedFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
         return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
     }
 

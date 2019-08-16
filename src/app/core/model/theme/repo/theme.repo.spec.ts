@@ -11,6 +11,7 @@ import { ThemeRepo } from './theme.repo';
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
+import { testAppConfig } from '../../../../../test.config';
 
 describe('ThemeRepo', () => {
 
@@ -18,12 +19,19 @@ describe('ThemeRepo', () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 })
             ],
             providers: [
-                { provide: REQUEST, useFactory: (getRequest) },
+                { provide: REQUEST, useFactory: getRequest },
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
                 ThemeRepo
             ]

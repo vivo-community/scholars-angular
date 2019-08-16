@@ -12,6 +12,7 @@ import { DirectoryComponent } from './directory.component';
 import { routes } from './directory.routes';
 
 import { metaReducers, reducers } from '../core/store';
+import { testAppConfig } from '../../test.config';
 
 describe('DirectoryComponent', () => {
     let component: DirectoryComponent;
@@ -24,17 +25,21 @@ describe('DirectoryComponent', () => {
             ],
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 TranslateModule.forRoot(),
                 RouterTestingModule.withRoutes(routes)
             ],
             providers: [
-                {
-                    provide: APP_BASE_HREF,
-                    useValue: '/'
-                }
+                { provide: 'APP_CONFIG', useValue: testAppConfig },
+                { provide: APP_BASE_HREF, useValue: '/' }
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA

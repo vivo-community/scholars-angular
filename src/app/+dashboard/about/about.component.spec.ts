@@ -7,6 +7,7 @@ import { AboutComponent } from './about.component';
 import { LoaderDirective } from '../../shared/loader/loader.directive';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test.config';
 
 describe('AboutComponent', () => {
     let component: AboutComponent;
@@ -19,8 +20,14 @@ describe('AboutComponent', () => {
                 LoaderDirective
             ],
             imports: [
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 TranslateModule.forRoot()
             ],

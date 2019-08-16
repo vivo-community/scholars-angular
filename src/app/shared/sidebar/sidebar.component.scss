@@ -19,8 +19,16 @@
         .card-header:hover {
           cursor: pointer;
         }
-        .card-items .badge {
-          height: 18px;
+        .card-items {
+          ul.list-group {
+            padding-left: 1px;
+          }
+          ul.list-group:last-child {
+            padding-bottom: 2px;
+          }
+          .badge {
+            height: 18px;
+          }
         }
       }
     }
@@ -29,4 +37,5 @@
       overflow: hidden;
     }
   }
+  
 }

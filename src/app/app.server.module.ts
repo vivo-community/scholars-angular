@@ -11,24 +11,25 @@ import { Observable, Observer } from 'rxjs';
 import { readFileSync } from 'fs';
 
 import { AppModule } from './app.module';
+
 import { AppComponent } from './app.component';
 
 import { ComputedStyleLoader } from './core/computed-style-loader';
 
 import { CustomMissingTranslationHandler } from './core/handler/custom-missing-translation.handler';
 
-export function createUniversalTranslateLoader(): TranslateLoader {
+const createUniversalTranslateLoader = (): TranslateLoader => {
     return {
-        getTranslation: (lang: string) => {
+        getTranslation: (lang: string): Observable<any> => {
             return new Observable((observer: Observer<any>) => {
                 observer.next(JSON.parse(readFileSync(`./dist/browser/assets/i18n/${lang}.json`, 'utf8')));
                 observer.complete();
             });
         }
     } as TranslateLoader;
-}
+};
 
-export function createUniversalStyleLoader(document: Document, baseHref: string): ComputedStyleLoader {
+const createUniversalStyleLoader = (document: Document, baseHref: string): ComputedStyleLoader => {
     return {
         getComputedStyle(): any {
             const styleLinkTag = document.querySelector('head > link[rel=stylesheet]');
@@ -43,7 +44,7 @@ export function createUniversalStyleLoader(document: Document, baseHref: string)
             return { root, ruleName, style, getPropertyValue: (key) => style[key] };
         }
     } as ComputedStyleLoader;
-}
+};
 
 @NgModule({
     imports: [
@@ -61,7 +62,7 @@ export function createUniversalStyleLoader(document: Document, baseHref: string)
             },
             loader: {
                 provide: TranslateLoader,
-                useFactory: (createUniversalTranslateLoader)
+                useFactory: createUniversalTranslateLoader
             }
         })
     ],
@@ -73,7 +74,7 @@ export function createUniversalStyleLoader(document: Document, baseHref: string)
     providers: [
         {
             provide: ComputedStyleLoader,
-            useFactory: (createUniversalStyleLoader),
+            useFactory: createUniversalStyleLoader,
             deps: [DOCUMENT, APP_BASE_HREF]
         }
     ]

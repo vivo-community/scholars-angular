@@ -12,6 +12,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { ThemesComponent } from './themes.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test.config';
 
 describe('ThemesComponent', () => {
     let component: ThemesComponent;
@@ -32,8 +33,14 @@ describe('ThemesComponent', () => {
                 NoopAnimationsModule,
                 CoreModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 TranslateModule.forRoot(),
                 RouterTestingModule.withRoutes([])

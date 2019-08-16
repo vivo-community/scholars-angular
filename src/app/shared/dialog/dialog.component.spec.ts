@@ -12,6 +12,7 @@ import { DialogComponent } from './dialog.component';
 import { DialogButtonType } from '../../core/model/dialog';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test.config';
 
 describe('DialogComponent', () => {
     let component: DialogComponent;
@@ -22,8 +23,14 @@ describe('DialogComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 TranslateModule.forRoot()
             ]

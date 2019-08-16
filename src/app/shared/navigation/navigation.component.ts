@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
 
 import { AppState } from '../../core/store';
+import { AppConfig } from '../../app.config';
 import { DirectoryView } from '../../core/model/view';
 
 import { selectIsNavigationCollapsed, selectIsSidebarExpanded, selectIsNavigationExpanded } from '../../core/store/layout';
@@ -16,8 +17,6 @@ import { selectAllResources } from '../../core/store/sdr';
 import { addFacetsToQueryParams, addFiltersToQueryParams } from '../utilities/view.utility';
 
 import * as fromLayout from '../../core/store/layout/layout.actions';
-
-import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'scholars-navigation',
@@ -40,8 +39,11 @@ export class NavigationComponent implements OnInit {
 
     public directoryViews: Observable<DirectoryView[]>;
 
-    constructor(private store: Store<AppState>) {
-        this.vivoEditorUrl = environment.vivoEditorUrl;
+    constructor(
+        @Inject('APP_CONFIG') appConfig: AppConfig,
+        private store: Store<AppState>
+    ) {
+        this.vivoEditorUrl = appConfig.vivoEditorUrl;
     }
 
     ngOnInit() {

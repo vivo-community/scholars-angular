@@ -9,12 +9,18 @@
 </div>
 <scholars-sidebar *ngIf="directoryView | async; let directoryView">
   <div class="container mt-2">
-    <span class="h3 text-primary">{{ directoryView.name }}</span>
-    <span class="pull-right" *ngIf="hasExport(directoryView)">
-      <a [href]="getDirectoryExportUrl(directoryView, queryParams | async)" download>
-        <span>{{ 'DIRECTORY.EXPORT' | translate }}</span>
-      </a>
-    </span>
+    <div class="row flex-column-reverse flex-md-row">
+      <div class="col-md-8">
+        <span class="h3 text-primary">{{ directoryView.name }}</span>
+      </div>
+      <div class="col-md-4">
+        <span class="pull-right" *ngIf="hasExport(directoryView)">
+          <a [href]="getDirectoryExportUrl(directoryView, queryParams | async)" download>
+            <span>{{ 'DIRECTORY.EXPORT' | translate }}</span>
+          </a>
+        </span>
+      </div>
+    </div>
     <div class="index">
       <a class="option" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getResetQueryParams(directoryView)" queryParamsHandling="merge">
         <span *ngIf="isActive(queryParams | async, 'All')" class="fa fa-caret-right mr-1"></span>

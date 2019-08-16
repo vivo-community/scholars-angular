@@ -149,7 +149,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
         return `${filter.field}.filter`;
     }
 
-    private getDiscoveryQueryParams(query: string): Params {
+    public getDiscoveryQueryParams(query: string): Params {
         const queryParams: Params = {};
         queryParams.collection = this.view.collection;
         addFacetsToQueryParams(queryParams, this.view);

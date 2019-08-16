@@ -15,6 +15,7 @@ import { TabComponent } from './tab.component';
 import { metaReducers, reducers } from '../../core/store';
 
 import { routes } from '../display.routes';
+import { testAppConfig } from '../../../test.config';
 
 describe('TabComponent', () => {
     let component: TabComponent;
@@ -27,8 +28,14 @@ describe('TabComponent', () => {
             ],
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 RouterTestingModule.withRoutes(routes[0].children)
             ],

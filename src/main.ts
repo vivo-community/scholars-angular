@@ -11,15 +11,22 @@ if (environment.production) {
     enableProdMode();
 }
 
-const main = async () => platformBrowserDynamic().bootstrapModule(AppBrowserModule);
+// fetch runtime configuration, move to provider when Angular supports asynchronous providers
+fetch('assets/appConfig.json').then(response => response.json()).then(appConfig => {
 
-// hmr support
-if (environment.hmr) {
-    if (get('hot')(module)) {
-        hmrBootstrap(module, main);
+    const main = async () => platformBrowserDynamic([{
+        provide: 'APP_CONFIG',
+        useValue: appConfig
+    }]).bootstrapModule(AppBrowserModule);
+
+    // hmr support
+    if (environment.hmr) {
+        if (get('hot')(module)) {
+            hmrBootstrap(module, main);
+        } else {
+            console.error('HMR is not enabled for webpack-dev-server!');
+        }
     } else {
-        console.error('HMR is not enabled for webpack-dev-server!');
+        bootloader(main);
     }
-} else {
-    bootloader(main);
-}
+});

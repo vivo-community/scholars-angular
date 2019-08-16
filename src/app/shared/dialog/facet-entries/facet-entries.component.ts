@@ -1,18 +1,23 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Params, Router, NavigationStart } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 
-import { scheduled, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { scheduled, Subscription, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { queue } from 'rxjs/internal/scheduler/queue';
 
 import { AppState } from '../../../core/store';
 import { DialogButtonType, DialogControl } from '../../../core/model/dialog';
-import { Facet } from '../../../core/model/view';
-import { SdrFacet } from '../../../core/model/sdr';
+import { Facet, FacetType, CollectionView } from '../../../core/model/view';
+import { SdrFacet, SdrFacetEntry } from '../../../core/model/sdr';
+import { CustomRouterState } from '../../../core/store/router/router.reducer';
+import { selectRouterState } from '../../../core/store/router';
+import { selectCollectionViewByName, selectResourcesFacets } from '../../../core/store/sdr';
+import { createSdrRequest } from '../../utilities/discovery.utility';
 
 import * as fromDialog from '../../../core/store/dialog/dialog.actions';
+import * as fromSdr from '../../../core/store/sdr/sdr.actions';
 
 @Component({
     selector: 'scholars-facet-entries',
@@ -21,13 +26,15 @@ import * as fromDialog from '../../../core/store/dialog/dialog.actions';
 })
 export class FacetEntriesComponent implements OnDestroy, OnInit {
 
-    @Input() facet: Facet;
+    @Input() name: string;
 
-    @Input() sdrFacet: SdrFacet;
+    @Input() field: string;
 
-    public page = 2;
+    public routerState: Observable<CustomRouterState>;
 
-    public size = 10;
+    public facet: Observable<Facet>;
+
+    public sdrFacet: Observable<SdrFacet>;
 
     public routerLink = [];
 
@@ -50,31 +57,70 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
     }
 
     ngOnInit() {
+        this.routerState = this.store.pipe(
+            select(selectRouterState),
+            filter((router: any) => router !== undefined),
+            map((router: any) => router.state)
+        );
+
+        this.subscriptions.push(this.routerState.subscribe((routerState: CustomRouterState) => {
+
+            this.dialog = {
+                title: scheduled([this.name], queue),
+                close: {
+                    type: DialogButtonType.OUTLINE_WARNING,
+                    label: this.translate.get('SHARED.DIALOG.FACET_ENTRIES.CANCEL'),
+                    action: () => {
+                        this.onPageChange(1, routerState);
+                        this.store.dispatch(new fromDialog.CloseDialogAction());
+                    },
+                    disabled: () => scheduled([false], queue)
+                }
+            };
+
+            const viewCollection = routerState.url.startsWith('/directory') ? 'directoryViews' : 'discoveryViews';
+
+            this.sdrFacet = this.store.pipe(
+                select(selectResourcesFacets(routerState.queryParams.collection)),
+                map((sdrFacets: SdrFacet[]) => sdrFacets.find((sdrFacet: SdrFacet) => sdrFacet.field === this.field))
+            );
+
+            this.facet = this.store.pipe(
+                select(selectCollectionViewByName(viewCollection, routerState.params.view)),
+                map((view: CollectionView) => view.facets.find((facet: Facet) => facet.name === this.name))
+            );
+        }));
+
         this.subscriptions.push(this.router.events.pipe(
             filter(event => event instanceof NavigationStart)
         ).subscribe(() => {
             this.store.dispatch(new fromDialog.CloseDialogAction());
         }));
-        this.dialog = {
-            title: scheduled([this.facet.name], queue),
-            close: {
-                type: DialogButtonType.OUTLINE_WARNING,
-                label: this.translate.get('SHARED.DIALOG.FACET_ENTRIES.CANCEL'),
-                action: () => this.store.dispatch(new fromDialog.CloseDialogAction()),
-                disabled: () => scheduled([false], queue)
-            }
-        };
     }
 
-    public getFacetEntryPage(): any[] {
-        const start = (this.page - 1) * this.size;
-        return this.sdrFacet.entries.slice(start, start + this.size);
-    }
-
-    public getQueryParams(facet: SdrFacet, entry: any): Params {
+    public getQueryParams(facet: Facet, entry: SdrFacetEntry): Params {
         const queryParams: Params = {};
-        queryParams[`${facet.field}.filter`] = entry.value;
+        if (facet.type === FacetType.DATE_YEAR) {
+            const date = new Date(entry.value);
+            const year = date.getUTCFullYear();
+            queryParams[`${this.field}.filter`] = `[${year} TO ${year + 1}]`;
+        } else {
+            queryParams[`${this.field}.filter`] = entry.value;
+        }
+        queryParams[`${this.field}.pageNumber`] = 1;
         return queryParams;
+    }
+
+    public onPageChange(page: number, routerState: CustomRouterState): void {
+        const queryParams: Params = {};
+        queryParams[`${this.field}.pageNumber`] = page;
+        const request = createSdrRequest({
+            url: routerState.url,
+            params: routerState.params,
+            queryParams: Object.assign({}, routerState.queryParams, queryParams),
+            data: {}
+        });
+        this.store.dispatch(new fromSdr.SearchResourcesAction(routerState.queryParams.collection, { request }));
     }
 
 }

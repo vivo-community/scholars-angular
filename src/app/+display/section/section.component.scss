@@ -1,0 +1,20 @@
+:host {
+  .embed-dropdown {
+    .dropdown-menu {
+      min-width: 450px;
+    }
+
+    .dropdown-toggle::after {
+      display: none;
+    }
+
+    .fa-share-alt {
+      padding: 5px;
+    }
+
+    .fa-copy:hover,
+    .fa-share-alt:hover {
+      cursor: pointer;
+    }
+  }
+}

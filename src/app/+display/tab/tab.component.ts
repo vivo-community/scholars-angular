@@ -23,6 +23,10 @@ export class TabComponent implements OnDestroy, OnInit {
 
     public document: Observable<SolrDocument>;
 
+    public display: string;
+
+    public collection: string;
+
     private subscriptions: Subscription[];
 
     constructor(
@@ -40,6 +44,8 @@ export class TabComponent implements OnDestroy, OnInit {
             if (params[0].collection && params[0].id && params[1].view && params[1].tab) {
                 this.tab = this.store.pipe(select(selectDisplayViewTab(params[1].view, params[1].tab)));
                 this.document = this.store.pipe(select(selectResourceById(params[0].collection, params[0].id)));
+                this.display = params[1].view;
+                this.collection = params[0].collection;
             }
         }));
     }

@@ -24,7 +24,7 @@ export class AboutComponent implements OnInit {
 
     ngOnInit() {
         this.discoveryView = this.store.pipe(
-            select(selectDefaultDiscoveryView),
+            select(selectDefaultDiscoveryView('persons')),
             filter((view: DiscoveryView) => view !== undefined)
         );
     }

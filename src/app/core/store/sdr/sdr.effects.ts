@@ -1,5 +1,4 @@
 import { Injectable, Injector } from '@angular/core';
-import { Params } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,12 +19,11 @@ import { AbstractSdrRepo } from '../../model/sdr/repo/abstract-sdr-repo';
 import { SdrResource, SdrCollection, SdrFacet, SdrFacetEntry, Count } from '../../model/sdr';
 import { SidebarMenu, SidebarSection, SidebarItem, SidebarItemType } from '../../model/sidebar';
 import { SolrDocument } from '../../model/discovery';
-import { SdrRequest, Facetable, Indexable, Direction, Sort, Pageable } from '../../model/request';
-import { OperationKey, Facet, DiscoveryView, DirectoryView, FacetSort } from '../../model/view';
+import { Facet, DiscoveryView, DirectoryView, FacetType } from '../../model/view';
 
 import { injectable, repos } from '../../model/repos';
 
-import { formalize } from '../../../shared/utilities/formalize.pipe';
+import { createSdrRequest } from '../../../shared/utilities/discovery.utility';
 
 import { selectAllResources } from './';
 import { selectRouterState } from '../router';
@@ -131,9 +129,28 @@ export class SdrEffects {
         map(([combination, stomp]) => this.subscribeToResourceQueue(combination[0], stomp))
     );
 
-    @Effect() gfindByTypesInFailure = this.actions.pipe(
+    @Effect() findByTypesInFailure = this.actions.pipe(
         ofType(...this.buildActions(fromSdr.SdrActionTypes.FIND_BY_TYPES_IN_FAILURE)),
         map((action: fromSdr.FindByTypesInResourceFailureAction) => this.alert.findByTypesInFailureAlert(action.payload))
+    );
+
+    @Effect() fetchLazyReference = this.actions.pipe(
+        ofType(...this.buildActions(fromSdr.SdrActionTypes.FETCH_LAZY_REFERENCE)),
+        switchMap((action: fromSdr.FetchLazyReferenceAction) => {
+            const field = action.payload.field;
+            const collection = action.payload.collection;
+            const document = action.payload.document;
+            const ids = document[field].map((property) => property.id);
+            return this.repos.get(collection).findByIdIn(ids).pipe(
+                map((resources: SdrCollection) => new fromSdr.FetchLazyReferenceSuccessAction(action.name, { document, collection, field, resources })),
+                catchError((response) => scheduled([new fromSdr.FetchLazyReferenceFailureAction(action.name, { response })], asap))
+            );
+        })
+    );
+
+    @Effect() fetchLazyReferenceFailure = this.actions.pipe(
+        ofType(...this.buildActions(fromSdr.SdrActionTypes.FETCH_LAZY_REFERENCE_FAILURE)),
+        map((action: fromSdr.FetchLazyReferenceFailureAction) => this.alert.fetchLazyRefernceFailureAlert(action.payload))
     );
 
     @Effect() page = this.actions.pipe(
@@ -207,6 +224,19 @@ export class SdrEffects {
     @Effect() countFailure = this.actions.pipe(
         ofType(...this.buildActions(fromSdr.SdrActionTypes.COUNT_FAILURE)),
         map((action: fromSdr.CountResourcesFailureAction) => this.alert.countFailureAlert(action.payload))
+    );
+
+    @Effect() recentlyUpdated = this.actions.pipe(
+        ofType(...this.buildActions(fromSdr.SdrActionTypes.RECENTLY_UPDATED)),
+        mergeMap((action: fromSdr.RecentlyUpdatedResourcesAction) => this.repos.get(action.name).recentlyUpdated(action.payload.limit).pipe(
+            map((recentlyUpdated: SdrResource[]) => new fromSdr.RecentlyUpdatedResourcesSuccessAction(action.name, { recentlyUpdated })),
+            catchError((response) => scheduled([new fromSdr.RecentlyUpdatedResourcesFailureAction(action.name, { response })], asap))
+        ))
+    );
+
+    @Effect() getRecentlyUpdatedFailure = this.actions.pipe(
+        ofType(...this.buildActions(fromSdr.SdrActionTypes.RECENTLY_UPDATED_FAILURE)),
+        map((action: fromSdr.RecentlyUpdatedResourcesFailureAction) => this.alert.recentlyUpdatedFailureAlert(action.payload))
     );
 
     @Effect() clearResourceSubscription = this.actions.pipe(
@@ -315,7 +345,7 @@ export class SdrEffects {
                 collection = router.state.queryParams.collection;
             }
             if (collection) {
-                const request = this.createSdrRequest(router.state);
+                const request = createSdrRequest(router.state);
                 if (router.state.url.startsWith('/directory') || router.state.url.startsWith('/discovery')) {
                     this.store.dispatch(new fromSdr.SearchResourcesAction(collection, { request }));
                 } else {
@@ -380,13 +410,9 @@ export class SdrEffects {
     private searchSuccessHandler(action: fromSdr.SearchResourcesSuccessAction, routerState: CustomRouterState, store: AppState): void {
         if (routerState.queryParams.collection) {
 
-            let facets: Facet[] = [];
-
-            if (routerState.url.startsWith('/directory')) {
-                facets = store['directoryViews'].entities[routerState.params.view].facets;
-            } else if (routerState.url.startsWith('/discovery')) {
-                facets = store['discoveryViews'].entities[routerState.params.view].facets;
-            }
+            const viewFacets: Facet[] = routerState.url.startsWith('/directory') ?
+                store['directoryViews'].entities[routerState.params.view].facets :
+                store['discoveryViews'].entities[routerState.params.view].facets;
 
             const sdrFacets: SdrFacet[] = action.payload.collection.facets;
 
@@ -394,148 +420,92 @@ export class SdrEffects {
                 sections: []
             };
 
-            facets.filter((facet: Facet) => !facet.hidden).forEach((facet: Facet) => {
-                for (const sdrFacet of sdrFacets) {
-                    if (sdrFacet.field === facet.field) {
+            this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
 
-                        const sidebarSection: SidebarSection = {
-                            title: scheduled([facet.name], asap),
-                            items: [],
-                            collapsible: true,
-                            collapsed: facet.collapsed
-                        };
+            viewFacets.filter((viewFacet: Facet) => !viewFacet.hidden).forEach((viewFacet: Facet) => {
+                const sdrFacet = sdrFacets.find((sf: SdrFacet) => sf.field === viewFacet.field);
+                if (sdrFacet) {
+                    const sidebarSection: SidebarSection = {
+                        title: scheduled([viewFacet.name], asap),
+                        items: [],
+                        collapsible: true,
+                        collapsed: viewFacet.collapsed
+                    };
 
-                        Object.assign(sdrFacet, {
-                            entries: sdrFacet.entries.sort(this.getFacetSortFunction(facet))
-                        });
+                    sidebarMenu.sections.push(sidebarSection);
 
-                        sdrFacet.entries.slice(0, facet.limit).forEach((facetEntry: SdrFacetEntry) => {
-                            let selected = false;
+                    sdrFacet.entries.content.filter((facetEntry: SdrFacetEntry) => facetEntry.value.length > 0).forEach((facetEntry: SdrFacetEntry) => {
+                        let selected = false;
 
-                            if (facetEntry.value.length > 0) {
-                                for (const requestFacet of routerState.queryParams.facets.split(',')) {
-                                    if (routerState.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
-                                        selected = true;
-                                        break;
-                                    }
+                        const requestFacet = routerState.queryParams.facets.split(',').find((rf: string) => rf === sdrFacet.field);
+
+                        if (requestFacet && routerState.queryParams[`${requestFacet}.filter`] !== undefined) {
+                            if (viewFacet.type === FacetType.DATE_YEAR) {
+                                const date = new Date(facetEntry.value);
+                                const year = date.getUTCFullYear();
+                                if (routerState.queryParams[`${requestFacet}.filter`] === `[${year} TO ${year + 1}]`) {
+                                    selected = true;
                                 }
-
-                                const sidebarItem: SidebarItem = {
-                                    type: SidebarItemType.FACET,
-                                    label: scheduled([facet.field === 'type' ? formalize(facetEntry.value) : facetEntry.value], asap),
-                                    facet: facet,
-                                    selected: selected,
-                                    parenthetical: facetEntry.count,
-                                    route: [],
-                                    queryParams: {},
-                                };
-
-                                sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
-
-                                sidebarItem.queryParams.page = 1;
-
-                                if (selected) {
-                                    sidebarSection.collapsed = false;
+                            } else {
+                                if (routerState.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
+                                    selected = true;
                                 }
-
-                                sidebarSection.items.push(sidebarItem);
                             }
-                        });
-
-                        if (sdrFacet.entries.length > facet.limit) {
-                            sidebarSection.items.push({
-                                type: SidebarItemType.ACTION,
-                                action: this.dialog.facetEntriesDialog(facet, sdrFacet),
-                                label: this.translate.get('SHARED.SIDEBAR.ACTION.MORE'),
-                                classes: 'font-weight-bold'
-                            });
                         }
 
-                        sidebarMenu.sections.push(sidebarSection);
-                        break;
+                        const sidebarItem: SidebarItem = {
+                            type: SidebarItemType.FACET,
+                            label: scheduled([facetEntry.value], asap),
+                            facet: viewFacet,
+                            selected: selected,
+                            parenthetical: facetEntry.count,
+                            route: [],
+                            queryParams: {},
+                        };
+
+                        if (viewFacet.type === FacetType.DATE_YEAR) {
+                            const date = new Date(facetEntry.value);
+                            const year = date.getUTCFullYear();
+                            sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${year} TO ${year + 1}]` : undefined;
+                        } else {
+                            sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
+                        }
+
+                        sidebarItem.queryParams.page = 1;
+
+                        if (selected) {
+                            sidebarSection.collapsed = false;
+                        }
+
+                        sidebarSection.items.push(sidebarItem);
+                    });
+
+                    if (sdrFacet.entries.page.totalPages > 1) {
+                        sidebarSection.items.push({
+                            type: SidebarItemType.ACTION,
+                            action: this.dialog.facetEntriesDialog(viewFacet.name, sdrFacet.field),
+                            label: this.translate.get('SHARED.SIDEBAR.ACTION.MORE'),
+                            classes: 'font-weight-bold'
+                        });
                     }
                 }
             });
 
-            this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
+            if (action.payload.collection.page.totalElements === 0) {
+                sidebarMenu.sections.push({
+                    title: this.translate.get('SHARED.SIDEBAR.INFO.NO_RESULTS_LABEL', { view: routerState.params.view }),
+                    items: [{
+                        type: SidebarItemType.INFO,
+                        label: this.translate.get('SHARED.SIDEBAR.INFO.NO_RESULTS_TEXT', { view: routerState.params.view, query: routerState.queryParams.query }),
+                        route: [],
+                        queryParams: {},
+                    }],
+                    collapsible: false,
+                    collapsed: false
+                });
+            }
         }
         this.subscribeToResourceQueue(action.name, store.stomp);
-    }
-
-    private getFacetSortFunction(facet: Facet): (f1: SdrFacetEntry, f2: SdrFacetEntry) => number {
-        const sort = FacetSort.COUNT === FacetSort[facet.sort] ? 'count' : 'value';
-        const direction = Direction.ASC === Direction[facet.direction] ? [1, -1] : [-1, 1];
-        return (f1: SdrFacetEntry, f2: SdrFacetEntry) => {
-            if (f1[sort] > f2[sort]) {
-                return direction[0];
-            }
-            if (f1[sort] < f2[sort]) {
-                return direction[1];
-            }
-            return 0;
-        };
-    }
-
-    private createSdrRequest(routerState: CustomRouterState): SdrRequest {
-        const queryParams = routerState.queryParams;
-        return {
-            pageable: this.buildPageable(queryParams),
-            facets: this.buildFacets(queryParams),
-            indexable: this.buildIndexable(queryParams),
-            query: queryParams.query
-        };
-    }
-
-    private buildPageable(queryParams: Params): Pageable {
-        return {
-            number: queryParams.page,
-            size: queryParams.size,
-            sort: this.buildSort(queryParams.sort)
-        };
-    }
-
-    private buildSort(sortParams: string): Sort[] {
-        const sort: Sort[] = [];
-        if (sortParams !== undefined) {
-            if (Array.isArray(sortParams)) {
-                sortParams.forEach((currentSortParam) => sort.push(this.splitSort(currentSortParam)));
-            } else {
-                sort.push(this.splitSort(sortParams));
-            }
-        }
-        return sort;
-    }
-
-    private splitSort(sortParam: string): Sort {
-        const sortSplit = sortParam.split(',');
-        return {
-            name: sortSplit[0],
-            direction: Direction[sortSplit[1] !== undefined ? sortSplit[1].toUpperCase() : 'ASC']
-        };
-    }
-
-    private buildFacets(queryParams: Params): Facetable[] {
-        const facets: Facetable[] = [];
-        const fields: string[] = queryParams.facets !== undefined ? queryParams.facets.split(',') : [];
-        fields.forEach((field: string) => {
-            const facet: Facetable = { field };
-            if (queryParams[`${field}.filter`]) {
-                facet.filter = queryParams[`${field}.filter`];
-            }
-            facets.push(facet);
-        });
-        return facets;
-    }
-
-    private buildIndexable(queryParams: Params): Indexable {
-        if (queryParams.index) {
-            const indexSplit: string[] = queryParams.index.split(',');
-            return {
-                field: indexSplit[0],
-                operationKey: OperationKey[indexSplit[1]],
-                option: indexSplit[2]
-            };
-        }
     }
 
 }

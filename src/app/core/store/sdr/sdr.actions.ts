@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { SdrRequest } from '../../model/request';
+import { SdrCollection } from '../../model/sdr';
 
 export enum SdrActionTypes {
     GET_ALL = 'get all resources',
@@ -14,6 +15,9 @@ export enum SdrActionTypes {
     COUNT = 'count resources',
     COUNT_SUCCESS = 'sucessfully counted resources',
     COUNT_FAILURE = 'failed counting resources',
+    RECENTLY_UPDATED = 'get recently updated',
+    RECENTLY_UPDATED_SUCCESS = 'sucessfully got recently updated',
+    RECENTLY_UPDATED_FAILURE = 'failed getting recently updated',
     GET_ONE = 'get one resource by id',
     GET_ONE_SUCCESS = 'sucessfully got resource by id',
     GET_ONE_FAILURE = 'failed getting resource by id',
@@ -23,6 +27,9 @@ export enum SdrActionTypes {
     FIND_BY_TYPES_IN = 'find resource by types in',
     FIND_BY_TYPES_IN_SUCCESS = 'sucessfully found resource by types in',
     FIND_BY_TYPES_IN_FAILURE = 'failed finding resource by types is',
+    FETCH_LAZY_REFERENCE = 'fetch lazy reference',
+    FETCH_LAZY_REFERENCE_SUCCESS = 'sucessfully fetched lazy reference',
+    FETCH_LAZY_REFERENCE_FAILURE = 'failed fetching lazy reference',
     POST = 'post resource',
     POST_SUCCESS = 'sucessfully posted resource',
     POST_FAILURE = 'failed posting resource',
@@ -102,6 +109,21 @@ export class CountResourcesFailureAction implements Action {
     constructor(public name: string, public payload: any) { }
 }
 
+export class RecentlyUpdatedResourcesAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.RECENTLY_UPDATED, this.name);
+    constructor(public name: string, public payload: { limit: number }) { }
+}
+
+export class RecentlyUpdatedResourcesSuccessAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.RECENTLY_UPDATED_SUCCESS, this.name);
+    constructor(public name: string, public payload: any) { }
+}
+
+export class RecentlyUpdatedResourcesFailureAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.RECENTLY_UPDATED_FAILURE, this.name);
+    constructor(public name: string, public payload: any) { }
+}
+
 export class GetOneResourceAction implements Action {
     readonly type = getSdrAction(SdrActionTypes.GET_ONE, this.name);
     constructor(public name: string, public payload: { id: number }) { }
@@ -144,6 +166,21 @@ export class FindByTypesInResourceSuccessAction implements Action {
 
 export class FindByTypesInResourceFailureAction implements Action {
     readonly type = getSdrAction(SdrActionTypes.FIND_BY_TYPES_IN_FAILURE, this.name);
+    constructor(public name: string, public payload: any) { }
+}
+
+export class FetchLazyReferenceAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE, this.name);
+    constructor(public name: string, public payload: { document: any, collection: string, field: string }) { }
+}
+
+export class FetchLazyReferenceSuccessAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, this.name);
+    constructor(public name: string, public payload: { document: any, collection: string, field: string, resources: SdrCollection }) { }
+}
+
+export class FetchLazyReferenceFailureAction implements Action {
+    readonly type = getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_FAILURE, this.name);
     constructor(public name: string, public payload: any) { }
 }
 
@@ -225,6 +262,9 @@ export type SdrActions =
     CountResourcesAction |
     CountResourcesSuccessAction |
     CountResourcesFailureAction |
+    RecentlyUpdatedResourcesAction |
+    RecentlyUpdatedResourcesSuccessAction |
+    RecentlyUpdatedResourcesFailureAction |
     GetOneResourceAction |
     GetOneResourceSuccessAction |
     GetOneResourceFailureAction |
@@ -234,6 +274,9 @@ export type SdrActions =
     FindByTypesInResourceAction |
     FindByTypesInResourceSuccessAction |
     FindByTypesInResourceFailureAction |
+    FetchLazyReferenceAction |
+    FetchLazyReferenceSuccessAction |
+    FetchLazyReferenceFailureAction |
     PostResourceAction |
     PostResourceSuccessAction |
     PostResourceFailureAction |

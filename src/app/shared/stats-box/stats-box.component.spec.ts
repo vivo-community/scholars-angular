@@ -6,6 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { StatsBoxComponent } from './stats-box.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test.config';
 
 describe('StatsBoxComponent', () => {
     let component: StatsBoxComponent;
@@ -17,8 +18,14 @@ describe('StatsBoxComponent', () => {
                 StatsBoxComponent
             ],
             imports: [
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 RouterTestingModule.withRoutes([])
             ],

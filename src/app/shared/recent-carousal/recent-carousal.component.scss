@@ -1,0 +1,72 @@
+:host {
+  .scroll {
+    display: flex;
+    margin: 25px -15px;
+    .fa {
+      flex-direction: column;
+      color: #444;
+    }
+    .fa:hover {
+      cursor: pointer;
+      color: var(--primary);
+    }
+    .fa-chevron-left {
+      @media (max-width: 376px) { margin-left: 10px }
+      @media (max-width: 576px) { margin-left: 25px; }
+    }
+    .fa-chevron-right {
+      @media (max-width: 376px) { margin-right: 10px }
+      @media (max-width: 576px) { margin-right: 25px; }
+    }
+    .scroll-view {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      overflow-y: hidden;
+      align-items: center;
+      justify-content: center;
+      min-width: 150px;
+
+      .scroll-item {
+        box-sizing: border-box;
+        flex-direction: column;
+        height: 175px;
+        width: 150px;
+        margin: 8px;
+        line-height: 15px;
+        background-size: 100%;
+        background-position: center top;
+        background-repeat: no-repeat;
+        transition: all .35s ease-in-out;
+        border-radius: 8px;
+
+        .card-body {
+          color: white;
+          display: flex;
+          flex-direction: column-reverse;
+          text-decoration: none;
+
+          .item-title {
+            font-size: 0.9em;
+          }
+          .item-subtitle {
+            font-size: 0.8em;
+          }
+          .item-footer {
+            font-size: 0.7em;
+          }
+        }
+      }
+      .scroll-item:hover {
+        height: 201.25px;
+        width: 172.5px;
+        transition: all .30s ease-in-out;
+        cursor: pointer;
+      }
+      .scroll-item.hide {
+        display: none;
+      }
+    }
+  }
+
+}

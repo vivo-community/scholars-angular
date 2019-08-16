@@ -23,6 +23,7 @@ export interface Subsection {
 
 export interface DisplayTabSectionView extends View {
     readonly hidden: boolean;
+    readonly shared: boolean;
     readonly template: string;
     templateFunction?: (document: any) => string;
     readonly requiredFields: string[];

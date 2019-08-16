@@ -10,6 +10,7 @@ import { UserEditComponent } from './user-edit.component';
 import { Role } from '../../../core/model/user';
 
 import { metaReducers, reducers } from '../../../core/store';
+import { testAppConfig } from '../../../../test.config';
 
 describe('UserEditComponent', () => {
     let component: UserEditComponent;
@@ -20,8 +21,14 @@ describe('UserEditComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 TranslateModule.forRoot()
             ]

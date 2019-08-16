@@ -13,6 +13,8 @@ import { DialogService } from '../../core/service/dialog.service';
 import { DirectoryViewsComponent } from './directory-views.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test.config';
+
 
 describe('DirectoryViewsComponent', () => {
     let component: DirectoryViewsComponent;
@@ -33,8 +35,14 @@ describe('DirectoryViewsComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 SharedModule,
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 TranslateModule.forRoot(),
                 RouterTestingModule.withRoutes([])

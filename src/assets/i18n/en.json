@@ -40,8 +40,8 @@
       "ABOUT_PROJECT": "About the Project"
     },
     "HOME": {
-      "LATEST_PUBLICATIONS_TEXT": "Latest published books by {{organization}} faculty",
-      "CLICK_PUBLICATION_TEXT": "Click to see the author faculty page"
+      "LATEST_PUBLICATIONS_TEXT": "Most recently updated faculty profiles by {{organization}}",
+      "CLICK_PUBLICATION_TEXT": "Click to see the faculty profile"
     }
   },
   "DIRECTORY": {
@@ -51,6 +51,12 @@
   "DISCOVERY": {
     "TITLE": "Discovery",
     "EXPORT": "Export Search Results"
+  },
+  "DISPLAY": {
+    "EMBEDDABLE": {
+      "LABEL": "Embeddable",
+      "COPIED": "Embeddable snippet copied!"
+    }
   },
   "HEADER": {
     "BANNER": {
@@ -146,8 +152,12 @@
       "LAST": "Last",
       "PAGE_SIZE": "Page Size {{size}}"
     },
+    "RECENT_PUBLICATIONS": {
+      "PERSON_IMAGE_ALT_FALLBACK": "Thumbnail of Person"
+    },
     "SEARCH_BOX": {
       "LABEL": "Find Research at {{organization}}",
+      "DISCOVERY": "Discovery",
       "SEARCH_TIPS": "Search Tips"
     },
     "SIDEBAR": {
@@ -166,6 +176,10 @@
       },
       "ACTION": {
         "MORE": "more..."
+      },
+      "INFO": {
+        "NO_RESULTS_LABEL": "No {{view}} Found",
+        "NO_RESULTS_TEXT": "There are no {{view}} found for search. Please try another search or select another collection for current search."
       },
       "SECTION": {
         "ARIA_LABEL_COLLAPSE": "Collapse the {{label}} section.",

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Store, select } from '@ngrx/store';
@@ -7,7 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
-
+import { AppConfig } from '../app.config';
 import { DirectoryView, DiscoveryView } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
@@ -16,8 +16,6 @@ import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectR
 import { selectRouterQueryParams } from '../core/store/router';
 
 import { addFacetsToQueryParams, addFiltersToQueryParams, addExportToQueryParams } from '../shared/utilities/view.utility';
-
-import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'scholars-directory',
@@ -42,6 +40,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
     private subscriptions: Subscription[];
 
     constructor(
+        @Inject('APP_CONFIG') private appConfig: AppConfig,
         private store: Store<AppState>,
         private router: Router,
         private route: ActivatedRoute
@@ -57,10 +56,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
 
     ngOnInit() {
         this.queryParams = this.store.pipe(select(selectRouterQueryParams));
-        this.discoveryView = this.store.pipe(
-            select(selectDefaultDiscoveryView),
-            filter((view: DiscoveryView) => view !== undefined)
-        );
+
         this.subscriptions.push(this.route.params.subscribe((params) => {
             if (params.view) {
                 this.directoryView = this.store.pipe(
@@ -70,6 +66,11 @@ export class DirectoryComponent implements OnDestroy, OnInit {
                         this.documents = this.store.pipe(select(selectAllResources<SolrDocument>(view.collection)));
                         this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>(view.collection)));
                         this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>(view.collection)));
+
+                        this.discoveryView = this.store.pipe(
+                            select(selectDefaultDiscoveryView(view.collection)),
+                            filter((discoveryView: DiscoveryView) => discoveryView !== undefined)
+                        );
                     })
                 );
             }
@@ -105,13 +106,13 @@ export class DirectoryComponent implements OnDestroy, OnInit {
 
     public getDirectoryExportUrl(directoryView: DirectoryView, params: Params): string {
         const queryParams: Params = Object.assign({}, params);
-        queryParams.fields = queryParams.facets;
+        queryParams.filters = queryParams.facets;
         queryParams.facets = null;
         queryParams.collection = null;
         addExportToQueryParams(queryParams, directoryView);
         const tree = this.router.createUrlTree([''], { queryParams });
         const query = tree.toString().substring(1);
-        return `${environment.service}/${directoryView.collection}/search/export${query}`;
+        return `${this.appConfig.serviceUrl}/${directoryView.collection}/search/export${query}`;
     }
 
     private getQueryParams(directoryView: DirectoryView): Params {

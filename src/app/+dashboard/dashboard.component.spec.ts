@@ -13,6 +13,7 @@ import { HomeComponent } from './home/home.component';
 import { routes } from './dashboard.routes';
 
 import { metaReducers, reducers } from '../core/store';
+import { testAppConfig } from '../../test.config';
 
 describe('DashboardComponent', () => {
     let component: DashboardComponent;
@@ -27,8 +28,14 @@ describe('DashboardComponent', () => {
             ],
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 TranslateModule.forRoot(),
                 RouterTestingModule.withRoutes(routes)

@@ -10,10 +10,8 @@ import { RegistrationStep, RegistrationComponent } from '../../shared/dialog/reg
 
 import { User } from '../model/user';
 import { RegistrationRequest } from '../model/request';
-import { SdrFacet } from '../model/sdr';
 
 import * as fromDialog from '../../core/store/dialog/dialog.actions';
-import { FacetType, Facet } from '../model/view';
 
 @Injectable({
     providedIn: 'root',
@@ -77,14 +75,14 @@ export class DialogService {
         });
     }
 
-    public facetEntriesDialog(facet: Facet, sdrFacet: SdrFacet): fromDialog.OpenDialogAction {
+    public facetEntriesDialog(name: string, field: string): fromDialog.OpenDialogAction {
         return new fromDialog.OpenDialogAction({
             dialog: {
                 ref: {
                     component: FacetEntriesComponent,
-                    inputs: { facet, sdrFacet }
+                    inputs: { name, field }
                 },
-                options: this.options(this.translate.instant('SHARED.DIALOG.FACET_ENTRIES.ARIA_LABELLED_BY', { name: facet.name }))
+                options: this.options(this.translate.instant('SHARED.DIALOG.FACET_ENTRIES.ARIA_LABELLED_BY', { name }))
             }
         });
     }

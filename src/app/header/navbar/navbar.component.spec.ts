@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { NavbarComponent } from './navbar.component';
 
 import { metaReducers, reducers } from '../../core/store';
+import { testAppConfig } from '../../../test.config';
 
 describe('NavbarComponent', () => {
     let component: NavbarComponent;
@@ -20,8 +21,14 @@ describe('NavbarComponent', () => {
             ],
             imports: [
                 SharedModule,
-                StoreModule.forRoot(reducers, {
-                    metaReducers
+                StoreModule.forRoot(reducers(testAppConfig), {
+                    metaReducers,
+                    runtimeChecks: {
+                        strictStateImmutability: false,
+                        strictActionImmutability: false,
+                        strictStateSerializability: false,
+                        strictActionSerializability: false
+                    }
                 }),
                 RouterTestingModule.withRoutes([])
             ],

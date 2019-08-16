@@ -8,7 +8,7 @@ export enum Layout {
 
 export enum FacetType {
     STRING = 'STRING',
-    DATE_TIME = 'DATE_TIME'
+    DATE_YEAR = 'DATE_YEAR'
 }
 
 export enum FacetSort {
@@ -25,14 +25,14 @@ export interface Sort {
 export interface Export {
     readonly columnHeader: string;
     readonly valuePath: string;
-    readonly delimiter: string;
 }
 
 export interface Facet {
     readonly name: string;
     readonly field: string;
     readonly type: FacetType;
-    readonly limit: number;
+    readonly pageSize: number;
+    readonly pageNumber: number;
     readonly sort: FacetSort;
     readonly direction: Direction;
     readonly collapsed: boolean;
