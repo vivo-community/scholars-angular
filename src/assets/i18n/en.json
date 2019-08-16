@@ -177,6 +177,10 @@
       "ACTION": {
         "MORE": "more..."
       },
+      "INFO": {
+        "NO_RESULTS_LABEL": "No {{view}} Found",
+        "NO_RESULTS_TEXT": "There are no {{view}} found for search. Please try another search or select another collection for current search."
+      },
       "SECTION": {
         "ARIA_LABEL_COLLAPSE": "Collapse the {{label}} section.",
         "ARIA_LABEL_EXPAND": "Expand the {{label}} section."

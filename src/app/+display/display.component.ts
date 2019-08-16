@@ -91,7 +91,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
             this.changeDetRef.markForCheck();
         }));
         this.discoveryView = this.store.pipe(
-            select(selectDefaultDiscoveryView),
+            select(selectDefaultDiscoveryView('persons')),
             filter((view: DiscoveryView) => view !== undefined)
         );
         this.subscriptions.push(this.route.params.subscribe((params: Params) => {

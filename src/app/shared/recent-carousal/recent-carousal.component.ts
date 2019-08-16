@@ -128,8 +128,9 @@ export class RecentCarousalComponent implements AfterViewInit, OnInit {
     }
 
     private getCount(): number {
+        // NOTE: the server does not know the width of your browser, best to no render any cards and fade in
         if (isPlatformServer(this.platformId)) {
-            return 4;
+            return 0;
         }
         const size = this.scrollViewRef !== undefined ? this.scrollViewRef.nativeElement.clientWidth : 0;
         return Math.floor(size / 150);

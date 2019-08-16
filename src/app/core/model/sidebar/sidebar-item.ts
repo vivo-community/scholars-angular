@@ -5,7 +5,8 @@ import { Action } from '@ngrx/store';
 
 export enum SidebarItemType {
     FACET = 'FACET',
-    ACTION = 'ACTION'
+    ACTION = 'ACTION',
+    INFO = 'INFO'
 }
 
 export interface SidebarItem {

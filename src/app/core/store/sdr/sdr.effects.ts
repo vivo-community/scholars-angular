@@ -410,13 +410,9 @@ export class SdrEffects {
     private searchSuccessHandler(action: fromSdr.SearchResourcesSuccessAction, routerState: CustomRouterState, store: AppState): void {
         if (routerState.queryParams.collection) {
 
-            let viewFacets: Facet[] = [];
-
-            if (routerState.url.startsWith('/directory')) {
-                viewFacets = store['directoryViews'].entities[routerState.params.view].facets;
-            } else if (routerState.url.startsWith('/discovery')) {
-                viewFacets = store['discoveryViews'].entities[routerState.params.view].facets;
-            }
+            const viewFacets: Facet[] = routerState.url.startsWith('/directory') ?
+                store['directoryViews'].entities[routerState.params.view].facets :
+                store['discoveryViews'].entities[routerState.params.view].facets;
 
             const sdrFacets: SdrFacet[] = action.payload.collection.facets;
 
@@ -494,6 +490,20 @@ export class SdrEffects {
                     }
                 }
             });
+
+            if (action.payload.collection.page.totalElements === 0) {
+                sidebarMenu.sections.push({
+                    title: this.translate.get('SHARED.SIDEBAR.INFO.NO_RESULTS_LABEL', { view: routerState.params.view }),
+                    items: [{
+                        type: SidebarItemType.INFO,
+                        label: this.translate.get('SHARED.SIDEBAR.INFO.NO_RESULTS_TEXT', { view: routerState.params.view, query: routerState.queryParams.query }),
+                        route: [],
+                        queryParams: {},
+                    }],
+                    collapsible: false,
+                    collapsed: false
+                });
+            }
         }
         this.subscribeToResourceQueue(action.name, store.stomp);
     }

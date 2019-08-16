@@ -56,10 +56,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
 
     ngOnInit() {
         this.queryParams = this.store.pipe(select(selectRouterQueryParams));
-        this.discoveryView = this.store.pipe(
-            select(selectDefaultDiscoveryView),
-            filter((view: DiscoveryView) => view !== undefined)
-        );
+
         this.subscriptions.push(this.route.params.subscribe((params) => {
             if (params.view) {
                 this.directoryView = this.store.pipe(
@@ -69,6 +66,11 @@ export class DirectoryComponent implements OnDestroy, OnInit {
                         this.documents = this.store.pipe(select(selectAllResources<SolrDocument>(view.collection)));
                         this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>(view.collection)));
                         this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>(view.collection)));
+
+                        this.discoveryView = this.store.pipe(
+                            select(selectDefaultDiscoveryView(view.collection)),
+                            filter((discoveryView: DiscoveryView) => discoveryView !== undefined)
+                        );
                     })
                 );
             }

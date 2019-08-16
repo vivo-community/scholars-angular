@@ -9,15 +9,21 @@
 </div>
 <scholars-sidebar>
   <div class="container mt-2" *ngIf="discoveryView | async; let discoveryView">
-    <span class="h4 text-primary">
-      <span class="mr-2">Search results for:</span>
-      <span>{{query | async}}</span>
-    </span>
-    <span class="pull-right" *ngIf="hasExport(discoveryView)">
-      <a [href]="getDiscoveryExportUrl(discoveryView, queryParams | async)" download>
-        <span>{{ 'DISCOVERY.EXPORT' | translate }}</span>
-      </a>
-    </span>
+    <div class="row flex-column-reverse flex-md-row">
+      <div class="col-md-8">
+        <span class="h4 text-primary">
+          <span class="mr-2">Search results for:</span>
+          <span>{{query | async}}</span>
+        </span>
+      </div>
+      <div class="col-md-4">
+        <span class="pull-right" *ngIf="hasExport(discoveryView)">
+          <a [href]="getDiscoveryExportUrl(discoveryView, queryParams | async)" download>
+            <span>{{ 'DISCOVERY.EXPORT' | translate }}</span>
+          </a>
+        </span>
+      </div>
+    </div>
     <div class="applied-filters mt-2" *ngIf="filters | async; let filters">
       <span class="badge badge-light p-2 mr-2 mb-2" *ngFor="let filter of filters">
         <span *ngIf="showFilter(discoveryView, filter)">
@@ -27,7 +33,7 @@
         </span>
       </span>
     </div>
-    <ul role="tablist" class="list-unstyled mt-3 nav" *ngIf="discoveryViews | async; let discoveryViews" [ngClass]="{ 'nav-tabs nav-fill': showTabs(windowDimensions | async), 'nav-pills flex-column': !showTabs(windowDimensions | async) }">
+    <ul role="tablist" class="list-unstyled mt-3 nav" *ngIf="discoveryViews | async; let discoveryViews" [ngClass]="{ 'nav-tabs': showTabs(windowDimensions | async), 'nav-pills flex-column': !showTabs(windowDimensions | async) }">
       <li class="nav-item" *ngFor="let discoveryView of discoveryViews">
         <a class="nav-link" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, page | async, query | async)" [class.active]="isActive(discoveryView, url | async)">{{ discoveryView.name }}</a>
       </li>
