@@ -18,7 +18,7 @@ import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
 import { Side, Subsection } from '../core/model/view/display-view';
 
-import { selectResourceById, selectDefaultDiscoveryView, selectDisplayViewByTypes, selectResourceIsLoading, selectAllResources, selectResourceIsDereferencing } from '../core/store/sdr';
+import { selectResourceById, selectDiscoveryViewByCollection, selectDisplayViewByTypes, selectResourceIsLoading, selectAllResources, selectResourceIsDereferencing } from '../core/store/sdr';
 
 import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
@@ -85,23 +85,28 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
     ngOnInit() {
         this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
+
         this.subscriptions.push(this.router.events.pipe(
             filter(event => event instanceof NavigationStart)
         ).subscribe(() => {
             this.changeDetRef.markForCheck();
         }));
-        this.discoveryView = this.store.pipe(
-            select(selectDefaultDiscoveryView('persons')),
-            filter((view: DiscoveryView) => view !== undefined)
-        );
+
         this.subscriptions.push(this.route.params.subscribe((params: Params) => {
             if (params.collection && params.id) {
                 this.store.dispatch(new fromSdr.GetOneResourceAction(params.collection, { id: params.id }));
+
+                this.discoveryView = this.store.pipe(
+                    select(selectDiscoveryViewByCollection(params.collection)),
+                    filter((view: DiscoveryView) => view !== undefined)
+                );
+
                 this.document = this.store.pipe(
                     select(selectResourceById(params.collection, params.id)),
                     filter((document: SolrDocument) => document !== undefined),
                     take(1),
                     mergeMap((document: SolrDocument) => {
+
 
                         this.store.dispatch(new fromSdr.FindByTypesInResourceAction('displayViews', {
                             types: document.type

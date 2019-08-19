@@ -28,7 +28,7 @@ export const selectResourceById = <R extends SdrResource>(name: string, id: stri
     resources => resources[id]
 );
 
-export const selectDefaultDiscoveryView = (collection: string) => createSelector(
+export const selectDiscoveryViewByCollection = (collection: string) => createSelector(
     selectAllResources<DiscoveryView>('discoveryViews'),
     (resources) => resources.find((dv: DiscoveryView) => dv.collection === collection)
 );

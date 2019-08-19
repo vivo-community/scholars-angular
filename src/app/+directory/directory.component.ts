@@ -12,7 +12,7 @@ import { DirectoryView, DiscoveryView } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 
-import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDefaultDiscoveryView } from '../core/store/sdr';
+import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByCollection } from '../core/store/sdr';
 import { selectRouterQueryParams } from '../core/store/router';
 
 import { addFacetsToQueryParams, addFiltersToQueryParams, addExportToQueryParams } from '../shared/utilities/view.utility';
@@ -68,7 +68,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
                         this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>(view.collection)));
 
                         this.discoveryView = this.store.pipe(
-                            select(selectDefaultDiscoveryView(view.collection)),
+                            select(selectDiscoveryViewByCollection(view.collection)),
                             filter((discoveryView: DiscoveryView) => discoveryView !== undefined)
                         );
                     })

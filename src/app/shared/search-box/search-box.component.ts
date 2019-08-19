@@ -43,6 +43,8 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
 
     @Input() live = false;
 
+    @Input() placeholder = '';
+
     @Input() debounce = 750;
 
     public form: FormGroup;
