@@ -10,7 +10,7 @@ import { AppState } from '../../core/store';
 import { AppConfig } from '../../app.config';
 import { Person } from '../../core/model/discovery';
 
-import { selectAllResources } from '../../core/store/sdr';
+import { selectResourcesRecentlyUpdated } from '../../core/store/sdr';
 
 import * as fromSdr from '../../core/store/sdr/sdr.actions';
 
@@ -60,7 +60,7 @@ export class RecentCarousalComponent implements AfterViewInit, OnInit, OnDestroy
 
     ngOnInit() {
         this.persons = this.store.pipe(
-            select(selectAllResources(this.collection)),
+            select(selectResourcesRecentlyUpdated(this.collection)),
             filter((persons: Person[]) => persons.length > 0)
         );
 
