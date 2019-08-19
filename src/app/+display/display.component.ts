@@ -106,8 +106,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
                     filter((document: SolrDocument) => document !== undefined),
                     take(1),
                     mergeMap((document: SolrDocument) => {
-
-
                         this.store.dispatch(new fromSdr.FindByTypesInResourceAction('displayViews', {
                             types: document.type
                         }));
