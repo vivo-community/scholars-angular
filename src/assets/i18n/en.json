@@ -157,6 +157,8 @@
     },
     "SEARCH_BOX": {
       "LABEL": "Find Research at {{organization}}",
+      "PLACEHOLDER": "Search...",
+      "VIEW_PLACEHOLDER": "Search {{view}}...",
       "DISCOVERY": "Discovery",
       "SEARCH_TIPS": "Search Tips"
     },

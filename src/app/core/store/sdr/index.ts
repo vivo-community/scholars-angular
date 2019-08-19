@@ -22,13 +22,14 @@ export const selectResourcesCount = <R extends SdrResource>(name: string) => cre
 export const selectResourcesPage = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getPage);
 export const selectResourcesFacets = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getFacets);
 export const selectResourcesLinks = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getLinks);
+export const selectResourcesRecentlyUpdated = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getRecentlyUpdated);
 
 export const selectResourceById = <R extends SdrResource>(name: string, id: string) => createSelector(
     selectResourceEntities<R>(name),
     resources => resources[id]
 );
 
-export const selectDefaultDiscoveryView = (collection: string) => createSelector(
+export const selectDiscoveryViewByCollection = (collection: string) => createSelector(
     selectAllResources<DiscoveryView>('discoveryViews'),
     (resources) => resources.find((dv: DiscoveryView) => dv.collection === collection)
 );

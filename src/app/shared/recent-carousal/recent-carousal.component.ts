@@ -1,16 +1,16 @@
 import { trigger, style, transition, animate } from '@angular/animations';
 import { isPlatformServer } from '@angular/common';
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 import { AppConfig } from '../../app.config';
 import { Person } from '../../core/model/discovery';
 
-import { selectAllResources } from '../../core/store/sdr';
+import { selectResourcesRecentlyUpdated } from '../../core/store/sdr';
 
 import * as fromSdr from '../../core/store/sdr/sdr.actions';
 
@@ -33,7 +33,7 @@ interface ScrollItem {
         ])
     ]
 })
-export class RecentCarousalComponent implements AfterViewInit, OnInit {
+export class RecentCarousalComponent implements AfterViewInit, OnInit, OnDestroy {
 
     private collection = 'persons';
 
@@ -46,6 +46,8 @@ export class RecentCarousalComponent implements AfterViewInit, OnInit {
 
     private persons: Observable<Person[]>;
 
+    private subscriptions: Subscription[];
+
     constructor(
         @Inject('APP_CONFIG') private appConfig: AppConfig,
         @Inject(PLATFORM_ID) private platformId: string,
@@ -53,15 +55,16 @@ export class RecentCarousalComponent implements AfterViewInit, OnInit {
         private translate: TranslateService
     ) {
         this.items = new BehaviorSubject<ScrollItem[]>([]);
+        this.subscriptions = [];
     }
 
     ngOnInit() {
         this.persons = this.store.pipe(
-            select(selectAllResources(this.collection)),
+            select(selectResourcesRecentlyUpdated(this.collection)),
             filter((persons: Person[]) => persons.length > 0)
         );
 
-        this.persons.subscribe((persons: Person[]) => {
+        this.subscriptions.push(this.persons.subscribe((persons: Person[]) => {
             this.items.next(persons.map((person: Person) => {
                 return {
                     src: person['thumbnail'] ? `${this.appConfig.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
@@ -74,9 +77,13 @@ export class RecentCarousalComponent implements AfterViewInit, OnInit {
                 };
             }));
             this.fitItems();
-        });
+        }));
 
         this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', { limit: this.limit }));
+    }
+
+    ngOnDestroy() {
+        this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
     }
 
     ngAfterViewInit() {

@@ -12,6 +12,7 @@ export interface SdrState<R extends SdrResource> extends EntityState<R> {
     facets: SdrFacet[];
     count: number;
     links: SdrCollectionLinks;
+    recentlyUpdated: SdrResource[];
     counting: boolean;
     loading: boolean;
     dereferencing: boolean;
@@ -31,6 +32,7 @@ export const getSdrInitialState = <R extends SdrResource>(key: string) => {
         facets: [],
         count: undefined,
         links: undefined,
+        recentlyUpdated: [],
         counting: false,
         loading: false,
         dereferencing: false,
@@ -108,14 +110,13 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
                     loading: false,
                     error: undefined
                 });
-            case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE, name):
             case getSdrAction(SdrActionTypes.RECENTLY_UPDATED_SUCCESS, name):
-                return getSdrAdapter<R>(keys[name]).addAll(action.payload.recentlyUpdated._embedded[name], {
+                return {
                     ...state,
-                    links: undefined,
-                    loading: false,
+                    recentlyUpdated: action.payload.recentlyUpdated._embedded[name],
+                    counting: true,
                     error: undefined
-                });
+                };
             case getSdrAction(SdrActionTypes.GET_ONE_SUCCESS, name):
             case getSdrAction(SdrActionTypes.FIND_BY_TYPES_IN_SUCCESS, name):
                 return getSdrAdapter<R>(keys[name]).addOne(getResource(action, name), {
@@ -218,3 +219,4 @@ export const getPage = <R extends SdrResource>(state: SdrState<R>) => state.page
 export const getCount = <R extends SdrResource>(state: SdrState<R>) => state.count;
 export const getFacets = <R extends SdrResource>(state: SdrState<R>) => state.facets;
 export const getLinks = <R extends SdrResource>(state: SdrState<R>) => state.links;
+export const getRecentlyUpdated = <R extends SdrResource>(state: SdrState<R>) => state.recentlyUpdated;

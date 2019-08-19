@@ -51,12 +51,17 @@
     color: var(--hero-color);
   }
 }
-.home-recent {
+
+.home-recent,
+.home-recent .container,
+.home-recent .container .row {
   height: 240px;
+}
+.home-recent {
   .gallery-info {
     line-height: 1em;
     display: inline-block;
-    font-size: 12px;
+    font-size: 14px;
     color: #464646;
   }
 }
