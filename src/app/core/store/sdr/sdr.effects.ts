@@ -420,8 +420,6 @@ export class SdrEffects {
                 sections: []
             };
 
-            this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
-
             viewFacets.filter((viewFacet: Facet) => !viewFacet.hidden).forEach((viewFacet: Facet) => {
                 const sdrFacet = sdrFacets.find((sf: SdrFacet) => sf.field === viewFacet.field);
                 if (sdrFacet) {
@@ -504,6 +502,8 @@ export class SdrEffects {
                     collapsed: false
                 });
             }
+
+            this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
         }
         this.subscribeToResourceQueue(action.name, store.stomp);
     }

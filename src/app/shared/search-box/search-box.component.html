@@ -2,7 +2,7 @@
   <div *ngIf="setupForm()">
 
     <form *ngIf="isBrowserRendered()" (ngSubmit)="onSearch()" novalidate>
-      <div [formGroup]="form" class="form-group search-box text-center clearfix">
+      <div [formGroup]="form" class="form-group search-box text-center">
         <ng-container *ngTemplateOutlet="searchLabel"></ng-container>
         <label for="search" class="d-none">Search</label>
         <input id="search" type="text" class="form-control" [placeholder]="placeholder" name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />
@@ -11,7 +11,7 @@
     </form>
 
     <form *ngIf="isServerRendered()" [action]="getAction()" method="get" novalidate>
-      <div [formGroup]="form" class="form-group search-box text-center clearfix">
+      <div [formGroup]="form" class="form-group search-box text-center">
         <ng-container *ngTemplateOutlet="searchLabel"></ng-container>
         <label for="search" class="d-none">Search</label>
         <input id="search" type="text" class="form-control" [placeholder]="placeholder" name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />

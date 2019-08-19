@@ -13,8 +13,8 @@
       <div class="col-md-8">
         <span class="h3 text-primary">{{ directoryView.name }}</span>
       </div>
-      <div class="col-md-4">
-        <span class="pull-right" *ngIf="hasExport(directoryView)">
+      <div class="col-md-4 text-right">
+        <span *ngIf="hasExport(directoryView)">
           <a [href]="getDirectoryExportUrl(directoryView, queryParams | async)" download>
             <span>{{ 'DIRECTORY.EXPORT' | translate }}</span>
           </a>
