@@ -5,7 +5,7 @@
       <div [formGroup]="form" class="form-group search-box text-center clearfix">
         <ng-container *ngTemplateOutlet="searchLabel"></ng-container>
         <label for="search" class="d-none">Search</label>
-        <input id="search" type="text" class="form-control" placeholder="Search {{view.name}}..." name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />
+        <input id="search" type="text" class="form-control" placeholder="{{ 'SHARED.SEARCH_BOX.PLACEHOLDER' | translate: {name: view.name} }}" name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />
         <ng-container *ngTemplateOutlet="helpLinks"></ng-container>
       </div>
     </form>
@@ -14,7 +14,7 @@
       <div [formGroup]="form" class="form-group search-box text-center clearfix">
         <ng-container *ngTemplateOutlet="searchLabel"></ng-container>
         <label for="search" class="d-none">Search</label>
-        <input id="search" type="text" class="form-control" placeholder="Search {{view.name}}..." name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />
+        <input id="search" type="text" class="form-control" placeholder="{{ 'SHARED.SEARCH_BOX.PLACEHOLDER' | translate: {name: view.name} }}" name="query" formControlName="query" [style.box-shadow]="styles?.inputBoxShadow" />
         <input type="text" class="form-control invisible" name="collection" formControlName="collection" />
         <input type="text" class="form-control invisible" name="facets" formControlName="facets" />
         <input *ngFor="let filter of view.filters" type="text" class="form-control invisible" [name]="getFilterName(filter)" [formControlName]="getFilterName(filter)" />
