@@ -1,6 +1,6 @@
 {
   "name": "scholars-angular",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Angular Universal client for Scholars Discovery",
   "license": "MIT",
   "repository": {
@@ -104,7 +104,7 @@
     "karma-mocha-reporter": "2.2.5",
     "protractor": "5.4.2",
     "ts-node": "8.3.0",
-    "tslint": "5.18.0",
+    "tslint": "5.19.0",
     "typescript": "3.5.3"
   }
 }

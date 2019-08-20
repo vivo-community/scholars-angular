@@ -12,7 +12,7 @@ import * as fromSdr from '../../core/store/sdr/sdr.actions';
 
 import { selectResourcesCount, selectDirectoryViewByCollection } from '../../core/store/sdr';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams } from '../utilities/view.utility';
+import { addFacetsToQueryParams, addFiltersToQueryParams, addBoostToQueryParams } from '../utilities/view.utility';
 
 @Component({
     selector: 'scholars-stats-box',
@@ -64,6 +64,7 @@ export class StatsBoxComponent implements OnInit {
         queryParams.page = 1;
         addFacetsToQueryParams(queryParams, directoryView);
         addFiltersToQueryParams(queryParams, directoryView);
+        addBoostToQueryParams(queryParams, directoryView);
         // NOTE: currently ignoring sort of CollectionView and applying sort asc by index field
         queryParams.sort = `${directoryView.index.field},asc`;
         return queryParams;
