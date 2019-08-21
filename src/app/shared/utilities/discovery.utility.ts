@@ -1,7 +1,7 @@
 import { Params } from '@angular/router';
 
 import { CustomRouterState } from '../../core/store/router/router.reducer';
-import { SdrRequest, Pageable, Sort, Direction, Facetable, Indexable } from '../../core/model/request';
+import { SdrRequest, Pageable, Sort, Direction, Facetable, Indexable, Boostable } from '../../core/model/request';
 import { OperationKey } from '../../core/model/view';
 
 export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => {
@@ -9,6 +9,7 @@ export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => 
     return {
         pageable: buildPageable(queryParams),
         facets: buildFacets(queryParams),
+        boosts: buildBoosts(queryParams),
         indexable: buildIndexable(queryParams),
         query: queryParams.query
     };
@@ -55,6 +56,19 @@ const buildFacets = (queryParams: Params): Facetable[] => {
         facets.push(facet);
     });
     return facets;
+};
+
+const buildBoosts = (queryParams: Params): Boostable[] => {
+    if (queryParams.boost) {
+        if (Array.isArray(queryParams.boost)) {
+            return queryParams.boost.map((ba: string) => ba.split(',')).map((parts: string[]) => {
+                return { field: parts[0], value: Number(parts[1]) };
+            });
+        } else {
+            const parts = queryParams.boost.split(',');
+            return [{ field: parts[0], value: Number(parts[1]) }];
+        }
+    }
 };
 
 const buildIndexable = (queryParams: Params): Indexable => {

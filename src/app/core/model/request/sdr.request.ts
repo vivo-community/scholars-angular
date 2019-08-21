@@ -31,9 +31,15 @@ export interface Facetable {
     filter?: string;
 }
 
+export interface Boostable {
+    readonly field: string;
+    readonly value: number;
+}
+
 export interface SdrRequest {
     readonly pageable?: Pageable;
     readonly indexable?: Indexable;
     readonly facets?: Facetable[];
+    readonly boosts?: Boostable[];
     readonly query?: string;
 }

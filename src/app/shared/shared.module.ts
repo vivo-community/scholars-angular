@@ -14,7 +14,7 @@ import { LoginComponent } from './dialog/login/login.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { NotificationComponent } from './dialog/notification/notification.component';
 import { PaginationComponent } from './pagination/pagination.component';
-import { RecentCarousalComponent } from './recent-carousal/recent-carousal.component';
+import { RecentCarouselComponent } from './recent-carousel/recent-carousel.component';
 import { ResultViewComponent } from './result-view/result-view.component';
 import { RegistrationComponent } from './dialog/registration/registration.component';
 import { SearchBoxComponent } from './search-box/search-box.component';
@@ -56,7 +56,7 @@ const COMPONENTS = [
     LoginComponent,
     NavigationComponent,
     PaginationComponent,
-    RecentCarousalComponent,
+    RecentCarouselComponent,
     RegistrationComponent,
     ResultViewComponent,
     SearchBoxComponent,

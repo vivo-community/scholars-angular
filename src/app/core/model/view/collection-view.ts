@@ -44,6 +44,11 @@ export interface Filter {
     readonly value: string;
 }
 
+export interface Boost {
+    readonly field: string;
+    readonly value: number;
+}
+
 export interface CollectionView extends ResourceView {
     readonly layout: Layout;
     readonly templates: any;
@@ -51,6 +56,7 @@ export interface CollectionView extends ResourceView {
     readonly styles: string[];
     readonly facets: Facet[];
     readonly filters: Filter[];
+    readonly boosts: Boost[];
     readonly sort: Sort[];
     readonly export: Export[];
 }

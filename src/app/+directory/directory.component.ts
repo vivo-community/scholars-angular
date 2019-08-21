@@ -15,7 +15,7 @@ import { SdrPage, SdrFacet } from '../core/model/sdr';
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByCollection } from '../core/store/sdr';
 import { selectRouterQueryParams } from '../core/store/router';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams, addExportToQueryParams } from '../shared/utilities/view.utility';
+import { addFacetsToQueryParams, addFiltersToQueryParams, addExportToQueryParams, addBoostToQueryParams } from '../shared/utilities/view.utility';
 
 @Component({
     selector: 'scholars-directory',
@@ -122,6 +122,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
         queryParams.page = 1;
         addFacetsToQueryParams(queryParams, directoryView);
         addFiltersToQueryParams(queryParams, directoryView);
+        addBoostToQueryParams(queryParams, directoryView);
         // NOTE: currently ignoring sort of CollectionView and applying sort asc by index field
         queryParams.sort = `${directoryView.index.field},asc`;
         return queryParams;

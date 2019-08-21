@@ -17,7 +17,7 @@ import { selectRouterSearchQuery, selectRouterUrl, selectRouterQueryParamFilters
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById } from '../core/store/sdr';
 import { selectWindowDimensions } from '../core/store/layout';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams, addSortToQueryParams, addExportToQueryParams } from '../shared/utilities/view.utility';
+import { addFacetsToQueryParams, addFiltersToQueryParams, addSortToQueryParams, addExportToQueryParams, addBoostToQueryParams } from '../shared/utilities/view.utility';
 
 @Component({
     selector: 'scholars-discovery',
@@ -130,6 +130,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         queryParams.collection = discoveryView.collection;
         addFacetsToQueryParams(queryParams, discoveryView);
         addFiltersToQueryParams(queryParams, discoveryView);
+        addBoostToQueryParams(queryParams, discoveryView);
         addSortToQueryParams(queryParams, discoveryView);
         // tslint:disable-next-line:no-shadowed-variable
         filters.filter((filter: Filter) => !this.equals(filter, removeFilter)).forEach((filter: Filter) => {

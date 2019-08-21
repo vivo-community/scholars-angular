@@ -11,6 +11,7 @@ import { Sort, Facetable, SdrRequest } from '../../request';
 import { Count } from '../count';
 import { SdrResource } from '../sdr-resource';
 import { SdrCollection } from '../sdr-collection';
+import { Boost } from '../../view';
 
 @Injectable({
     providedIn: 'root',
@@ -143,6 +144,12 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
 
         if (request.indexable) {
             parameters.push(`index=${encodeURIComponent(request.indexable.field)},${request.indexable.operationKey},${request.indexable.option}`);
+        }
+
+        if (request.boosts && request.boosts.length > 0) {
+            request.boosts.forEach((boost: Boost) => {
+                parameters.push(`boost=${boost.field},${boost.value}`);
+            });
         }
 
         if (request.facets && request.facets.length > 0) {

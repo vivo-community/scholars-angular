@@ -1,6 +1,6 @@
 import { Params } from '@angular/router';
 
-import { Export, Facet, Filter, CollectionView, Sort } from '../../core/model/view';
+import { Export, Facet, Filter, CollectionView, Sort, Boost } from '../../core/model/view';
 
 const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
     if (collectionView.facets && collectionView.facets.length > 0) {
@@ -20,6 +20,15 @@ const addFiltersToQueryParams = (queryParams: Params, collectionView: Collection
     if (collectionView.filters && collectionView.filters.length > 0) {
         collectionView.filters.forEach((filter: Filter) => {
             queryParams[`${filter.field}.filter`] = filter.value;
+        });
+    }
+};
+
+const addBoostToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
+    if (collectionView.boosts && collectionView.boosts.length > 0) {
+        queryParams.boost = [];
+        collectionView.boosts.forEach((boost: Boost) => {
+            queryParams.boost.push(`${boost.field},${boost.value}`);
         });
     }
 };
@@ -45,6 +54,7 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
 export {
     addFacetsToQueryParams,
     addFiltersToQueryParams,
+    addBoostToQueryParams,
     addSortToQueryParams,
     addExportToQueryParams
 };
