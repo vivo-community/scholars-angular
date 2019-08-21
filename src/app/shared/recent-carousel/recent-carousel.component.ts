@@ -22,9 +22,9 @@ interface ScrollItem {
 }
 
 @Component({
-    selector: 'scholars-recent-carousal',
-    templateUrl: 'recent-carousal.component.html',
-    styleUrls: ['recent-carousal.component.scss'],
+    selector: 'scholars-recent-carousel',
+    templateUrl: 'recent-carousel.component.html',
+    styleUrls: ['recent-carousel.component.scss'],
     animations: [
         trigger('fadeIn', [
             transition(':enter', [
@@ -33,7 +33,7 @@ interface ScrollItem {
         ])
     ]
 })
-export class RecentCarousalComponent implements AfterViewInit, OnInit, OnDestroy {
+export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy {
 
     private collection = 'persons';
 
