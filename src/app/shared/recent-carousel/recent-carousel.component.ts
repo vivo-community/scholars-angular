@@ -3,8 +3,8 @@ import { isPlatformServer } from '@angular/common';
 import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subscription, timer } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 import { AppConfig } from '../../app.config';
@@ -37,7 +37,9 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
 
     private collection = 'persons';
 
-    private limit = 10;
+    private limit = 20;
+
+    private delay = 10000;
 
     @ViewChild('scrollView', { static: true })
     private scrollViewRef: ElementRef;
@@ -63,7 +65,6 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
             select(selectResourcesRecentlyUpdated(this.collection)),
             filter((persons: Person[]) => persons.length > 0)
         );
-
         this.subscriptions.push(this.persons.subscribe((persons: Person[]) => {
             this.items.next(persons.map((person: Person) => {
                 return {
@@ -77,8 +78,8 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
                 };
             }));
             this.fitItems();
+            this.subscriptions.push(timer(this.delay, this.delay).pipe(take(100)).subscribe(() => this.scrollRight()));
         }));
-
         this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', { limit: this.limit }));
     }
 
@@ -122,7 +123,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
     }
 
     public getBackgroundImage(item: ScrollItem): string {
-        return `linear-gradient(rgba(255,255,255,.15) 70%, rgba(100,100,100,.6) 80%,  rgba(50,50,50,.7) 90%, rgba(0,0,0,.8)), url('${item.src}')`;
+        return `linear-gradient(rgba(255,255,255,.15) 60%, rgba(100,100,100,.6) 70%,  rgba(50,50,50,.7) 80%, rgba(0,0,0,.8)), url('${item.src}')`;
     }
 
     private fitItems(): void {
@@ -140,7 +141,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
             return 0;
         }
         const size = this.scrollViewRef !== undefined ? this.scrollViewRef.nativeElement.clientWidth : 0;
-        return Math.floor(size / 150);
+        return Math.floor(size / 100);
     }
 
 }
