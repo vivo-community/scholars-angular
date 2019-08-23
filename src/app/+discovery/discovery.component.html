@@ -16,8 +16,8 @@
           <span>{{query | async}}</span>
         </span>
       </div>
-      <div class="col-md-4">
-        <span class="pull-right" *ngIf="hasExport(discoveryView)">
+      <div class="col-md-4 text-right">
+        <span *ngIf="hasExport(discoveryView)">
           <a [href]="getDiscoveryExportUrl(discoveryView, queryParams | async)" download>
             <span>{{ 'DISCOVERY.EXPORT' | translate }}</span>
           </a>

@@ -21,12 +21,21 @@
         </span>
       </div>
     </div>
+    <div class="applied-filters mt-2" *ngIf="filters | async; let filters">
+      <span class="badge badge-light p-2 mr-2 mb-2" *ngFor="let filter of filters">
+        <span *ngIf="showFilter(directoryView, filter)">
+          <span class="mr-1">{{getFilterField(directoryView, filter) | formalize}}:</span>
+          <span class="mr-2">{{getFilterValue(directoryView, filter) | formalize}}</span>
+          <a class="fa fa-close" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, queryParams | async, filters, filter)"></a>
+        </span>
+      </span>
+    </div>
     <div class="index">
       <a class="option" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getResetQueryParams(directoryView)" queryParamsHandling="merge">
         <span *ngIf="isActive(queryParams | async, 'All')" class="fa fa-caret-right mr-1"></span>
         <span>{{ 'DIRECTORY.ALL' | translate }}</span>
       </a>
-      <a class="option" *ngFor="let option of directoryView.index.options" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option)" queryParamsHandling="merge">
+      <a class="option" *ngFor="let option of directoryView.index.options" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, queryParams | async)" queryParamsHandling="merge">
         <span *ngIf="isActive(queryParams | async, option)" class="fa fa-caret-right mr-1"></span>
         <span>{{option}}</span>
       </a>
