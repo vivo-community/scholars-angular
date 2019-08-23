@@ -30,7 +30,7 @@
 
     <ng-template #helpLinks>
       <small class="d-block text-muted text-right">
-        <a [routerLink]="['/discovery']" [queryParams]="getDiscoveryQueryParams('')" queryParamsHandling="merge">{{ 'SHARED.SEARCH_BOX.DISCOVERY' | translate }}</a>
+        <a [routerLink]="getDiscoveryRouterLink()" [queryParams]="getDiscoveryQueryParams()" queryParamsHandling="merge">{{ 'SHARED.SEARCH_BOX.DISCOVERY' | translate }}</a>
         <span> | </span>
         <a [routerLink]="['/about']" fragment="searchTips">{{ 'SHARED.SEARCH_BOX.SEARCH_TIPS' | translate }}</a>
       </small>

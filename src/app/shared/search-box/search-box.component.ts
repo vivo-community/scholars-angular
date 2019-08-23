@@ -167,6 +167,10 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
         return queryParams;
     }
 
+    public getDiscoveryRouterLink(): string[] {
+        return [`/discovery/${this.view.name}`];
+    }
+
     private buildUrlTree(queryParams: Params): UrlTree {
         return this.router.createUrlTree([`/discovery/${this.view.name}`], {
             queryParams: queryParams,
