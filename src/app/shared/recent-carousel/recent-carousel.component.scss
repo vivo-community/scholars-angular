@@ -25,14 +25,14 @@
       overflow-y: hidden;
       align-items: center;
       justify-content: center;
-      min-width: 150px;
+      min-width: 100px;
 
       .scroll-item {
         box-sizing: border-box;
         flex-direction: column;
-        height: 175px;
-        width: 150px;
-        margin: 8px;
+        height: 125px;
+        width: 100px;
+        margin: 5px;
         line-height: 12px;
         background-size: 100%;
         background-position: center top;
@@ -47,25 +47,31 @@
           text-decoration: none;
 
           .item-title {
-            font-size: 0.85em;
+            font-size: 0.65em;
+            transition: all .35s ease-in-out;
           }
           .item-subtitle {
-            font-size: 0.75em;
+            font-size: 0.55em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-          }
-          .item-footer {
-            font-size: 0.65em;
-            margin-top: 3px;
+            transition: all .35s ease-in-out;
           }
         }
       }
       .scroll-item:hover {
-        height: 201.25px;
-        width: 172.5px;
+        height: 150px;
+        width: 120px;
         transition: all .30s ease-in-out;
         cursor: pointer;
+        .card-body {
+          .item-title {
+            font-size: 0.80em;
+          }
+          .item-subtitle {
+            font-size: 0.70em;
+          }
+        }
       }
       .scroll-item.hide {
         display: none;

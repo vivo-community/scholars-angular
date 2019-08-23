@@ -55,13 +55,24 @@
 .home-recent,
 .home-recent .container,
 .home-recent .container .row {
-  height: 240px;
+  height: 300px;
+}
+@media (min-width: 768px) {
+  .home-recent,
+  .home-recent .container,
+  .home-recent .container .row {
+    height: 220px;
+  } 
+  .home-recent .container .row {
+    margin-top: -25px;
+    margin-bottom: -25px;
+  }
 }
 .home-recent {
   .gallery-info {
     line-height: 1em;
     display: inline-block;
-    font-size: 14px;
+    font-size: 15px;
     color: #464646;
   }
 }
