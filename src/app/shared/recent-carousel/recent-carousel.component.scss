@@ -37,7 +37,6 @@
         background-size: 100%;
         background-position: center top;
         background-repeat: no-repeat;
-        transition: all .35s ease-in-out;
         border-radius: 8px;
 
         .card-body {
@@ -48,28 +47,12 @@
 
           .item-title {
             font-size: 0.65em;
-            transition: all .35s ease-in-out;
           }
           .item-subtitle {
             font-size: 0.55em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            transition: all .35s ease-in-out;
-          }
-        }
-      }
-      .scroll-item:hover {
-        height: 150px;
-        width: 120px;
-        transition: all .30s ease-in-out;
-        cursor: pointer;
-        .card-body {
-          .item-title {
-            font-size: 0.80em;
-          }
-          .item-subtitle {
-            font-size: 0.70em;
           }
         }
       }
