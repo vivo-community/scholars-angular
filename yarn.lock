@@ -6917,10 +6917,10 @@ schema-utils@^2.0.1:
     ajv "^6.1.0"
     ajv-keywords "^3.1.0"
 
-scholars-embed-utilities@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.1.3.tgz#50537ec2f6f642731fe24caf4486f1758063ab15"
-  integrity sha512-cE2fQGX2igGlwtJBcM0wloVSGO8GwqmBrejWjG8RmvQRxzEniz41wi0IbsvWCBNnF4vOrJKME0uSp4ZZokFLsg==
+scholars-embed-utilities@0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.1.4.tgz#75c4f8cf06b1acdfe47dff85916b4b3f3048933d"
+  integrity sha512-i1Ar7C9aK9NJFsFr46l3YvZR6x9rPZfdqzIznlCkJez+55w27xMIE7TvP4vehOO7S79h37BNMq+qBwdLhQx9vg==
   dependencies:
     handlebars "4.1.2"
     handlebars-loader "1.7.1"
@@ -7180,6 +7180,18 @@ sockjs-client@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/sockjs-client/-/sockjs-client-1.3.0.tgz#12fc9d6cb663da5739d3dc5fb6e8687da95cb177"
   integrity sha512-R9jxEzhnnrdxLCNln0xg5uGHqMnkhPSTzUZH2eXcR03S/On9Yvoq2wyUZILRUhZCNVu2PmwWVoyuiPz8th8zbg==
+  dependencies:
+    debug "^3.2.5"
+    eventsource "^1.0.7"
+    faye-websocket "~0.11.1"
+    inherits "^2.0.3"
+    json3 "^3.3.2"
+    url-parse "^1.4.3"
+
+sockjs-client@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/sockjs-client/-/sockjs-client-1.4.0.tgz#c9f2568e19c8fd8173b4997ea3420e0bb306c7d5"
+  integrity sha512-5zaLyO8/nri5cua0VtOrFXBPK1jbL4+1cebT/mmKA1E1ZXOvJrII75bPu0l0k843G/+iAbhEqzyKr0w/eCCj7g==
   dependencies:
     debug "^3.2.5"
     eventsource "^1.0.7"
