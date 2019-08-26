@@ -80,7 +80,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
             this.fitItems();
             this.subscriptions.push(timer(this.delay, this.delay).pipe(take(100)).subscribe(() => this.scrollRight()));
         }));
-        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', { limit: this.limit }));
+        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', { limit: this.limit, filters: [{ field: 'featuredProfileDisplay', value: 'false' }] }));
     }
 
     ngOnDestroy() {

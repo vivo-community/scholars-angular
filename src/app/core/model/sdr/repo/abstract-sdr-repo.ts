@@ -11,7 +11,7 @@ import { Sort, Facetable, SdrRequest } from '../../request';
 import { Count } from '../count';
 import { SdrResource } from '../sdr-resource';
 import { SdrCollection } from '../sdr-collection';
-import { Boost } from '../../view';
+import { Boost, Filter } from '../../view';
 
 @Injectable({
     providedIn: 'root',
@@ -37,8 +37,16 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
         });
     }
 
-    public recentlyUpdated(limit: number): Observable<R[]> {
-        return this.restService.get<R[]>(`${this.appConfig.serviceUrl}/${this.path()}/search/recently-updated?limit=${limit}`, {
+    public recentlyUpdated(limit: number, filters: Filter[] = []): Observable<R[]> {
+        const parameters: string[] = [];
+        parameters.push(`limit=${limit}`);
+        const fields: string[] = [];
+        filters.forEach((filter: Filter) => {
+            fields.push(filter.field);
+            parameters.push(`${filter.field}.filter=${encodeURIComponent(filter.value)}`);
+        });
+        parameters.push(`filters=${encodeURIComponent(fields.join(','))}`);
+        return this.restService.get<R[]>(`${this.appConfig.serviceUrl}/${this.path()}/search/recently-updated?${parameters.join('&')}`, {
             withCredentials: true
         });
     }
@@ -165,7 +173,6 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
                     parameters.push(`${facet.field}.filter=${encodeURIComponent(facet.filter)}`);
                 }
             });
-
             parameters.push(`facets=${encodeURIComponent(fields.join(','))}`);
         }
 

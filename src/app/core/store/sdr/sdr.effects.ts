@@ -228,7 +228,7 @@ export class SdrEffects {
 
     @Effect() recentlyUpdated = this.actions.pipe(
         ofType(...this.buildActions(fromSdr.SdrActionTypes.RECENTLY_UPDATED)),
-        mergeMap((action: fromSdr.RecentlyUpdatedResourcesAction) => this.repos.get(action.name).recentlyUpdated(action.payload.limit).pipe(
+        mergeMap((action: fromSdr.RecentlyUpdatedResourcesAction) => this.repos.get(action.name).recentlyUpdated(action.payload.limit, action.payload.filters).pipe(
             map((recentlyUpdated: SdrResource[]) => new fromSdr.RecentlyUpdatedResourcesSuccessAction(action.name, { recentlyUpdated })),
             catchError((response) => scheduled([new fromSdr.RecentlyUpdatedResourcesFailureAction(action.name, { response })], asap))
         ))
