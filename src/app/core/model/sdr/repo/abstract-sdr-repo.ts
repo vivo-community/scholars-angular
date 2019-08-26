@@ -7,11 +7,10 @@ import { RestService } from '../../../service/rest.service';
 import { SdrRepo } from './sdr-repo';
 
 import { AppConfig } from '../../../../app.config';
-import { Sort, Facetable, SdrRequest } from '../../request';
+import { Sort, Facetable, Filterable, Boostable, SdrRequest } from '../../request';
 import { Count } from '../count';
 import { SdrResource } from '../sdr-resource';
 import { SdrCollection } from '../sdr-collection';
-import { Boost, Filter } from '../../view';
 
 @Injectable({
     providedIn: 'root',
@@ -37,11 +36,11 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
         });
     }
 
-    public recentlyUpdated(limit: number, filters: Filter[] = []): Observable<R[]> {
+    public recentlyUpdated(limit: number, filters: Filterable[] = []): Observable<R[]> {
         const parameters: string[] = [];
         parameters.push(`limit=${limit}`);
         const fields: string[] = [];
-        filters.forEach((filter: Filter) => {
+        filters.forEach((filter: Filterable) => {
             fields.push(filter.field);
             parameters.push(`${filter.field}.filter=${encodeURIComponent(filter.value)}`);
         });
@@ -155,7 +154,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
         }
 
         if (request.boosts && request.boosts.length > 0) {
-            request.boosts.forEach((boost: Boost) => {
+            request.boosts.forEach((boost: Boostable) => {
                 parameters.push(`boost=${boost.field},${boost.value}`);
             });
         }

@@ -31,6 +31,11 @@ export interface Facetable {
     filter?: string;
 }
 
+export interface Filterable {
+    readonly field: string;
+    readonly value: number;
+}
+
 export interface Boostable {
     readonly field: string;
     readonly value: number;
