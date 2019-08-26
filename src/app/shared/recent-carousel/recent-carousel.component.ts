@@ -78,7 +78,9 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
                 };
             }));
             this.fitItems();
-            this.subscriptions.push(timer(this.delay, this.delay).pipe(take(100)).subscribe(() => this.scrollRight()));
+            if (isPlatformServer(this.platformId)) {
+                this.subscriptions.push(timer(this.delay, this.delay).pipe(take(100)).subscribe(() => this.scrollRight()));
+            }
         }));
         this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', { limit: this.limit, filters: [] }));
     }
@@ -103,7 +105,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
     public scrollLeft(): void {
         const count = this.getCount();
         const items = this.items.getValue();
-        if (items.length > count - 1) {
+        if (count > 0 && items.length > count - 1) {
             items[count - 1].hidden = true;
             items.unshift(items.pop());
             items[0].hidden = false;
@@ -114,7 +116,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
     public scrollRight(): void {
         const count = this.getCount();
         const items = this.items.getValue();
-        if (items.length > count - 1) {
+        if (count > 0 && items.length > count - 1) {
             items[0].hidden = true;
             items.push(items.shift());
             items[count - 1].hidden = false;
