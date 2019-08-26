@@ -1,7 +1,6 @@
 import { Action } from '@ngrx/store';
-import { SdrRequest } from '../../model/request';
+import { SdrRequest, Filterable } from '../../model/request';
 import { SdrCollection } from '../../model/sdr';
-import { Filter } from '../../model/view';
 
 export enum SdrActionTypes {
     GET_ALL = 'get all resources',
@@ -112,7 +111,7 @@ export class CountResourcesFailureAction implements Action {
 
 export class RecentlyUpdatedResourcesAction implements Action {
     readonly type = getSdrAction(SdrActionTypes.RECENTLY_UPDATED, this.name);
-    constructor(public name: string, public payload: { limit: number, filters: Filter[] }) { }
+    constructor(public name: string, public payload: { limit: number, filters: Filterable[] }) { }
 }
 
 export class RecentlyUpdatedResourcesSuccessAction implements Action {
