@@ -1,5 +1,5 @@
 import { trigger, style, transition, animate } from '@angular/animations';
-import { isPlatformServer } from '@angular/common';
+import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
@@ -78,7 +78,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
                 };
             }));
             this.fitItems();
-            if (isPlatformServer(this.platformId)) {
+            if (isPlatformBrowser(this.platformId)) {
                 this.subscriptions.push(timer(this.delay, this.delay).pipe(take(100)).subscribe(() => this.scrollRight()));
             }
         }));
