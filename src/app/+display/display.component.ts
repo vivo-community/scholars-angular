@@ -117,7 +117,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
                                 if (this.route.children.length === 0) {
                                     let tabName = 'View All';
-                                    if (displayView.name !== 'Persons') {
+                                    if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
                                         for (const tab of this.getTabsToShow(displayView.tabs, document)) {
                                             if (!tab.hidden) {
                                                 tabName = tab.name;
