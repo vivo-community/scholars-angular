@@ -8,7 +8,7 @@ import { filter, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 import { AppConfig } from '../app.config';
-import { DiscoveryView, Filter, FacetType } from '../core/model/view';
+import { DiscoveryView, Filter } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
@@ -17,7 +17,7 @@ import { selectRouterSearchQuery, selectRouterUrl, selectRouterQueryParamFilters
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById } from '../core/store/sdr';
 import { selectWindowDimensions } from '../core/store/layout';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams, addSortToQueryParams, addExportToQueryParams, addBoostToQueryParams } from '../shared/utilities/view.utility';
+import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
 
 @Component({
     selector: 'scholars-discovery',
@@ -95,47 +95,29 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
     }
 
     public showFilter(discoveryView: DiscoveryView, actualFilter: Filter): boolean {
-        // tslint:disable-next-line:no-shadowed-variable
-        for (const filter of discoveryView.filters) {
-            if (this.equals(filter, actualFilter)) {
-                return false;
-            }
-        }
-        return true;
+        return showFilter(discoveryView, actualFilter);
     }
 
     public getFilterField(discoveryView: DiscoveryView, actualFilter: Filter): string {
-        return actualFilter.field;
+        return getFilterField(discoveryView, actualFilter);
     }
 
     public getFilterValue(discoveryView: DiscoveryView, actualFilter: Filter): string {
-        for (const facet of discoveryView.facets) {
-            if (facet.type === FacetType.DATE_YEAR && facet.field === actualFilter.field) {
-                return actualFilter.value.substring(1, actualFilter.value.length - 1).split(' TO ')[0];
-            }
-        }
-        return actualFilter.value;
+        return getFilterValue(discoveryView, actualFilter);
     }
 
     public hasExport(discoveryView: DiscoveryView): boolean {
-        return discoveryView.export !== undefined && discoveryView.export.length > 0;
+        return hasExport(discoveryView);
     }
 
     public getDiscoveryRouterLink(discoveryView: DiscoveryView): string[] {
         return ['/discovery', discoveryView.name];
     }
 
-    public getDiscoveryQueryParams(discoveryView: DiscoveryView, page: SdrPage, query: string, filters: Filter[] = [], removeFilter: Filter): Params {
-        const queryParams: Params = {};
-        queryParams.collection = discoveryView.collection;
-        addFacetsToQueryParams(queryParams, discoveryView);
-        addFiltersToQueryParams(queryParams, discoveryView);
-        addBoostToQueryParams(queryParams, discoveryView);
-        addSortToQueryParams(queryParams, discoveryView);
-        // tslint:disable-next-line:no-shadowed-variable
-        filters.filter((filter: Filter) => !this.equals(filter, removeFilter)).forEach((filter: Filter) => {
-            queryParams[`${filter.field}.filter`] = filter.value;
-        });
+    public getDiscoveryQueryParams(discoveryView: DiscoveryView, page: SdrPage, query: string, filters: Filter[] = [], filterToRemove: Filter): Params {
+        const queryParams: Params = getQueryParams(discoveryView);
+        delete queryParams.filters;
+        applyFiltersToQueryParams(queryParams, filters, filterToRemove);
         if (query && query.length > 0) {
             queryParams.query = query;
         }
@@ -154,10 +136,6 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         const tree = this.router.createUrlTree([''], { queryParams });
         const query = tree.toString().substring(1);
         return `${this.appConfig.serviceUrl}/${discoveryView.collection}/search/export${query}`;
-    }
-
-    private equals(filterOne: Filter, filterTwo: Filter): boolean {
-        return filterOne.field === filterTwo.field && filterOne.value === filterTwo.value;
     }
 
 }

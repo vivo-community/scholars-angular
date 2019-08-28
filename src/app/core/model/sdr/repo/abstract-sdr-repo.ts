@@ -37,14 +37,8 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     }
 
     public recentlyUpdated(limit: number, filters: Filterable[] = []): Observable<R[]> {
-        const parameters: string[] = [];
+        const parameters = this.mapFilters(filters);
         parameters.push(`limit=${limit}`);
-        const fields: string[] = [];
-        filters.forEach((filter: Filterable) => {
-            fields.push(filter.field);
-            parameters.push(`${filter.field}.filter=${encodeURIComponent(filter.value)}`);
-        });
-        parameters.push(`filters=${encodeURIComponent(fields.join(','))}`);
         return this.restService.get<R[]>(`${this.appConfig.serviceUrl}/${this.path()}/search/recently-updated?${parameters.join('&')}`, {
             withCredentials: true
         });
@@ -129,17 +123,17 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     }
 
     protected mapParameters(request: SdrRequest): string {
-        const parameters: string[] = [];
+        let parameters: string[] = [];
 
-        if (request.pageable) {
-            if (request.pageable.number) {
-                parameters.push(`page=${(request.pageable.number)}`);
+        if (request.page) {
+            if (request.page.number) {
+                parameters.push(`page=${(request.page.number)}`);
             }
-            if (request.pageable.size) {
-                parameters.push(`size=${request.pageable.size}`);
+            if (request.page.size) {
+                parameters.push(`size=${request.page.size}`);
             }
-            if (request.pageable.sort && request.pageable.sort.length > 0) {
-                request.pageable.sort.forEach((sort: Sort) => {
+            if (request.page.sort && request.page.sort.length > 0) {
+                request.page.sort.forEach((sort: Sort) => {
                     parameters.push(`sort=${encodeURIComponent(sort.name)},${sort.direction}`);
                 });
             }
@@ -149,8 +143,8 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
             parameters.push(`query=${encodeURIComponent(request.query)}`);
         }
 
-        if (request.indexable) {
-            parameters.push(`index=${encodeURIComponent(request.indexable.field)},${request.indexable.operationKey},${request.indexable.option}`);
+        if (request.filters && request.filters.length > 0) {
+            parameters = parameters.concat(this.mapFilters(request.filters));
         }
 
         if (request.boosts && request.boosts.length > 0) {
@@ -179,5 +173,35 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     }
 
     protected abstract path(): string;
+
+    private mapFilters(filters: Filterable[]): string[] {
+        const parameters: string[] = [];
+        const fields: string[] = [];
+        filters.forEach((filter: Filterable) => {
+            fields.push(filter.field);
+            parameters.push(`${filter.field}.filter=${encodeURIComponent(filter.value)}`);
+            parameters.push(`${filter.field}.opKey=${encodeURIComponent(filter.opKey)}`);
+        });
+        parameters.push(`filters=${encodeURIComponent(fields.join(','))}`);
+        return parameters;
+    }
+
+    private mapFacets(facets: Facetable[]): string[] {
+        const parameters: string[] = [];
+        const fields: string[] = [];
+        facets.forEach((facet: Facetable) => {
+            fields.push(facet.field);
+            ['type', 'pageSize', 'pageNumber', 'sort'].forEach((key: string) => {
+                if (facet[key]) {
+                    parameters.push(`${facet.field}.${key}=${facet[key]}`);
+                }
+            });
+            if (facet.filter) {
+                parameters.push(`${facet.field}.filter=${encodeURIComponent(facet.filter)}`);
+            }
+        });
+        parameters.push(`facets=${encodeURIComponent(fields.join(','))}`);
+        return parameters;
+    }
 
 }

@@ -1,4 +1,4 @@
-<div class="stats-box link d-flex flex-column" *ngIf="directoryView | async; let directoryView" [routerLink]="getRouterLink(directoryView)" [queryParams]="getQueryParams(directoryView)">
+<div class="stats-box link d-flex flex-column" *ngIf="directoryView | async; let directoryView" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView)">
   <div class="stats-box-value text-center">
     <span>{{format(count | async)}}</span>
   </div>

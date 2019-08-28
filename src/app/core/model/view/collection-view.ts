@@ -1,6 +1,17 @@
 import { ResourceView } from './';
 import { Direction } from '../request';
 
+export enum OpKey {
+    BETWEEN = 'BETWEEN',
+    CONTAINS = 'CONTAINS',
+    ENDS_WITH = 'ENDS_WITH',
+    EQUALS = 'EQUALS',
+    EXPRESSION = 'EXPRESSION',
+    FUZZY = 'FUZZY',
+    NOT_EQUALS = 'NOT_EQUALS',
+    STARTS_WITH = 'STARTS_WITH'
+}
+
 export enum Layout {
     LIST = 'LIST',
     GRID = 'GRID'
@@ -42,6 +53,7 @@ export interface Facet {
 export interface Filter {
     readonly field: string;
     readonly value: string;
+    readonly opKey: OpKey;
 }
 
 export interface Boost {

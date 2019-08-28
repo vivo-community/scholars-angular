@@ -1,21 +1,21 @@
 import { Params } from '@angular/router';
 
 import { CustomRouterState } from '../../core/store/router/router.reducer';
-import { SdrRequest, Pageable, Sort, Direction, Facetable, Indexable, Boostable } from '../../core/model/request';
-import { OperationKey } from '../../core/model/view';
+import { SdrRequest, Pageable, Sort, Direction, Facetable, Filterable, Boostable } from '../../core/model/request';
+import { OpKey } from '../../core/model/view';
 
 export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => {
     const queryParams = routerState.queryParams;
     return {
-        pageable: buildPageable(queryParams),
+        page: buildPage(queryParams),
+        filters: buildFilters(queryParams),
         facets: buildFacets(queryParams),
         boosts: buildBoosts(queryParams),
-        indexable: buildIndexable(queryParams),
         query: queryParams.query
     };
 };
 
-const buildPageable = (queryParams: Params): Pageable => {
+const buildPage = (queryParams: Params): Pageable => {
     return {
         number: queryParams.page,
         size: queryParams.size,
@@ -43,6 +43,21 @@ const splitSort = (sortParam: string): Sort => {
     };
 };
 
+const buildFilters = (queryParams: Params): Filterable[] => {
+    const filters: Filterable[] = [];
+    const fields: string[] = queryParams.filters !== undefined ? queryParams.filters.split(',') : [];
+    fields.forEach((field: string) => {
+        const value = queryParams[`${field}.filter`] ? queryParams[`${field}.filter`] : queryParams[`${field}.filter`];
+        const opKey: OpKey = queryParams[`${field}.opKey`] ? queryParams[`${field}.opKey`] : 'EQUALS';
+        filters.push({
+            field,
+            value,
+            opKey
+        });
+    });
+    return filters;
+};
+
 const buildFacets = (queryParams: Params): Facetable[] => {
     const facets: Facetable[] = [];
     const fields: string[] = queryParams.facets !== undefined ? queryParams.facets.split(',') : [];
@@ -68,16 +83,5 @@ const buildBoosts = (queryParams: Params): Boostable[] => {
             const parts = queryParams.boost.split(',');
             return [{ field: parts[0], value: Number(parts[1]) }];
         }
-    }
-};
-
-const buildIndexable = (queryParams: Params): Indexable => {
-    if (queryParams.index) {
-        const indexSplit: string[] = queryParams.index.split(',');
-        return {
-            field: indexSplit[0],
-            operationKey: OperationKey[indexSplit[1]],
-            option: indexSplit[2]
-        };
     }
 };

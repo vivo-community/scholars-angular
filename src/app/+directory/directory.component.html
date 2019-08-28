@@ -26,17 +26,17 @@
         <span *ngIf="showFilter(directoryView, filter)">
           <span class="mr-1">{{getFilterField(directoryView, filter) | formalize}}:</span>
           <span class="mr-2">{{getFilterValue(directoryView, filter) | formalize}}</span>
-          <a class="fa fa-close" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, queryParams | async, filters, filter)"></a>
+          <a class="fa fa-close" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, filters, filter)"></a>
         </span>
       </span>
     </div>
     <div class="index">
-      <a class="option" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getResetQueryParams(directoryView)" queryParamsHandling="merge">
-        <span *ngIf="isActive(queryParams | async, 'All')" class="fa fa-caret-right mr-1"></span>
+      <a class="option" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getResetQueryParams(directoryView, queryParams | async)">
+        <span *ngIf="isActive(directoryView, queryParams | async, 'All')" class="fa fa-caret-right mr-1"></span>
         <span>{{ 'DIRECTORY.ALL' | translate }}</span>
       </a>
-      <a class="option" *ngFor="let option of directoryView.index.options" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, queryParams | async)" queryParamsHandling="merge">
-        <span *ngIf="isActive(queryParams | async, option)" class="fa fa-caret-right mr-1"></span>
+      <a class="option" *ngFor="let option of directoryView.index.options" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, filters | async)">
+        <span *ngIf="isActive(directoryView, queryParams | async, option)" class="fa fa-caret-right mr-1"></span>
         <span>{{option}}</span>
       </a>
     </div>

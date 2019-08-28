@@ -13,6 +13,7 @@ import { Person } from '../../core/model/discovery';
 import { selectResourcesRecentlyUpdated } from '../../core/store/sdr';
 
 import * as fromSdr from '../../core/store/sdr/sdr.actions';
+import { OpKey } from '../../core/model/view';
 
 interface ScrollItem {
     src: string;
@@ -82,7 +83,13 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
                 this.subscriptions.push(timer(this.delay, this.delay).pipe(take(100)).subscribe(() => this.scrollRight()));
             }
         }));
-        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', { limit: this.limit, filters: [] }));
+        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('persons', {
+            limit: this.limit, filters: [{
+                field: 'featuredProfileDisplay',
+                value: 'true',
+                opKey: OpKey.EQUALS
+            }]
+        }));
     }
 
     ngOnDestroy() {

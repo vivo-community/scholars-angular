@@ -14,7 +14,7 @@ import { DiscoveryView, Facet, Filter } from '../../core/model/view';
 import { selectActiveThemeOrganization } from '../../core/store/theme';
 import { selectRouterSearchQuery } from '../../core/store/router';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams, addSortToQueryParams, addBoostToQueryParams } from '../utilities/view.utility';
+import { getQueryParams } from '../utilities/view.utility';
 
 export interface SearchBoxStyles {
     label: {
@@ -152,12 +152,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     }
 
     public getDiscoveryQueryParams(query: string): Params {
-        const queryParams: Params = {};
-        queryParams.collection = this.view.collection;
-        addFacetsToQueryParams(queryParams, this.view);
-        addFiltersToQueryParams(queryParams, this.view);
-        addBoostToQueryParams(queryParams, this.view);
-        addSortToQueryParams(queryParams, this.view);
+        const queryParams: Params = getQueryParams(this.view);
         if (query && query.length > 0) {
             queryParams.query = query;
         } else {

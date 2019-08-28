@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, Inject, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Store, select } from '@ngrx/store';
@@ -8,14 +8,14 @@ import { filter, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 import { AppConfig } from '../app.config';
-import { DirectoryView, DiscoveryView, Filter, FacetType } from '../core/model/view';
+import { DirectoryView, DiscoveryView, Filter } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByCollection } from '../core/store/sdr';
-import { selectRouterQueryParams, selectRouterQueryParamFilters, selectRouterSearchQuery } from '../core/store/router';
+import { selectRouterQueryParams, selectRouterQueryParamFilters } from '../core/store/router';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams, addExportToQueryParams, addBoostToQueryParams } from '../shared/utilities/view.utility';
+import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
 
 @Component({
     selector: 'scholars-directory',
@@ -24,8 +24,6 @@ import { addFacetsToQueryParams, addFiltersToQueryParams, addExportToQueryParams
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DirectoryComponent implements OnDestroy, OnInit {
-
-    public query: Observable<string>;
 
     public queryParams: Observable<Params>;
 
@@ -59,7 +57,6 @@ export class DirectoryComponent implements OnDestroy, OnInit {
     }
 
     ngOnInit() {
-        this.query = this.store.pipe(select(selectRouterSearchQuery));
         this.queryParams = this.store.pipe(select(selectRouterQueryParams));
         this.filters = this.store.pipe(select(selectRouterQueryParamFilters));
         this.subscriptions.push(this.route.params.subscribe((params) => {
@@ -81,61 +78,62 @@ export class DirectoryComponent implements OnDestroy, OnInit {
         }));
     }
 
-    public isActive(queryParams: Params, option: string): boolean {
-        if (queryParams.index !== undefined) {
-            return queryParams.index.split(',')[2] === option;
+    public isActive(directoryView: DirectoryView, queryParams: Params, option: string): boolean {
+        if (queryParams.filters && queryParams.filters.indexOf(directoryView.index.field) >= 0) {
+            return queryParams[`${directoryView.index.field}.filter`] === option;
         }
         return option === 'All';
     }
 
     public showFilter(directoryView: DirectoryView, actualFilter: Filter): boolean {
-        // tslint:disable-next-line:no-shadowed-variable
-        for (const filter of directoryView.filters) {
-            if (this.equals(filter, actualFilter)) {
-                return false;
-            }
-        }
-        return true;
+        return showFilter(directoryView, actualFilter);
     }
 
     public getFilterField(directoryView: DirectoryView, actualFilter: Filter): string {
-        return actualFilter.field;
+        return getFilterField(directoryView, actualFilter);
     }
 
     public getFilterValue(directoryView: DirectoryView, actualFilter: Filter): string {
-        for (const facet of directoryView.facets) {
-            if (facet.type === FacetType.DATE_YEAR && facet.field === actualFilter.field) {
-                return actualFilter.value.substring(1, actualFilter.value.length - 1).split(' TO ')[0];
-            }
-        }
-        return actualFilter.value;
+        return getFilterValue(directoryView, actualFilter);
     }
 
     public hasExport(directoryView: DirectoryView): boolean {
-        return directoryView.export !== undefined && directoryView.export.length > 0;
+        return hasExport(directoryView);
     }
 
     public getDirectoryRouterLink(directoryView: DirectoryView): string[] {
         return ['/directory', directoryView.name];
     }
 
-    public getDirectoryQueryParams(directoryView: DirectoryView, option: string, currentQueryParams: Params, filters: Filter[] = [], removeFilter: Filter): Params {
-        const queryParams: Params = this.getQueryParams(directoryView);
-        addFacetsToQueryParams(queryParams, directoryView);
+    public getDirectoryQueryParams(directoryView: DirectoryView, option: string, filters: Filter[], filterToRemove: Filter): Params {
+        const queryParams: Params = getQueryParams(directoryView);
+        queryParams.page = 1;
+        delete queryParams.filters;
         if (option) {
-            queryParams.index = `${directoryView.index.field},${directoryView.index.operationKey},${option}`;
-        } else {
-            queryParams.index = currentQueryParams.index;
+            queryParams[`${directoryView.index.field}.filter`] = option;
+            queryParams[`${directoryView.index.field}.opKey`] = directoryView.index.opKey;
+            if (!queryParams.filters) {
+                queryParams.filters = directoryView.index.field;
+            } else {
+                queryParams.filters += `,${directoryView.index.field}`;
+            }
         }
-        // tslint:disable-next-line:no-shadowed-variable
-        filters.filter((filter: Filter) => !this.equals(filter, removeFilter)).forEach((filter: Filter) => {
-            queryParams[`${filter.field}.filter`] = filter.value;
-        });
+        applyFiltersToQueryParams(queryParams, filters, filterToRemove);
         return queryParams;
     }
 
-    public getResetQueryParams(directoryView: DirectoryView): Params {
-        const queryParams: Params = this.getQueryParams(directoryView);
+    public getResetQueryParams(directoryView: DirectoryView, params: Params): Params {
+        const queryParams: Params = Object.assign({}, params);
+        if (queryParams.filters && queryParams.filters.indexOf(directoryView.index.field) >= 0) {
+            const filters = queryParams.filters.split(',').map(field => field.trim()).filter(field => field !== directoryView.index.field);
+            if (filters.length > 0) {
+                queryParams.filters = filters.join(',');
+            } else {
+                delete queryParams.filters;
+            }
+            delete queryParams[`${directoryView.index.field}.filter`];
+            delete queryParams[`${directoryView.index.field}.opKey`];
+        }
         return queryParams;
     }
 
@@ -148,23 +146,6 @@ export class DirectoryComponent implements OnDestroy, OnInit {
         const tree = this.router.createUrlTree([''], { queryParams });
         const query = tree.toString().substring(1);
         return `${this.appConfig.serviceUrl}/${directoryView.collection}/search/export${query}`;
-    }
-
-    private getQueryParams(directoryView: DirectoryView): Params {
-        const queryParams: Params = {};
-        queryParams.collection = directoryView.collection;
-        queryParams.index = undefined;
-        queryParams.page = 1;
-        addFacetsToQueryParams(queryParams, directoryView);
-        addFiltersToQueryParams(queryParams, directoryView);
-        addBoostToQueryParams(queryParams, directoryView);
-        // NOTE: currently ignoring sort of CollectionView and applying sort asc by index field
-        queryParams.sort = `${directoryView.index.field},asc`;
-        return queryParams;
-    }
-
-    private equals(filterOne: Filter, filterTwo: Filter): boolean {
-        return filterOne.field === filterTwo.field && filterOne.value === filterTwo.value;
     }
 
 }
