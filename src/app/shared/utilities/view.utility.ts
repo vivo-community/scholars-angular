@@ -78,11 +78,11 @@ const applyFiltersToQueryParams = (queryParams: Params, filters: Filter[], filte
 
 const showFilter = (collectionView: CollectionView, actualFilter: Filter): boolean => {
     for (const filter of collectionView.filters) {
-        if (equals(filter, actualFilter) && actualFilter.opKey !== OpKey.BETWEEN && actualFilter.opKey !== OpKey.EQUALS) {
+        if (equals(filter, actualFilter)) {
             return false;
         }
     }
-    return true;
+    return actualFilter.opKey === OpKey.BETWEEN || actualFilter.opKey === OpKey.EQUALS;
 };
 
 const getFilterField = (collectionView: CollectionView, actualFilter: Filter): string => {
