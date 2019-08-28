@@ -19,7 +19,7 @@ import { AbstractSdrRepo } from '../../model/sdr/repo/abstract-sdr-repo';
 import { SdrResource, SdrCollection, SdrFacet, SdrFacetEntry, Count } from '../../model/sdr';
 import { SidebarMenu, SidebarSection, SidebarItem, SidebarItemType } from '../../model/sidebar';
 import { SolrDocument } from '../../model/discovery';
-import { Facet, DiscoveryView, DirectoryView, FacetType } from '../../model/view';
+import { Facet, DiscoveryView, DirectoryView, FacetType, OpKey } from '../../model/view';
 
 import { injectable, repos } from '../../model/repos';
 
@@ -458,21 +458,39 @@ export class SdrEffects {
                             selected: selected,
                             parenthetical: facetEntry.count,
                             route: [],
-                            queryParams: {},
+                            queryParams: Object.assign({}, routerState.queryParams)
                         };
 
                         if (viewFacet.type === FacetType.DATE_YEAR) {
                             const date = new Date(facetEntry.value);
                             const year = date.getUTCFullYear();
                             sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${year} TO ${year + 1}]` : undefined;
+                            sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
                         } else {
                             sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
+                            sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.EQUALS;
                         }
 
                         sidebarItem.queryParams.page = 1;
 
                         if (selected) {
                             sidebarSection.collapsed = false;
+                            if (sidebarItem.queryParams.filters && sidebarItem.queryParams.filters.indexOf(sdrFacet.field) >= 0) {
+                                const filters = sidebarItem.queryParams.filters.split(',').map(field => field.trim()).filter(field => field !== sdrFacet.field);
+                                if (filters.length > 0) {
+                                    sidebarItem.queryParams.filters = filters.join(',');
+                                } else {
+                                    delete sidebarItem.queryParams.filters;
+                                }
+                            }
+                        } else {
+                            if (sidebarItem.queryParams.filters) {
+                                if (sidebarItem.queryParams.filters.indexOf(sdrFacet.field) < 0) {
+                                    sidebarItem.queryParams.filters += `,${sdrFacet.field}`;
+                                }
+                            } else {
+                                sidebarItem.queryParams.filters = sdrFacet.field;
+                            }
                         }
 
                         sidebarSection.items.push(sidebarItem);
@@ -496,7 +514,7 @@ export class SdrEffects {
                         type: SidebarItemType.INFO,
                         label: this.translate.get('SHARED.SIDEBAR.INFO.NO_RESULTS_TEXT', { view: routerState.params.view, query: routerState.queryParams.query }),
                         route: [],
-                        queryParams: {},
+                        queryParams: {}
                     }],
                     collapsible: false,
                     collapsed: false

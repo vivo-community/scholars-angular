@@ -1,6 +1,6 @@
 import { Params } from '@angular/router';
 
-import { Export, Facet, Filter, CollectionView, Sort, Boost } from '../../core/model/view';
+import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType } from '../../core/model/view';
 
 const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
     if (collectionView.facets && collectionView.facets.length > 0) {
@@ -18,9 +18,13 @@ const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionV
 
 const addFiltersToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
     if (collectionView.filters && collectionView.filters.length > 0) {
+        let filters = '';
         collectionView.filters.forEach((filter: Filter) => {
+            filters += filters.length > 0 ? `,${filter.field}` : filter.field;
             queryParams[`${filter.field}.filter`] = filter.value;
+            queryParams[`${filter.field}.opKey`] = filter.opKey;
         });
+        queryParams.filters = filters;
     }
 };
 
@@ -51,10 +55,63 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
     }
 };
 
+const getQueryParams = (collectionView: CollectionView): Params => {
+    const queryParams: Params = {};
+    queryParams.collection = collectionView.collection;
+    addFacetsToQueryParams(queryParams, collectionView);
+    addFiltersToQueryParams(queryParams, collectionView);
+    addBoostToQueryParams(queryParams, collectionView);
+    addSortToQueryParams(queryParams, collectionView);
+    return queryParams;
+};
+
+const applyFiltersToQueryParams = (queryParams: Params, filters: Filter[], filterToRemove: Filter): void => {
+    filters.filter((filter: Filter) => !equals(filter, filterToRemove)).forEach((filter: Filter) => {
+        queryParams[`${filter.field}.filter`] = filter.value;
+        if (!queryParams.filters) {
+            queryParams.filters = filter.field;
+        } else {
+            queryParams.filters += `,${filter.field}`;
+        }
+    });
+};
+
+const showFilter = (collectionView: CollectionView, actualFilter: Filter): boolean => {
+    for (const filter of collectionView.filters) {
+        if (equals(filter, actualFilter)) {
+            return false;
+        }
+    }
+    return actualFilter.opKey === OpKey.BETWEEN || actualFilter.opKey === OpKey.EQUALS;
+};
+
+const getFilterField = (collectionView: CollectionView, actualFilter: Filter): string => {
+    return actualFilter.field;
+};
+
+const getFilterValue = (collectionView: CollectionView, actualFilter: Filter): string => {
+    for (const facet of collectionView.facets) {
+        if (facet.type === FacetType.DATE_YEAR && facet.field === actualFilter.field) {
+            return actualFilter.value.substring(1, actualFilter.value.length - 1).split(' TO ')[0];
+        }
+    }
+    return actualFilter.value;
+};
+
+const hasExport = (collectionView: CollectionView): boolean => {
+    return collectionView.export !== undefined && collectionView.export.length > 0;
+};
+
+const equals = (filterOne: Filter, filterTwo: Filter): boolean => {
+    return filterTwo ? filterOne.field === filterTwo.field && filterOne.value === filterTwo.value : true;
+};
+
 export {
-    addFacetsToQueryParams,
-    addFiltersToQueryParams,
-    addBoostToQueryParams,
-    addSortToQueryParams,
-    addExportToQueryParams
+    addExportToQueryParams,
+    applyFiltersToQueryParams,
+    getQueryParams,
+    showFilter,
+    getFilterField,
+    getFilterValue,
+    hasExport
 };

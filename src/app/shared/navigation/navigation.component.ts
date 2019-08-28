@@ -14,7 +14,7 @@ import { selectRouterUrl } from '../../core/store/router';
 import { selectHasMenu } from '../../core/store/sidebar';
 import { selectAllResources } from '../../core/store/sdr';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams } from '../utilities/view.utility';
+import { getQueryParams } from '../utilities/view.utility';
 
 import * as fromLayout from '../../core/store/layout/layout.actions';
 
@@ -64,13 +64,8 @@ export class NavigationComponent implements OnInit {
     }
 
     public getDirectoryQueryParams(directoryView: DirectoryView): Params {
-        const queryParams: Params = {};
-        queryParams.collection = directoryView.collection;
-        queryParams.index = undefined;
-        addFacetsToQueryParams(queryParams, directoryView);
-        addFiltersToQueryParams(queryParams, directoryView);
-        // NOTE: currently ignoring sort of CollectionView and applying sort asc by index field
-        queryParams.sort = `${directoryView.index.field},asc`;
+        const queryParams: Params = getQueryParams(directoryView);
+        queryParams.page = 1;
         return queryParams;
     }
 
