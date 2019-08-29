@@ -1,6 +1,9 @@
+import { isPlatformBrowser } from '@angular/common';
 import { Params } from '@angular/router';
 
 import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType } from '../../core/model/view';
+import { SdrPage } from '../../core/model/sdr';
+import { Direction } from '../../core/model/request';
 
 const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
     if (collectionView.facets && collectionView.facets.length > 0) {
@@ -106,6 +109,41 @@ const equals = (filterOne: Filter, filterTwo: Filter): boolean => {
     return filterTwo ? filterOne.field === filterTwo.field && filterOne.value === filterTwo.value : true;
 };
 
+const getResourcesPage = (resources: any[], sort: Sort[], page: SdrPage): any[] => {
+    let sorted = [].concat(resources);
+    for (const s of sort) {
+        const asc = Direction[s.direction] === Direction.ASC;
+        sorted = sorted.sort((a, b) => {
+            const av = s.date ? new Date(a[s.field]) : a[s.field];
+            const bv = s.date ? new Date(b[s.field]) : b[s.field];
+            return asc ? (av > bv) ? 1 : ((bv > av) ? -1 : 0) : (bv > av) ? 1 : ((av > bv) ? -1 : 0);
+        });
+    }
+    const pageStart = (page.number - 1) * page.size;
+    const pageEnd = pageStart + page.size;
+    return sorted.slice(pageStart, pageEnd);
+};
+
+const getSubsectionResources = (resources: any[], filters: Filter[]): any[] => {
+    return resources.filter((r) => {
+        for (const f of filters) {
+            if ((Array.isArray(r[f.field]) ? r[f.field].indexOf(f.value) < 0 : r[f.field] !== f.value)) {
+                return false;
+            }
+        }
+        return true;
+    });
+};
+
+const loadBadges = (platformId: string): void => {
+    if (isPlatformBrowser(platformId)) {
+        setTimeout(() => {
+            window['_altmetric_embed_init']();
+            window['__dimensions_embed'].addBadges();
+        }, 250);
+    }
+};
+
 export {
     addExportToQueryParams,
     applyFiltersToQueryParams,
@@ -113,5 +151,8 @@ export {
     showFilter,
     getFilterField,
     getFilterValue,
-    hasExport
+    hasExport,
+    getResourcesPage,
+    getSubsectionResources,
+    loadBadges
 };

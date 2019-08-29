@@ -1,4 +1,3 @@
-import { isPlatformBrowser } from '@angular/common';
 import { Component, Input, Inject, OnInit, PLATFORM_ID, AfterViewInit, OnDestroy } from '@angular/core';
 import { Params, ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
@@ -7,10 +6,10 @@ import { map, filter } from 'rxjs/operators';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppConfig } from '../../app.config';
-import { DisplayTabSectionView, Filter, Sort } from '../../core/model/view';
+import { DisplayTabSectionView, Sort } from '../../core/model/view';
 import { SolrDocument } from '../../core/model/discovery';
 import { SdrPage } from '../../core/model/sdr';
-import { Direction } from '../../core/model/request';
+import { getResourcesPage, getSubsectionResources, loadBadges } from '../../shared/utilities/view.utility';
 
 @Component({
     selector: 'scholars-section',
@@ -51,7 +50,7 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
 
     ngAfterViewInit() {
         if (this.section.paginated) {
-            this.loadBadges();
+            loadBadges(this.platformId);
         }
     }
 
@@ -60,9 +59,9 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
             this.subscriptions.push(this.router.events.pipe(
                 filter(event => event instanceof NavigationStart)
             ).subscribe(() => {
-                this.loadBadges();
+                loadBadges(this.platformId);
             }));
-            const resources = this.getSubsectionCollection(this.document[this.section.field], this.section.filters);
+            const resources = getSubsectionResources(this.document[this.section.field], this.section.filters);
             this.page = this.route.queryParams.pipe(
                 map((params: Params) => {
                     const pageSize = params[`${this.section.name}.size`] ? Number(params[`${this.section.name}.size`]) : this.section.pageSize;
@@ -89,18 +88,7 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     public getResourcesPage(resources: any[], sort: Sort[], page: SdrPage): any[] {
-        let sorted = [].concat(resources);
-        for (const s of sort) {
-            const asc = Direction[s.direction] === Direction.ASC;
-            sorted = sorted.sort((a, b) => {
-                const av = s.date ? new Date(a[s.field]) : a[s.field];
-                const bv = s.date ? new Date(b[s.field]) : b[s.field];
-                return asc ? (av > bv) ? 1 : ((bv > av) ? -1 : 0) : (bv > av) ? 1 : ((av > bv) ? -1 : 0);
-            });
-        }
-        const pageStart = (page.number - 1) * page.size;
-        const pageEnd = pageStart + page.size;
-        return sorted.slice(pageStart, pageEnd);
+        return getResourcesPage(resources, sort, page);
     }
 
     public getEmbedSnippet(): string {
@@ -114,26 +102,6 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
         document.execCommand('copy');
         copyElement.setSelectionRange(0, 0);
         setTimeout(() => tooltip.close(), 2000);
-    }
-
-    private loadBadges(): void {
-        if (isPlatformBrowser(this.platformId)) {
-            setTimeout(() => {
-                window['_altmetric_embed_init']();
-                window['__dimensions_embed'].addBadges();
-            }, 250);
-        }
-    }
-
-    private getSubsectionCollection(resources: any[], filters: Filter[]): any[] {
-        return resources.filter((r) => {
-            for (const f of filters) {
-                if ((Array.isArray(r[f.field]) ? r[f.field].indexOf(f.value) < 0 : r[f.field] !== f.value)) {
-                    return false;
-                }
-            }
-            return true;
-        });
     }
 
 }
