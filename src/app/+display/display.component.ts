@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription, combineLatest, scheduled, Observer } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { filter, tap, map, mergeMap, take } from 'rxjs/operators';
+import { filter, map, mergeMap, take } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
@@ -18,23 +18,24 @@ import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
 import { Side, Subsection } from '../core/model/view/display-view';
 
-import { selectResourceById, selectDiscoveryViewByCollection, selectDisplayViewByTypes, selectResourceIsLoading, selectAllResources, selectResourceIsDereferencing } from '../core/store/sdr';
+import { selectResourceById, selectDiscoveryViewByCollection, selectDisplayViewByTypes, selectResourceIsDereferencing } from '../core/store/sdr';
 
 import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
 
-const hasDataAfterFilter = (section: DisplayTabSectionView, document: SolrDocument): boolean => {
-    const filteredSubsections = section.subsections.filter((subsection: Subsection) => subsection.filters.length);
+const hasDataAfterFilter = (filteredSubsections: Subsection[], document: SolrDocument): boolean => {
     for (const filteredSubsection of filteredSubsections) {
         // tslint:disable-next-line: no-shadowed-variable
-        return filteredSubsection.filters.filter((filter: Filter) => {
+        if (filteredSubsection.filters.filter((filter: Filter) => {
             return document[filteredSubsection.field].filter((resource: any) => {
                 const value = resource[filter.field];
                 return Array.isArray(value) ? value.indexOf(filter.value) >= 0 : value === filter.value;
             }).length > 0;
-        }).length > 0;
+        }).length > 0) {
+            return true;
+        }
     }
-    return true;
+    return false;
 };
 
 const hasRequiredFields = (requiredFields: string[], document: SolrDocument): boolean => {
@@ -47,7 +48,12 @@ const hasRequiredFields = (requiredFields: string[], document: SolrDocument): bo
 };
 
 export const sectionsToShow = (sections: DisplayTabSectionView[], document: SolrDocument): DisplayTabSectionView[] => {
-    return sections.filter((section: DisplayTabSectionView) => !section.hidden && hasRequiredFields(section.requiredFields, document) && hasDataAfterFilter(section, document));
+    return sections.filter((section: DisplayTabSectionView) => {
+        const filteredSubsections = section.subsections.filter((subsection: Subsection) => subsection.filters.length);
+        return !section.hidden &&
+            hasRequiredFields(section.requiredFields.concat([section.field]), document) &&
+            (filteredSubsections.length === 0 || hasDataAfterFilter(filteredSubsections, document));
+    });
 };
 
 @Component({

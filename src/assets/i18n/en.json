@@ -50,6 +50,7 @@
   },
   "DISCOVERY": {
     "TITLE": "Discovery",
+    "RESULTS": "results for",
     "EXPORT": "Export Search Results"
   },
   "DISPLAY": {

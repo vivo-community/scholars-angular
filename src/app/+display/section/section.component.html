@@ -18,7 +18,22 @@
   </div>
 </div>
 <div class="card-body">
-  <div [innerHtml]="section.templateFunction(document) | safeHtml"></div>
+  <div *ngIf="!section.paginated" [innerHtml]="section.templateFunction(document) | safeHtml"></div>
+  <div *ngIf="section.paginated">
+    <div *ngIf="page | async">
+      <div *ngIf="getResources() | async as resources">
+        <scholars-pagination *ngIf="resources.length > 0" [page]="page" [pageSizeOptions]="pageSizeOptions" [queryPrefix]="section.name">
+          <div class="mb-3">
+            <ul class="list-group">
+              <li class="list-group-item border-0" *ngFor="let resource of getResourcesPage(resources, section.sort, page | async)">
+                <div [innerHtml]="section.templateFunction(resource) | safeHtml"></div>
+              </li>
+            </ul>
+          </div>
+        </scholars-pagination>
+      </div>
+    </div>
+  </div>
   <div *ngFor="let subsection of section.subsections">
     <scholars-subsection [subsection]="subsection" [document]="document"></scholars-subsection>
   </div>
