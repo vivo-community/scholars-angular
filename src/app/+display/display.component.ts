@@ -51,7 +51,7 @@ export const sectionsToShow = (sections: DisplayTabSectionView[], document: Solr
     return sections.filter((section: DisplayTabSectionView) => {
         const filteredSubsections = section.subsections.filter((subsection: Subsection) => subsection.filters.length);
         return !section.hidden &&
-            hasRequiredFields(section.requiredFields, document) &&
+            hasRequiredFields(section.requiredFields.concat([section.field]), document) &&
             (filteredSubsections.length === 0 || hasDataAfterFilter(filteredSubsections, document));
     });
 };
