@@ -1087,10 +1087,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.18.tgz#1d3ca764718915584fcd9f6344621b7672665c67"
   integrity sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ==
 
-"@types/node@12.7.2":
-  version "12.7.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.2.tgz#c4e63af5e8823ce9cc3f0b34f7b998c2171f0c44"
-  integrity sha512-dyYO+f6ihZEtNPDcWNR1fkoTDf3zAK3lAABDze3mz6POyIercH0lEUawUFXlG8xaQZmm1yEBON/4TsYv/laDYg==
+"@types/node@12.7.3":
+  version "12.7.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.3.tgz#27b3f40addaf2f580459fdb405222685542f907a"
+  integrity sha512-3SiLAIBkDWDg6vFo0+5YJyHPWU9uwu40Qe+v+0MH8wRKYBimHvvAOyk3EzMrD/TrIlLYfXrqDqrg913PynrMJQ==
 
 "@types/q@^0.0.32":
   version "0.0.32"
@@ -6923,10 +6923,10 @@ schema-utils@^2.0.1:
     ajv "^6.1.0"
     ajv-keywords "^3.1.0"
 
-scholars-embed-utilities@0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.1.5.tgz#f74d10c6175f88875a29267026351ea07e4c2301"
-  integrity sha512-hRKkL0jvfyQap2pD2Ew0xEMOnQBqChbal2DY8277QGLgIgRsNeWJl+GeK9F//CieyNYmk9orPwmfXaECOCtU0g==
+scholars-embed-utilities@0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.1.6.tgz#5503a9368472aa3f540efc8632cc456a597c2e35"
+  integrity sha512-b5oZebTRajndFN4CBhGJgAQR/HBk8BoYcn+1lr5hpFJ6zG81gxKXkT0GkXiFU89xglwVFD7Rur5HPxdbJhP5Xg==
   dependencies:
     handlebars "4.1.2"
     handlebars-loader "1.7.1"
