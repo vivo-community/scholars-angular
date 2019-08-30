@@ -116,7 +116,6 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
 
     public getDiscoveryQueryParams(discoveryView: DiscoveryView, page: SdrPage, query: string, filters: Filter[] = [], filterToRemove: Filter): Params {
         const queryParams: Params = getQueryParams(discoveryView);
-        delete queryParams.filters;
         applyFiltersToQueryParams(queryParams, filters, filterToRemove);
         if (query && query.length > 0) {
             queryParams.query = query;

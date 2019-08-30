@@ -71,6 +71,7 @@ const getQueryParams = (collectionView: CollectionView): Params => {
 const applyFiltersToQueryParams = (queryParams: Params, filters: Filter[], filterToRemove: Filter): void => {
     filters.filter((filter: Filter) => !equals(filter, filterToRemove)).forEach((filter: Filter) => {
         queryParams[`${filter.field}.filter`] = filter.value;
+        queryParams[`${filter.field}.opKey`] = filter.opKey;
         if (!queryParams.filters) {
             queryParams.filters = filter.field;
         } else {

@@ -107,8 +107,8 @@ export class DirectoryComponent implements OnDestroy, OnInit {
 
     public getDirectoryQueryParams(directoryView: DirectoryView, option: string, filters: Filter[], filterToRemove: Filter): Params {
         const queryParams: Params = getQueryParams(directoryView);
+        applyFiltersToQueryParams(queryParams, filters, filterToRemove);
         queryParams.page = 1;
-        delete queryParams.filters;
         if (option) {
             queryParams[`${directoryView.index.field}.filter`] = option;
             queryParams[`${directoryView.index.field}.opKey`] = directoryView.index.opKey;
@@ -118,7 +118,6 @@ export class DirectoryComponent implements OnDestroy, OnInit {
                 queryParams.filters += `,${directoryView.index.field}`;
             }
         }
-        applyFiltersToQueryParams(queryParams, filters, filterToRemove);
         return queryParams;
     }
 
