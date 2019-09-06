@@ -9,6 +9,10 @@ WORKDIR /var/app/scholars-angular
 # install dependencies
 RUN yarn install
 
+#Set Args defaults for build
+ARG HOST=localhost
+ARG PORT=4200
+
 # build app with server side rendering in production 
 RUN yarn build:ssr:prod
 
