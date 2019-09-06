@@ -60,7 +60,7 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
 
 const getQueryParams = (collectionView: CollectionView): Params => {
     const queryParams: Params = {};
-    queryParams.collection = collectionView.collection;
+    queryParams.collection = 'individuals';
     addFacetsToQueryParams(queryParams, collectionView);
     addFiltersToQueryParams(queryParams, collectionView);
     addBoostToQueryParams(queryParams, collectionView);

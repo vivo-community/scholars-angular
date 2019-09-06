@@ -36,8 +36,6 @@ interface ScrollItem {
 })
 export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy {
 
-    private collection = 'persons';
-
     private limit = 20;
 
     private interval = 10000;
@@ -63,14 +61,14 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
 
     ngOnInit() {
         this.persons = this.store.pipe(
-            select(selectResourcesRecentlyUpdated(this.collection)),
+            select(selectResourcesRecentlyUpdated('individuals')),
             filter((persons: Person[]) => persons.length > 0)
         );
         this.subscriptions.push(this.persons.subscribe((persons: Person[]) => {
             this.items.next(persons.map((person: Person) => {
                 return {
                     src: person['thumbnail'] ? `${this.appConfig.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
-                    link: [`display/persons/${person['id']}`],
+                    link: [`display/${person['id']}`],
                     alt: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
                     modTime: person['modTime'] ? person['modTime'] : '',
                     name: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : '',
@@ -83,8 +81,12 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
                 this.subscriptions.push(interval(this.interval).subscribe(() => this.scrollRight()));
             }
         }));
-        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction(this.collection, {
+        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('individuals', {
             limit: this.limit, filters: [{
+                field: 'class',
+                value: 'Person',
+                opKey: OpKey.EQUALS
+            }, {
                 field: 'featuredProfileDisplay',
                 value: 'true',
                 opKey: OpKey.EQUALS

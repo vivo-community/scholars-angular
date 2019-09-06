@@ -11,7 +11,8 @@ import {
   Organization,
   Person,
   Process,
-  Relationship
+  Relationship,
+  Individual
 } from '../model/discovery';
 
 import { Theme } from '../model/theme';
@@ -55,6 +56,7 @@ export interface AppState {
   persons: fromSdr.SdrState<Person>;
   processes: fromSdr.SdrState<Process>;
   relationships: fromSdr.SdrState<Relationship>;
+  individuals: fromSdr.SdrState<Individual>;
   themes: fromSdr.SdrState<Theme>;
   users: fromSdr.SdrState<User>;
   directoryViews: fromSdr.SdrState<DirectoryView>;
@@ -85,6 +87,7 @@ export const reducers = (appConfig: AppConfig): ActionReducerMap<AppState> => {
     persons: fromSdr.getSdrReducer<Person>('persons', additionalContext),
     processes: fromSdr.getSdrReducer<Process>('processes', additionalContext),
     relationships: fromSdr.getSdrReducer<Relationship>('relationships', additionalContext),
+    individuals: fromSdr.getSdrReducer<Individual>('individuals', additionalContext),
     themes: fromSdr.getSdrReducer<Theme>('themes', additionalContext),
     users: fromSdr.getSdrReducer<User>('users', additionalContext),
     directoryViews: fromSdr.getSdrReducer<DirectoryView>('directoryViews', additionalContext),

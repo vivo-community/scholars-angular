@@ -10,7 +10,7 @@ import { filter, map, mergeMap, take } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
-import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, LazyReference, Filter } from '../core/model/view';
+import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, Filter } from '../core/model/view';
 
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
 
@@ -18,7 +18,7 @@ import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
 import { Side, Subsection } from '../core/model/view/display-view';
 
-import { selectResourceById, selectDiscoveryViewByCollection, selectDisplayViewByTypes, selectResourceIsDereferencing } from '../core/store/sdr';
+import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing } from '../core/store/sdr';
 
 import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
@@ -99,16 +99,11 @@ export class DisplayComponent implements OnDestroy, OnInit {
         }));
 
         this.subscriptions.push(this.route.params.subscribe((params: Params) => {
-            if (params.collection && params.id) {
-                this.store.dispatch(new fromSdr.GetOneResourceAction(params.collection, { id: params.id }));
-
-                this.discoveryView = this.store.pipe(
-                    select(selectDiscoveryViewByCollection(params.collection)),
-                    filter((view: DiscoveryView) => view !== undefined)
-                );
+            if (params.id) {
+                this.store.dispatch(new fromSdr.GetOneResourceAction('individuals', { id: params.id }));
 
                 this.document = this.store.pipe(
-                    select(selectResourceById(params.collection, params.id)),
+                    select(selectResourceById('individuals', params.id)),
                     filter((document: SolrDocument) => document !== undefined),
                     take(1),
                     mergeMap((document: SolrDocument) => {
@@ -116,10 +111,20 @@ export class DisplayComponent implements OnDestroy, OnInit {
                             types: document.type
                         }));
 
+                        console.log(document);
+
+                        this.discoveryView = this.store.pipe(
+                            select(selectDiscoveryViewByClass(document['class'])),
+                            filter((view: DiscoveryView) => view !== undefined)
+                        );
+
                         this.displayView = this.store.pipe(
                             select(selectDisplayViewByTypes(document.type)),
                             filter((displayView: DisplayView) => displayView !== undefined),
+                            take(1),
                             mergeMap((displayView: DisplayView) => {
+
+                                console.log(displayView);
 
                                 if (this.route.children.length === 0) {
                                     let tabName = 'View All';
@@ -165,15 +170,14 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
                                 return combineLatest([scheduled([displayView], asap), new Observable((observer: Observer<boolean>) => {
 
-                                    const dereference = (lazyReference: LazyReference): Promise<void> => {
+                                    const dereference = (lazyReference: string): Promise<void> => {
                                         return new Promise((resolve, reject) => {
-                                            this.store.dispatch(new fromSdr.FetchLazyReferenceAction(params.collection, {
+                                            this.store.dispatch(new fromSdr.FetchLazyReferenceAction('individuals', {
                                                 document,
-                                                collection: lazyReference.collection,
-                                                field: lazyReference.field
+                                                field: lazyReference
                                             }));
                                             this.subscriptions.push(this.store.pipe(
-                                                select(selectResourceIsDereferencing(params.collection)),
+                                                select(selectResourceIsDereferencing('individuals')),
                                                 filter((dereferencing: boolean) => !dereferencing)
                                             ).subscribe(() => {
                                                 resolve();
@@ -181,11 +185,11 @@ export class DisplayComponent implements OnDestroy, OnInit {
                                         });
                                     };
 
-                                    const lazyReferences: LazyReference[] = [];
+                                    const lazyReferences: string[] = [];
 
                                     displayView.tabs.filter((tab: DisplayTabView) => !tab.hidden).forEach((tab: DisplayTabView) => {
                                         tab.sections.filter((section: DisplayTabSectionView) => !section.hidden).forEach((section: DisplayTabSectionView) => {
-                                            section.lazyReferences.filter((lr: LazyReference) => document[lr.field] !== undefined && !lazyReferences.find((r) => r.field === lr.field)).forEach((lazyReference: LazyReference) => {
+                                            section.lazyReferences.filter((lr: string) => document[lr] !== undefined && !lazyReferences.find((r) => r === lr)).forEach((lazyReference: string) => {
                                                 lazyReferences.push(lazyReference);
                                             });
                                         });
@@ -195,6 +199,8 @@ export class DisplayComponent implements OnDestroy, OnInit {
                                         observer.next(true);
                                         observer.complete();
                                     });
+
+                                    console.log(lazyReferences);
 
                                 })]);
                             }),

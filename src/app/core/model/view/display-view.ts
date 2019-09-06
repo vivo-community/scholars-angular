@@ -6,11 +6,6 @@ export enum Side {
     RIGHT = 'RIGHT'
 }
 
-export interface LazyReference {
-    readonly field: string;
-    readonly collection: string;
-}
-
 export interface Subsection {
     readonly name: string;
     readonly field: string;
@@ -32,7 +27,7 @@ export interface DisplayTabSectionView extends View {
     readonly template: string;
     templateFunction?: (document: any) => string;
     readonly requiredFields: string[];
-    readonly lazyReferences: LazyReference[];
+    readonly lazyReferences: string[];
     readonly subsections: Subsection[];
 }
 

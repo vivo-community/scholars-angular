@@ -3,14 +3,15 @@ import { Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 
-import { DirectoryView } from '../../core/model/view';
+import { DirectoryView, OpKey } from '../../core/model/view';
 
 import * as fromSdr from '../../core/store/sdr/sdr.actions';
 
-import { selectResourcesCount, selectDirectoryViewByCollection } from '../../core/store/sdr';
+import { selectResourcesCount, selectDirectoryViewByClass } from '../../core/store/sdr';
 
 import { getQueryParams } from '../utilities/view.utility';
 
@@ -23,7 +24,7 @@ export class StatsBoxComponent implements OnInit {
 
     @Input() label: string;
 
-    @Input() collection: string;
+    @Input() clazz: string;
 
     public count: Observable<number>;
 
@@ -34,11 +35,20 @@ export class StatsBoxComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.directoryView = this.store.pipe(select(selectDirectoryViewByCollection(this.collection)));
-        this.store.dispatch(new fromSdr.CountResourcesAction(this.collection, {
-            request: {}
+        this.directoryView = this.store.pipe(
+            select(selectDirectoryViewByClass(this.clazz)),
+            filter((view: DirectoryView) => view !== undefined)
+        );
+        this.store.dispatch(new fromSdr.CountResourcesAction('individuals', {
+            request: {
+                filters: [{
+                    field: 'class',
+                    value: this.clazz,
+                    opKey: OpKey.EQUALS
+                }]
+            }
         }));
-        this.count = this.store.pipe(select(selectResourcesCount(this.collection)));
+        this.count = this.store.pipe(select(selectResourcesCount('individuals')));
     }
 
     public format(count: number): string | number {

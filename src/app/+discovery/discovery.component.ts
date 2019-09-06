@@ -77,9 +77,9 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
                     select(selectResourceById('discoveryViews', params.view)),
                     filter((view: DiscoveryView) => view !== undefined),
                     tap((view: DiscoveryView) => {
-                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>(view.collection)));
-                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>(view.collection)));
-                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>(view.collection)));
+                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individuals')));
+                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individuals')));
+                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individuals')));
                     })
                 );
             }
@@ -134,7 +134,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         addExportToQueryParams(queryParams, discoveryView);
         const tree = this.router.createUrlTree([''], { queryParams });
         const query = tree.toString().substring(1);
-        return `${this.appConfig.serviceUrl}/${discoveryView.collection}/search/export${query}`;
+        return `${this.appConfig.serviceUrl}/individuals/search/export${query}`;
     }
 
 }

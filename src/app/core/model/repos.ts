@@ -7,6 +7,7 @@ import { OrganizationRepo } from './discovery/repo/organization.repo';
 import { PersonRepo } from './discovery/repo/person.repo';
 import { ProcessRepo } from './discovery/repo/process.repo';
 import { RelationshipRepo } from './discovery/repo/relationship.repo';
+import { IndividualRepo } from './discovery/repo/individual.repo';
 import { DirectoryViewRepo } from './view/repo/directory-view.repo';
 import { DiscoveryViewRepo } from './view/repo/discovery-view.repo';
 import { DisplayViewRepo } from './view/repo/display-view.repo';
@@ -23,6 +24,7 @@ export const keys = {
     persons: 'id',
     processes: 'id',
     relationships: 'id',
+    individuals: 'id',
     themes: 'name',
     users: 'email',
     directoryViews: 'name',
@@ -38,6 +40,7 @@ export const repos = {
     persons: new InjectionToken<string>('PersonRepo'),
     processes: new InjectionToken<string>('ProcessRepo'),
     relationships: new InjectionToken<string>('RelationshipRepo'),
+    individuals: new InjectionToken<string>('IndividualRepo'),
     themes: new InjectionToken<string>('ThemeRepo'),
     users: new InjectionToken<string>('UserRepo'),
     directoryViews: new InjectionToken<string>('DirectoryViewRepo'),
@@ -53,6 +56,7 @@ export const injectable = [
     { provide: repos.persons, useExisting: PersonRepo },
     { provide: repos.processes, useExisting: ProcessRepo },
     { provide: repos.relationships, useExisting: RelationshipRepo },
+    { provide: repos.individuals, useExisting: IndividualRepo },
     { provide: repos.themes, useExisting: ThemeRepo },
     { provide: repos.users, useExisting: UserRepo },
     { provide: repos.directoryViews, useExisting: DirectoryViewRepo },

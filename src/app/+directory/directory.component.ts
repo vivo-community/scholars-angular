@@ -12,7 +12,7 @@ import { DirectoryView, DiscoveryView, Filter } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 
-import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByCollection } from '../core/store/sdr';
+import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByClass } from '../core/store/sdr';
 import { selectRouterQueryParams, selectRouterQueryParamFilters } from '../core/store/router';
 
 import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
@@ -65,11 +65,12 @@ export class DirectoryComponent implements OnDestroy, OnInit {
                     select(selectResourceById('directoryViews', params.view)),
                     filter((view: DirectoryView) => view !== undefined),
                     tap((view: DirectoryView) => {
-                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>(view.collection)));
-                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>(view.collection)));
-                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>(view.collection)));
+                        const classFilter: Filter = view.filters.find((f: Filter) => f.field === 'class');
+                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individuals')));
+                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individuals')));
+                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individuals')));
                         this.discoveryView = this.store.pipe(
-                            select(selectDiscoveryViewByCollection(view.collection)),
+                            select(selectDiscoveryViewByClass(classFilter.value)),
                             filter((discoveryView: DiscoveryView) => discoveryView !== undefined)
                         );
                     })
@@ -144,7 +145,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
         addExportToQueryParams(queryParams, directoryView);
         const tree = this.router.createUrlTree([''], { queryParams });
         const query = tree.toString().substring(1);
-        return `${this.appConfig.serviceUrl}/${directoryView.collection}/search/export${query}`;
+        return `${this.appConfig.serviceUrl}/individuals/search/export${query}`;
     }
 
 }

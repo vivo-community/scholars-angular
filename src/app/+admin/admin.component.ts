@@ -9,8 +9,8 @@ import { DiscoveryView } from '../core/model/view';
 
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
 
+import { selectDiscoveryViewByClass } from '../core/store/sdr';
 import { selectWindowDimensions } from '../core/store/layout';
-import { selectDiscoveryViewByCollection } from '../core/store/sdr';
 
 export interface AdminTab {
     route: string[];
@@ -57,7 +57,7 @@ export class AdminComponent implements OnInit {
 
     ngOnInit() {
         this.discoveryView = this.store.pipe(
-            select(selectDiscoveryViewByCollection('persons')),
+            select(selectDiscoveryViewByClass('Person')),
             filter((view: DiscoveryView) => view !== undefined)
         );
         this.windowDimensions = this.store.pipe(select(selectWindowDimensions));

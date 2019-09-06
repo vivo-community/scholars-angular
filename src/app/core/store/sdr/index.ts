@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DiscoveryView, DisplayView, DirectoryView, CollectionView } from '../../model/view';
+import { DiscoveryView, DisplayView, DirectoryView, CollectionView, Filter } from '../../model/view';
 import { SdrResource } from '../../model/sdr';
 
 import * as fromSdr from './sdr.reducer';
@@ -29,27 +29,19 @@ export const selectResourceById = <R extends SdrResource>(name: string, id: stri
     resources => resources[id]
 );
 
-export const selectDiscoveryViewByCollection = (collection: string) => createSelector(
+export const selectDirectoryViewByClass = (clazz: string) => createSelector(
+    selectAllResources<DirectoryView>('directoryViews'),
+    (resources) => resources.find((dv: DirectoryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz)
+);
+
+export const selectDiscoveryViewByClass = (clazz: string) => createSelector(
     selectAllResources<DiscoveryView>('discoveryViews'),
-    (resources) => resources.find((dv: DiscoveryView) => dv.collection === collection)
+    (resources) => resources.find((dv: DiscoveryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz)
 );
 
 export const selectCollectionViewByName = (collection: string, name: string) => createSelector(
     selectResourceEntities<CollectionView>(collection),
     (collectionViews) => collectionViews[name]
-);
-
-export const selectDirectoryViewByCollection = (collection: string) => createSelector(
-    selectResourceEntities<DirectoryView>('directoryViews'),
-    (directoryViews) => {
-        for (const key in directoryViews) {
-            if (directoryViews.hasOwnProperty(key)) {
-                if (directoryViews[key].collection === collection) {
-                    return directoryViews[key];
-                }
-            }
-        }
-    }
 );
 
 export const selectDisplayViewByTypes = (types: string[]) => createSelector(

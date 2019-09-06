@@ -1,4 +1,4 @@
-import { ResourceView } from './';
+import { View } from './';
 import { Direction } from '../request';
 
 export enum OpKey {
@@ -61,7 +61,7 @@ export interface Boost {
     readonly value: number;
 }
 
-export interface CollectionView extends ResourceView {
+export interface CollectionView extends View {
     readonly layout: Layout;
     readonly templates: any;
     templateFunctions?: any;
