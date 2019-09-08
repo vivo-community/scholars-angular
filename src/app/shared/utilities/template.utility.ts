@@ -5,7 +5,7 @@ import { compileTemplate, getTemplateFunction, getParsedTemplateFunction, initia
 const getParsedResourceViewTemplateFunction = (template: string, additionalContext: any) => {
     compileTemplate(template);
     return (resource: any) => {
-        resource.collection = 'individuals';
+        resource.collection = 'individual';
         const templateFunction = getTemplateFunction(template, additionalContext);
         return templateFunction(resource);
     };

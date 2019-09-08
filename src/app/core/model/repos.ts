@@ -10,7 +10,7 @@ import { UserRepo } from './user/repo/user.repo';
 // NOTE: the keys must match the property of the Spring Data REST embedded response
 
 export const keys = {
-    individuals: 'id',
+    individual: 'id',
     themes: 'name',
     users: 'email',
     directoryViews: 'name',
@@ -19,7 +19,7 @@ export const keys = {
 };
 
 export const repos = {
-    individuals: new InjectionToken<string>('IndividualRepo'),
+    individual: new InjectionToken<string>('IndividualRepo'),
     themes: new InjectionToken<string>('ThemeRepo'),
     users: new InjectionToken<string>('UserRepo'),
     directoryViews: new InjectionToken<string>('DirectoryViewRepo'),
@@ -28,7 +28,7 @@ export const repos = {
 };
 
 export const injectable = [
-    { provide: repos.individuals, useExisting: IndividualRepo },
+    { provide: repos.individual, useExisting: IndividualRepo },
     { provide: repos.themes, useExisting: ThemeRepo },
     { provide: repos.users, useExisting: UserRepo },
     { provide: repos.directoryViews, useExisting: DirectoryViewRepo },

@@ -97,7 +97,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
             case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, name):
                 const changes = {};
                 const id = action.payload.document.id;
-                changes[action.payload.field] = action.payload.resources._embedded['individuals'];
+                changes[action.payload.field] = action.payload.resources._embedded['individual'];
                 return getSdrAdapter<R>(keys[name]).updateOne({ id, changes }, {
                     ...state,
                     dereferencing: false,

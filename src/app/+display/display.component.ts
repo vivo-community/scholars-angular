@@ -100,10 +100,10 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
         this.subscriptions.push(this.route.params.subscribe((params: Params) => {
             if (params.id) {
-                this.store.dispatch(new fromSdr.GetOneResourceAction('individuals', { id: params.id }));
+                this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
 
                 this.document = this.store.pipe(
-                    select(selectResourceById('individuals', params.id)),
+                    select(selectResourceById('individual', params.id)),
                     filter((document: SolrDocument) => document !== undefined),
                     take(1),
                     mergeMap((document: SolrDocument) => {
@@ -172,12 +172,12 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
                                     const dereference = (lazyReference: string): Promise<void> => {
                                         return new Promise((resolve, reject) => {
-                                            this.store.dispatch(new fromSdr.FetchLazyReferenceAction('individuals', {
+                                            this.store.dispatch(new fromSdr.FetchLazyReferenceAction('individual', {
                                                 document,
                                                 field: lazyReference
                                             }));
                                             this.subscriptions.push(this.store.pipe(
-                                                select(selectResourceIsDereferencing('individuals')),
+                                                select(selectResourceIsDereferencing('individual')),
                                                 filter((dereferencing: boolean) => !dereferencing)
                                             ).subscribe(() => {
                                                 resolve();

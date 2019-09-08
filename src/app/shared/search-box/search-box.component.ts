@@ -108,7 +108,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
                 });
             }
 
-            const collection = 'individuals';
+            const collection = 'individual';
 
             this.form.patchValue({ collection });
 

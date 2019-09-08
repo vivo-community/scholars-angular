@@ -36,7 +36,7 @@ export interface AppState {
   sidebar: fromSidebar.SidebarState;
   stomp: fromStomp.StompState;
   theme: fromTheme.ThemeState;
-  individuals: fromSdr.SdrState<Individual>;
+  individual: fromSdr.SdrState<Individual>;
   themes: fromSdr.SdrState<Theme>;
   users: fromSdr.SdrState<User>;
   directoryViews: fromSdr.SdrState<DirectoryView>;
@@ -60,7 +60,7 @@ export const reducers = (appConfig: AppConfig): ActionReducerMap<AppState> => {
     sidebar: fromSidebar.reducer,
     stomp: fromStomp.reducer,
     theme: fromTheme.reducer,
-    individuals: fromSdr.getSdrReducer<Individual>('individuals', additionalContext),
+    individual: fromSdr.getSdrReducer<Individual>('individual', additionalContext),
     themes: fromSdr.getSdrReducer<Theme>('themes', additionalContext),
     users: fromSdr.getSdrReducer<User>('users', additionalContext),
     directoryViews: fromSdr.getSdrReducer<DirectoryView>('directoryViews', additionalContext),

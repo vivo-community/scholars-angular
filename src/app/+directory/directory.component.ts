@@ -66,9 +66,9 @@ export class DirectoryComponent implements OnDestroy, OnInit {
                     filter((view: DirectoryView) => view !== undefined),
                     tap((view: DirectoryView) => {
                         const classFilter: Filter = view.filters.find((f: Filter) => f.field === 'class');
-                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individuals')));
-                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individuals')));
-                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individuals')));
+                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individual')));
+                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individual')));
+                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individual')));
                         this.discoveryView = this.store.pipe(
                             select(selectDiscoveryViewByClass(classFilter.value)),
                             filter((discoveryView: DiscoveryView) => discoveryView !== undefined)

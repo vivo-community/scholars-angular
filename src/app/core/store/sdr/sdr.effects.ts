@@ -140,7 +140,7 @@ export class SdrEffects {
             const field = action.payload.field;
             const document = action.payload.document;
             const ids = document[field].map((property) => property.id);
-            return this.repos.get('individuals').findByIdIn(ids).pipe(
+            return this.repos.get('individual').findByIdIn(ids).pipe(
                 map((resources: SdrCollection) => new fromSdr.FetchLazyReferenceSuccessAction(action.name, { document, field, resources })),
                 catchError((response) => scheduled([new fromSdr.FetchLazyReferenceFailureAction(action.name, { response })], asap))
             );

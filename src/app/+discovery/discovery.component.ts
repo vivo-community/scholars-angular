@@ -77,9 +77,9 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
                     select(selectResourceById('discoveryViews', params.view)),
                     filter((view: DiscoveryView) => view !== undefined),
                     tap((view: DiscoveryView) => {
-                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individuals')));
-                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individuals')));
-                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individuals')));
+                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individual')));
+                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individual')));
+                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individual')));
                     })
                 );
             }

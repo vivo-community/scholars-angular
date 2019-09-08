@@ -60,7 +60,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
 
     ngOnInit() {
         this.individuals = this.store.pipe(
-            select(selectResourcesRecentlyUpdated('individuals')),
+            select(selectResourcesRecentlyUpdated('individual')),
             filter((individuals: Individual[]) => individuals.length > 0)
         );
         this.subscriptions.push(this.individuals.subscribe((individuals: Individual[]) => {
@@ -80,7 +80,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
                 this.subscriptions.push(interval(this.interval).subscribe(() => this.scrollRight()));
             }
         }));
-        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('individuals', {
+        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('individual', {
             limit: this.limit, filters: [{
                 field: 'class',
                 value: 'Person',
