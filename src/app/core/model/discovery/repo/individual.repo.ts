@@ -11,7 +11,7 @@ import { Individual } from '../individual';
 export class IndividualRepo extends AbstractSdrRepo<Individual> {
 
     protected path(): string {
-        return 'individuals';
+        return 'individual';
     }
 
     public post(individual: Individual): Observable<Individual> {

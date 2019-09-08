@@ -1,4 +1,4 @@
-import { View, CollectionView, DisplayView } from '../../core/model/view';
+import { CollectionView, DisplayView } from '../../core/model/view';
 
 import { compileTemplate, getTemplateFunction, getParsedTemplateFunction, initializeTemplateHelpers } from 'scholars-embed-utilities';
 

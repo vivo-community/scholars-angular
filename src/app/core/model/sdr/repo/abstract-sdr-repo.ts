@@ -25,7 +25,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     }
 
     public search(request: SdrRequest): Observable<SdrCollection> {
-        return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/facet${this.mapParameters(request)}`, {
+        return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/faceted${this.mapParameters(request)}`, {
             withCredentials: true
         });
     }

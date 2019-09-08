@@ -4,25 +4,12 @@ import { ActionReducerMap, MetaReducer } from '@ngrx/store';
 
 import { AppConfig } from '../../app.config';
 
-import {
-  Collection,
-  Concept,
-  Document,
-  Organization,
-  Person,
-  Process,
-  Relationship,
-  Individual
-} from '../model/discovery';
+import { Individual } from '../model/discovery';
 
 import { Theme } from '../model/theme';
 import { User } from '../model/user';
 
-import {
-  DirectoryView,
-  DiscoveryView,
-  DisplayView
-} from '../model/view';
+import { DirectoryView, DiscoveryView, DisplayView } from '../model/view';
 
 import * as fromRouter from '@ngrx/router-store';
 
@@ -49,13 +36,6 @@ export interface AppState {
   sidebar: fromSidebar.SidebarState;
   stomp: fromStomp.StompState;
   theme: fromTheme.ThemeState;
-  collections: fromSdr.SdrState<Collection>;
-  concepts: fromSdr.SdrState<Concept>;
-  documents: fromSdr.SdrState<Document>;
-  organizations: fromSdr.SdrState<Organization>;
-  persons: fromSdr.SdrState<Person>;
-  processes: fromSdr.SdrState<Process>;
-  relationships: fromSdr.SdrState<Relationship>;
   individuals: fromSdr.SdrState<Individual>;
   themes: fromSdr.SdrState<Theme>;
   users: fromSdr.SdrState<User>;
@@ -80,13 +60,6 @@ export const reducers = (appConfig: AppConfig): ActionReducerMap<AppState> => {
     sidebar: fromSidebar.reducer,
     stomp: fromStomp.reducer,
     theme: fromTheme.reducer,
-    collections: fromSdr.getSdrReducer<Collection>('collections', additionalContext),
-    concepts: fromSdr.getSdrReducer<Concept>('concepts', additionalContext),
-    documents: fromSdr.getSdrReducer<Document>('documents', additionalContext),
-    organizations: fromSdr.getSdrReducer<Organization>('organizations', additionalContext),
-    persons: fromSdr.getSdrReducer<Person>('persons', additionalContext),
-    processes: fromSdr.getSdrReducer<Process>('processes', additionalContext),
-    relationships: fromSdr.getSdrReducer<Relationship>('relationships', additionalContext),
     individuals: fromSdr.getSdrReducer<Individual>('individuals', additionalContext),
     themes: fromSdr.getSdrReducer<Theme>('themes', additionalContext),
     users: fromSdr.getSdrReducer<User>('users', additionalContext),

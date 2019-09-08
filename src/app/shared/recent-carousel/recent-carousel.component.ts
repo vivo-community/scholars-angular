@@ -8,12 +8,11 @@ import { filter } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 import { AppConfig } from '../../app.config';
-import { Person } from '../../core/model/discovery';
-
 import { selectResourcesRecentlyUpdated } from '../../core/store/sdr';
 
 import * as fromSdr from '../../core/store/sdr/sdr.actions';
 import { OpKey } from '../../core/model/view';
+import { Individual } from '../../core/model/discovery';
 
 interface ScrollItem {
     src: string;
@@ -45,7 +44,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
 
     private items: BehaviorSubject<ScrollItem[]>;
 
-    private persons: Observable<Person[]>;
+    private individuals: Observable<Individual[]>;
 
     private subscriptions: Subscription[];
 
@@ -60,19 +59,19 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
     }
 
     ngOnInit() {
-        this.persons = this.store.pipe(
+        this.individuals = this.store.pipe(
             select(selectResourcesRecentlyUpdated('individuals')),
-            filter((persons: Person[]) => persons.length > 0)
+            filter((individuals: Individual[]) => individuals.length > 0)
         );
-        this.subscriptions.push(this.persons.subscribe((persons: Person[]) => {
-            this.items.next(persons.map((person: Person) => {
+        this.subscriptions.push(this.individuals.subscribe((individuals: Individual[]) => {
+            this.items.next(individuals.map((individual: Individual) => {
                 return {
-                    src: person['thumbnail'] ? `${this.appConfig.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
-                    link: [`display/${person['id']}`],
-                    alt: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
-                    modTime: person['modTime'] ? person['modTime'] : '',
-                    name: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : '',
-                    preferredTitle: person['preferredTitle'] ? person['preferredTitle'] : '',
+                    src: individual['thumbnail'] ? `${this.appConfig.vivoUrl}${individual['thumbnail']}` : 'assets/images/default-avatar.png',
+                    link: [`display/${individual['id']}`],
+                    alt: individual['firstName'] ? individual['firstName'] + (individual['lastName'] ? ' ' + individual['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
+                    modTime: individual['modTime'] ? individual['modTime'] : '',
+                    name: individual['firstName'] ? individual['firstName'] + (individual['lastName'] ? ' ' + individual['lastName'] : '') : '',
+                    preferredTitle: individual['preferredTitle'] ? individual['preferredTitle'] : '',
                     hidden: true
                 };
             }));
