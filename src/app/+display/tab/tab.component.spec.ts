@@ -49,7 +49,7 @@ describe('TabComponent', () => {
                     useValue: {
                         params: scheduled([{ view: 'People', tab: 'View All' }], queue),
                         parent: {
-                            params: scheduled([{ collection: 'persons', id: 'test' }], queue),
+                            params: scheduled([{ collection: 'individuals', id: 'test' }], queue),
                         }
                     }
                 }
