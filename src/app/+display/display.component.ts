@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription, combineLatest, scheduled, Observer } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { filter, map, mergeMap, take } from 'rxjs/operators';
+import { filter, map, mergeMap, take, switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
@@ -106,7 +106,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
                     select(selectResourceById('individual', params.id)),
                     filter((document: SolrDocument) => document !== undefined),
                     take(1),
-                    mergeMap((document: SolrDocument) => {
+                    tap((document: SolrDocument) => {
                         this.store.dispatch(new fromSdr.FindByTypesInResourceAction('displayViews', {
                             types: document.type
                         }));
@@ -114,7 +114,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
                         console.log(document);
 
                         this.discoveryView = this.store.pipe(
-                            select(selectDiscoveryViewByClass(document['class'])),
+                            select(selectDiscoveryViewByClass(document.class)),
                             filter((view: DiscoveryView) => view !== undefined)
                         );
 
@@ -122,9 +122,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
                             select(selectDisplayViewByTypes(document.type)),
                             filter((displayView: DisplayView) => displayView !== undefined),
                             take(1),
-                            mergeMap((displayView: DisplayView) => {
-
-                                console.log(displayView);
+                            switchMap((displayView: DisplayView) => {
 
                                 if (this.route.children.length === 0) {
                                     let tabName = 'View All';
@@ -199,18 +197,12 @@ export class DisplayComponent implements OnDestroy, OnInit {
                                         observer.next(true);
                                         observer.complete();
                                     });
-
-                                    console.log(lazyReferences);
-
                                 })]);
                             }),
                             filter(([displayView, isReady]) => isReady),
                             map(([displayView, isReady]) => displayView)
                         );
-                        return combineLatest([scheduled([document], asap), this.displayView]);
-                    }),
-                    filter(([document, displayView]) => displayView !== undefined),
-                    map(([document, displayView]) => document)
+                    })
                 );
             }
         }));

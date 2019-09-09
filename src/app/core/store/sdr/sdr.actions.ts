@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { SdrRequest, Filterable } from '../../model/request';
-import { SdrCollection } from '../../model/sdr';
+import { SdrCollection, Count } from '../../model/sdr';
 
 export enum SdrActionTypes {
     GET_ALL = 'get all resources',
@@ -96,17 +96,17 @@ export class SearchResourcesFailureAction implements Action {
 
 export class CountResourcesAction implements Action {
     readonly type = getSdrAction(SdrActionTypes.COUNT, this.name);
-    constructor(public name: string, public payload: { request: SdrRequest }) { }
+    constructor(public name: string, public payload: { label: string, request: SdrRequest }) { }
 }
 
 export class CountResourcesSuccessAction implements Action {
     readonly type = getSdrAction(SdrActionTypes.COUNT_SUCCESS, this.name);
-    constructor(public name: string, public payload: any) { }
+    constructor(public name: string, public payload: { label: string, count: Count }) { }
 }
 
 export class CountResourcesFailureAction implements Action {
     readonly type = getSdrAction(SdrActionTypes.COUNT_FAILURE, this.name);
-    constructor(public name: string, public payload: any) { }
+    constructor(public name: string, public payload: { label: string, response: any }) { }
 }
 
 export class RecentlyUpdatedResourcesAction implements Action {

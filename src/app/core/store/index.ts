@@ -25,7 +25,6 @@ import * as fromStomp from './stomp/stomp.reducer';
 import * as fromTheme from './theme/theme.reducer';
 import * as fromRootStore from './root-store.reducer';
 
-
 export interface AppState {
   alert: fromAlert.AlertState;
   auth: fromAuth.AuthState;

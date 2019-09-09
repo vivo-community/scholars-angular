@@ -3,7 +3,7 @@ import { Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, distinctUntilChanged } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 
@@ -11,7 +11,7 @@ import { DirectoryView, OpKey } from '../../core/model/view';
 
 import * as fromSdr from '../../core/store/sdr/sdr.actions';
 
-import { selectResourcesCount, selectDirectoryViewByClass } from '../../core/store/sdr';
+import { selectResourcesCounts, selectDirectoryViewByClass } from '../../core/store/sdr';
 
 import { getQueryParams } from '../utilities/view.utility';
 
@@ -24,9 +24,9 @@ export class StatsBoxComponent implements OnInit {
 
     @Input() label: string;
 
-    @Input() clazz: string;
+    @Input() classifier: string;
 
-    public count: Observable<number>;
+    public counts: Observable<{}>;
 
     public directoryView: Observable<DirectoryView>;
 
@@ -36,19 +36,20 @@ export class StatsBoxComponent implements OnInit {
 
     public ngOnInit() {
         this.directoryView = this.store.pipe(
-            select(selectDirectoryViewByClass(this.clazz)),
+            select(selectDirectoryViewByClass(this.classifier)),
             filter((view: DirectoryView) => view !== undefined)
         );
         this.store.dispatch(new fromSdr.CountResourcesAction('individual', {
+            label: this.label,
             request: {
                 filters: [{
                     field: 'class',
-                    value: this.clazz,
+                    value: this.classifier,
                     opKey: OpKey.EQUALS
                 }]
             }
         }));
-        this.count = this.store.pipe(select(selectResourcesCount('individual')));
+        this.counts = this.store.pipe(select(selectResourcesCounts('individual')));
     }
 
     public format(count: number): string | number {

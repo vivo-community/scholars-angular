@@ -215,8 +215,8 @@ export class SdrEffects {
     @Effect() count = this.actions.pipe(
         ofType(...this.buildActions(fromSdr.SdrActionTypes.COUNT)),
         mergeMap((action: fromSdr.CountResourcesAction) => this.repos.get(action.name).count(action.payload.request).pipe(
-            map((count: Count) => new fromSdr.CountResourcesSuccessAction(action.name, { count })),
-            catchError((response) => scheduled([new fromSdr.CountResourcesFailureAction(action.name, { response })], asap))
+            map((count: Count) => new fromSdr.CountResourcesSuccessAction(action.name, { label: action.payload.label, count })),
+            catchError((response) => scheduled([new fromSdr.CountResourcesFailureAction(action.name, { label: action.payload.label, response })], asap))
         ))
     );
 
