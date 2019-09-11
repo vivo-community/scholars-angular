@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription, combineLatest, scheduled, Observer } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { filter, map, mergeMap, take, switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
+import { filter, map, take, switchMap, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
@@ -14,11 +14,13 @@ import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, Filt
 
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
 
+import { fadeIn } from '../shared/utilities/animation.utility';
+
 import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
 import { Side, Subsection } from '../core/model/view/display-view';
 
-import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing } from '../core/store/sdr';
+import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing, selectResourceIsLoading } from '../core/store/sdr';
 
 import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
@@ -60,6 +62,7 @@ export const sectionsToShow = (sections: DisplayTabSectionView[], document: Solr
     selector: 'scholars-display',
     templateUrl: 'display.component.html',
     styleUrls: ['display.component.scss'],
+    animations: [fadeIn],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DisplayComponent implements OnDestroy, OnInit {
@@ -71,6 +74,8 @@ export class DisplayComponent implements OnDestroy, OnInit {
     public discoveryView: Observable<DiscoveryView>;
 
     public document: Observable<SolrDocument>;
+
+    public loading: Observable<boolean>;
 
     private subscriptions: Subscription[];
 
@@ -101,7 +106,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
         this.subscriptions.push(this.route.params.subscribe((params: Params) => {
             if (params.id) {
                 this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
-
+                this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
                 this.document = this.store.pipe(
                     select(selectResourceById('individual', params.id)),
                     filter((document: SolrDocument) => document !== undefined),
