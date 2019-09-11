@@ -1,4 +1,3 @@
-import { trigger, style, transition, animate } from '@angular/animations';
 import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
@@ -8,11 +7,14 @@ import { filter } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 import { AppConfig } from '../../app.config';
+
+import { OpKey } from '../../core/model/view';
+import { Individual } from '../../core/model/discovery';
+import { fadeIn } from '../utilities/animation.utility';
+
 import { selectResourcesRecentlyUpdated } from '../../core/store/sdr';
 
 import * as fromSdr from '../../core/store/sdr/sdr.actions';
-import { OpKey } from '../../core/model/view';
-import { Individual } from '../../core/model/discovery';
 
 interface ScrollItem {
     src: string;
@@ -25,13 +27,7 @@ interface ScrollItem {
     selector: 'scholars-recent-carousel',
     templateUrl: 'recent-carousel.component.html',
     styleUrls: ['recent-carousel.component.scss'],
-    animations: [
-        trigger('fadeIn', [
-            transition(':enter', [
-                style({ opacity: 0 }), animate('1s ease-out', style({ opacity: 1 }))
-            ])
-        ])
-    ]
+    animations: [fadeIn]
 })
 export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy {
 

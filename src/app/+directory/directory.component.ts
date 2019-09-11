@@ -12,7 +12,9 @@ import { DirectoryView, DiscoveryView, Filter } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 
-import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByClass } from '../core/store/sdr';
+import { fadeIn } from '../shared/utilities/animation.utility';
+
+import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByClass, selectResourceIsLoading } from '../core/store/sdr';
 import { selectRouterQueryParams, selectRouterQueryParamFilters } from '../core/store/router';
 
 import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
@@ -21,6 +23,7 @@ import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, show
     selector: 'scholars-directory',
     templateUrl: 'directory.component.html',
     styleUrls: ['directory.component.scss'],
+    animations: [fadeIn],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DirectoryComponent implements OnDestroy, OnInit {
@@ -34,6 +37,8 @@ export class DirectoryComponent implements OnDestroy, OnInit {
     public discoveryView: Observable<DiscoveryView>;
 
     public documents: Observable<SolrDocument[]>;
+
+    public loading: Observable<boolean>;
 
     public page: Observable<SdrPage>;
 
@@ -59,6 +64,10 @@ export class DirectoryComponent implements OnDestroy, OnInit {
     ngOnInit() {
         this.queryParams = this.store.pipe(select(selectRouterQueryParams));
         this.filters = this.store.pipe(select(selectRouterQueryParamFilters));
+        this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
+        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individual')));
+        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individual')));
+        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individual')));
         this.subscriptions.push(this.route.params.subscribe((params) => {
             if (params.view) {
                 this.directoryView = this.store.pipe(
@@ -66,9 +75,6 @@ export class DirectoryComponent implements OnDestroy, OnInit {
                     filter((view: DirectoryView) => view !== undefined),
                     tap((view: DirectoryView) => {
                         const classFilter: Filter = view.filters.find((f: Filter) => f.field === 'class');
-                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individual')));
-                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individual')));
-                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individual')));
                         this.discoveryView = this.store.pipe(
                             select(selectDiscoveryViewByClass(classFilter.value)),
                             filter((discoveryView: DiscoveryView) => discoveryView !== undefined)

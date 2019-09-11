@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 import { AppConfig } from '../app.config';
@@ -13,8 +13,10 @@ import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
 
+import { fadeIn } from '../shared/utilities/animation.utility';
+
 import { selectRouterSearchQuery, selectRouterUrl, selectRouterQueryParamFilters, selectRouterQueryParams } from '../core/store/router';
-import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById } from '../core/store/sdr';
+import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectResourceIsLoading } from '../core/store/sdr';
 import { selectWindowDimensions } from '../core/store/layout';
 
 import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
@@ -23,6 +25,7 @@ import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, show
     selector: 'scholars-discovery',
     templateUrl: 'discovery.component.html',
     styleUrls: ['discovery.component.scss'],
+    animations: [fadeIn],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DiscoveryComponent implements OnDestroy, OnInit {
@@ -42,6 +45,8 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
     public discoveryView: Observable<DiscoveryView>;
 
     public documents: Observable<SolrDocument[]>;
+
+    public loading: Observable<boolean>;
 
     public page: Observable<SdrPage>;
 
@@ -70,17 +75,16 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         this.query = this.store.pipe(select(selectRouterSearchQuery));
         this.queryParams = this.store.pipe(select(selectRouterQueryParams));
         this.filters = this.store.pipe(select(selectRouterQueryParamFilters));
+        this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
+        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individual')));
+        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individual')));
+        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individual')));
         this.discoveryViews = this.store.pipe(select(selectAllResources<DiscoveryView>('discoveryViews')));
         this.subscriptions.push(this.route.params.subscribe((params) => {
             if (params.view) {
                 this.discoveryView = this.store.pipe(
                     select(selectResourceById('discoveryViews', params.view)),
-                    filter((view: DiscoveryView) => view !== undefined),
-                    tap((view: DiscoveryView) => {
-                        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individual')));
-                        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individual')));
-                        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individual')));
-                    })
+                    filter((view: DiscoveryView) => view !== undefined)
                 );
             }
         }));
