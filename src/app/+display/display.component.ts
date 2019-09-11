@@ -111,8 +111,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
                             types: document.type
                         }));
 
-                        console.log(document);
-
                         this.discoveryView = this.store.pipe(
                             select(selectDiscoveryViewByClass(document.class)),
                             filter((view: DiscoveryView) => view !== undefined)
