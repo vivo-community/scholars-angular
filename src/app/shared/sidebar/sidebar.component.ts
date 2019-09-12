@@ -10,7 +10,7 @@ import { selectIsSidebarCollapsed } from '../../core/store/layout';
 import { selectMenu } from '../../core/store/sidebar';
 import { selectResourceIsLoading } from '../../core/store/sdr';
 
-import { fadeIn } from '../utilities/animation.utility';
+import { fadeIn, expandCollapse } from '../utilities/animation.utility';
 
 import * as fromSidebar from '../../core/store/sidebar/sidebar.actions';
 
@@ -18,7 +18,10 @@ import * as fromSidebar from '../../core/store/sidebar/sidebar.actions';
     selector: 'scholars-sidebar',
     templateUrl: 'sidebar.component.html',
     styleUrls: ['sidebar.component.scss'],
-    animations: [fadeIn]
+    animations: [
+        fadeIn,
+        expandCollapse
+    ]
 })
 export class SidebarComponent implements OnInit {
 
