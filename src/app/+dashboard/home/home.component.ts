@@ -14,7 +14,7 @@ import { DiscoveryView } from '../../core/model/view';
 
 import { SearchBoxStyles } from '../../shared/search-box/search-box.component';
 
-import { selectDiscoveryViewByCollection } from '../../core/store/sdr';
+import { selectDiscoveryViewByClass } from '../../core/store/sdr';
 import { selectActiveThemeHome, selectActiveThemeOrganization } from '../../core/store/theme';
 
 import * as fromAuth from '../../core/store/auth/auth.actions';
@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.discoveryView = this.store.pipe(
-            select(selectDiscoveryViewByCollection('persons')),
+            select(selectDiscoveryViewByClass('Person')),
             filter((view: DiscoveryView) => view !== undefined)
         );
         this.home = this.store.pipe(

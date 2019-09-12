@@ -3,13 +3,11 @@
     "DIRECTORY_VIEWS": {
       "TITLE": "Directory Views",
       "NAME": "Name",
-      "COLLECTION": "Collection",
       "LAYOUT": "Layout"
     },
     "DISCOVERY_VIEWS": {
       "TITLE": "Discovery Views",
       "NAME": "Name",
-      "COLLECTION": "Collection",
       "LAYOUT": "Layout"
     },
     "DISPLAY_VIEWS": {

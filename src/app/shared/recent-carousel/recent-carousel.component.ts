@@ -1,4 +1,3 @@
-import { trigger, style, transition, animate } from '@angular/animations';
 import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
@@ -8,12 +7,14 @@ import { filter } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 import { AppConfig } from '../../app.config';
-import { Person } from '../../core/model/discovery';
+
+import { OpKey } from '../../core/model/view';
+import { Individual } from '../../core/model/discovery';
+import { fadeIn } from '../utilities/animation.utility';
 
 import { selectResourcesRecentlyUpdated } from '../../core/store/sdr';
 
 import * as fromSdr from '../../core/store/sdr/sdr.actions';
-import { OpKey } from '../../core/model/view';
 
 interface ScrollItem {
     src: string;
@@ -26,17 +27,9 @@ interface ScrollItem {
     selector: 'scholars-recent-carousel',
     templateUrl: 'recent-carousel.component.html',
     styleUrls: ['recent-carousel.component.scss'],
-    animations: [
-        trigger('fadeIn', [
-            transition(':enter', [
-                style({ opacity: 0 }), animate('1s ease-out', style({ opacity: 1 }))
-            ])
-        ])
-    ]
+    animations: [fadeIn]
 })
 export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy {
-
-    private collection = 'persons';
 
     private limit = 20;
 
@@ -47,7 +40,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
 
     private items: BehaviorSubject<ScrollItem[]>;
 
-    private persons: Observable<Person[]>;
+    private individuals: Observable<Individual[]>;
 
     private subscriptions: Subscription[];
 
@@ -62,19 +55,19 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
     }
 
     ngOnInit() {
-        this.persons = this.store.pipe(
-            select(selectResourcesRecentlyUpdated(this.collection)),
-            filter((persons: Person[]) => persons.length > 0)
+        this.individuals = this.store.pipe(
+            select(selectResourcesRecentlyUpdated('individual')),
+            filter((individuals: Individual[]) => individuals.length > 0)
         );
-        this.subscriptions.push(this.persons.subscribe((persons: Person[]) => {
-            this.items.next(persons.map((person: Person) => {
+        this.subscriptions.push(this.individuals.subscribe((individuals: Individual[]) => {
+            this.items.next(individuals.map((individual: Individual) => {
                 return {
-                    src: person['thumbnail'] ? `${this.appConfig.vivoUrl}${person['thumbnail']}` : 'assets/images/default-avatar.png',
-                    link: [`display/persons/${person['id']}`],
-                    alt: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
-                    modTime: person['modTime'] ? person['modTime'] : '',
-                    name: person['firstName'] ? person['firstName'] + (person['lastName'] ? ' ' + person['lastName'] : '') : '',
-                    preferredTitle: person['preferredTitle'] ? person['preferredTitle'] : '',
+                    src: individual['thumbnail'] ? `${this.appConfig.vivoUrl}${individual['thumbnail']}` : 'assets/images/default-avatar.png',
+                    link: [`display/${individual['id']}`],
+                    alt: individual['firstName'] ? individual['firstName'] + (individual['lastName'] ? ' ' + individual['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
+                    modTime: individual['modTime'] ? individual['modTime'] : '',
+                    name: individual['firstName'] ? individual['firstName'] + (individual['lastName'] ? ' ' + individual['lastName'] : '') : '',
+                    preferredTitle: individual['preferredTitle'] ? individual['preferredTitle'] : '',
                     hidden: true
                 };
             }));
@@ -83,8 +76,12 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
                 this.subscriptions.push(interval(this.interval).subscribe(() => this.scrollRight()));
             }
         }));
-        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction(this.collection, {
+        this.store.dispatch(new fromSdr.RecentlyUpdatedResourcesAction('individual', {
             limit: this.limit, filters: [{
+                field: 'class',
+                value: 'Person',
+                opKey: OpKey.EQUALS
+            }, {
                 field: 'featuredProfileDisplay',
                 value: 'true',
                 opKey: OpKey.EQUALS

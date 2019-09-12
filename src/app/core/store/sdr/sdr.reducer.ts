@@ -10,7 +10,7 @@ import { augmentCollectionViewTemplates, augmentDisplayViewTemplates } from '../
 export interface SdrState<R extends SdrResource> extends EntityState<R> {
     page: SdrPage;
     facets: SdrFacet[];
-    count: number;
+    counts: {};
     links: SdrCollectionLinks;
     recentlyUpdated: SdrResource[];
     counting: boolean;
@@ -30,7 +30,7 @@ export const getSdrInitialState = <R extends SdrResource>(key: string) => {
     return getSdrAdapter<R>(key).getInitialState({
         page: undefined,
         facets: [],
-        count: undefined,
+        counts: {},
         links: undefined,
         recentlyUpdated: [],
         counting: false,
@@ -82,27 +82,18 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
                     loading: true,
                     error: undefined
                 };
-            case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE, name):
-                return {
-                    ...state,
-                    dereferencing: true,
-                    error: undefined
-                };
             case getSdrAction(SdrActionTypes.COUNT, name):
                 return {
                     ...state,
                     counting: true,
                     error: undefined
                 };
-            case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, name):
-                const changes = {};
-                const id = action.payload.document.id;
-                changes[action.payload.field] = action.payload.resources._embedded[action.payload.collection];
-                return getSdrAdapter<R>(keys[name]).updateOne({ id, changes }, {
+            case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE, name):
+                return {
                     ...state,
-                    dereferencing: false,
+                    dereferencing: true,
                     error: undefined
-                });
+                };
             case getSdrAction(SdrActionTypes.GET_ALL_SUCCESS, name):
                 return getSdrAdapter<R>(keys[name]).addAll(getResources(action, name), {
                     ...state,
@@ -114,9 +105,18 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
                 return {
                     ...state,
                     recentlyUpdated: action.payload.recentlyUpdated._embedded[name],
-                    counting: true,
+                    loading: true,
                     error: undefined
                 };
+            case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, name):
+                const changes = {};
+                const id = action.payload.document.id;
+                changes[action.payload.field] = action.payload.resources._embedded['individual'];
+                return getSdrAdapter<R>(keys[name]).updateOne({ id, changes }, {
+                    ...state,
+                    dereferencing: false,
+                    error: undefined
+                });
             case getSdrAction(SdrActionTypes.GET_ONE_SUCCESS, name):
             case getSdrAction(SdrActionTypes.FIND_BY_TYPES_IN_SUCCESS, name):
                 return getSdrAdapter<R>(keys[name]).addOne(getResource(action, name), {
@@ -143,9 +143,11 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
                     error: undefined
                 });
             case getSdrAction(SdrActionTypes.COUNT_SUCCESS, name):
+                const successCount = {};
+                successCount[action.payload.label] = action.payload.count.value;
                 return {
                     ...state,
-                    count: action.payload.count.value,
+                    counts: Object.assign(state.counts, successCount),
                     counting: false
                 };
             case getSdrAction(SdrActionTypes.GET_ALL_FAILURE, name):
@@ -155,12 +157,18 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
             case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_FAILURE, name):
             case getSdrAction(SdrActionTypes.PAGE_FAILURE, name):
             case getSdrAction(SdrActionTypes.SEARCH_FAILURE, name):
-            case getSdrAction(SdrActionTypes.COUNT_FAILURE, name):
             case getSdrAction(SdrActionTypes.RECENTLY_UPDATED_FAILURE, name):
                 console.error(action);
                 return {
                     ...state,
                     loading: false,
+                    error: action.payload.response.error
+                };
+            case getSdrAction(SdrActionTypes.COUNT_FAILURE, name):
+                console.error(action);
+                return {
+                    ...state,
+                    counting: false,
                     error: action.payload.response.error
                 };
             case getSdrAction(SdrActionTypes.PUT, name):
@@ -216,7 +224,7 @@ export const isUpdating = <R extends SdrResource>(state: SdrState<R>) => state.u
 export const isCounting = <R extends SdrResource>(state: SdrState<R>) => state.counting;
 
 export const getPage = <R extends SdrResource>(state: SdrState<R>) => state.page;
-export const getCount = <R extends SdrResource>(state: SdrState<R>) => state.count;
+export const getCounts = <R extends SdrResource>(state: SdrState<R>) => state.counts;
 export const getFacets = <R extends SdrResource>(state: SdrState<R>) => state.facets;
 export const getLinks = <R extends SdrResource>(state: SdrState<R>) => state.links;
 export const getRecentlyUpdated = <R extends SdrResource>(state: SdrState<R>) => state.recentlyUpdated;

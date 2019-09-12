@@ -138,11 +138,10 @@ export class SdrEffects {
         ofType(...this.buildActions(fromSdr.SdrActionTypes.FETCH_LAZY_REFERENCE)),
         switchMap((action: fromSdr.FetchLazyReferenceAction) => {
             const field = action.payload.field;
-            const collection = action.payload.collection;
             const document = action.payload.document;
             const ids = document[field].map((property) => property.id);
-            return this.repos.get(collection).findByIdIn(ids).pipe(
-                map((resources: SdrCollection) => new fromSdr.FetchLazyReferenceSuccessAction(action.name, { document, collection, field, resources })),
+            return this.repos.get('individual').findByIdIn(ids).pipe(
+                map((resources: SdrCollection) => new fromSdr.FetchLazyReferenceSuccessAction(action.name, { document, field, resources })),
                 catchError((response) => scheduled([new fromSdr.FetchLazyReferenceFailureAction(action.name, { response })], asap))
             );
         })
@@ -216,8 +215,8 @@ export class SdrEffects {
     @Effect() count = this.actions.pipe(
         ofType(...this.buildActions(fromSdr.SdrActionTypes.COUNT)),
         mergeMap((action: fromSdr.CountResourcesAction) => this.repos.get(action.name).count(action.payload.request).pipe(
-            map((count: Count) => new fromSdr.CountResourcesSuccessAction(action.name, { count })),
-            catchError((response) => scheduled([new fromSdr.CountResourcesFailureAction(action.name, { response })], asap))
+            map((count: Count) => new fromSdr.CountResourcesSuccessAction(action.name, { label: action.payload.label, count })),
+            catchError((response) => scheduled([new fromSdr.CountResourcesFailureAction(action.name, { label: action.payload.label, response })], asap))
         ))
     );
 

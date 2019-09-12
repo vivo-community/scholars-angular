@@ -7,7 +7,7 @@ import { filter } from 'rxjs/operators';
 import { AppState } from '../../core/store';
 import { DiscoveryView } from '../../core/model/view';
 
-import { selectDiscoveryViewByCollection } from '../../core/store/sdr';
+import { selectDiscoveryViewByClass } from '../../core/store/sdr';
 
 @Component({
     selector: 'scholars-about',
@@ -24,7 +24,7 @@ export class AboutComponent implements OnInit {
 
     ngOnInit() {
         this.discoveryView = this.store.pipe(
-            select(selectDiscoveryViewByCollection('persons')),
+            select(selectDiscoveryViewByClass('Person')),
             filter((view: DiscoveryView) => view !== undefined)
         );
     }

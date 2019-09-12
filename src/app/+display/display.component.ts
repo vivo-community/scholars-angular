@@ -6,19 +6,21 @@ import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription, combineLatest, scheduled, Observer } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { filter, map, mergeMap, take } from 'rxjs/operators';
+import { filter, map, take, switchMap, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
-import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, LazyReference, Filter } from '../core/model/view';
+import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, Filter } from '../core/model/view';
 
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
+
+import { fadeIn } from '../shared/utilities/animation.utility';
 
 import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
 import { Side, Subsection } from '../core/model/view/display-view';
 
-import { selectResourceById, selectDiscoveryViewByCollection, selectDisplayViewByTypes, selectResourceIsDereferencing } from '../core/store/sdr';
+import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing, selectResourceIsLoading } from '../core/store/sdr';
 
 import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
@@ -60,6 +62,7 @@ export const sectionsToShow = (sections: DisplayTabSectionView[], document: Solr
     selector: 'scholars-display',
     templateUrl: 'display.component.html',
     styleUrls: ['display.component.scss'],
+    animations: [fadeIn],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DisplayComponent implements OnDestroy, OnInit {
@@ -71,6 +74,8 @@ export class DisplayComponent implements OnDestroy, OnInit {
     public discoveryView: Observable<DiscoveryView>;
 
     public document: Observable<SolrDocument>;
+
+    public loading: Observable<boolean>;
 
     private subscriptions: Subscription[];
 
@@ -99,27 +104,28 @@ export class DisplayComponent implements OnDestroy, OnInit {
         }));
 
         this.subscriptions.push(this.route.params.subscribe((params: Params) => {
-            if (params.collection && params.id) {
-                this.store.dispatch(new fromSdr.GetOneResourceAction(params.collection, { id: params.id }));
-
-                this.discoveryView = this.store.pipe(
-                    select(selectDiscoveryViewByCollection(params.collection)),
-                    filter((view: DiscoveryView) => view !== undefined)
-                );
-
+            if (params.id) {
+                this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
+                this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
                 this.document = this.store.pipe(
-                    select(selectResourceById(params.collection, params.id)),
+                    select(selectResourceById('individual', params.id)),
                     filter((document: SolrDocument) => document !== undefined),
                     take(1),
-                    mergeMap((document: SolrDocument) => {
+                    tap((document: SolrDocument) => {
                         this.store.dispatch(new fromSdr.FindByTypesInResourceAction('displayViews', {
                             types: document.type
                         }));
 
+                        this.discoveryView = this.store.pipe(
+                            select(selectDiscoveryViewByClass(document.class)),
+                            filter((view: DiscoveryView) => view !== undefined)
+                        );
+
                         this.displayView = this.store.pipe(
                             select(selectDisplayViewByTypes(document.type)),
                             filter((displayView: DisplayView) => displayView !== undefined),
-                            mergeMap((displayView: DisplayView) => {
+                            take(1),
+                            switchMap((displayView: DisplayView) => {
 
                                 if (this.route.children.length === 0) {
                                     let tabName = 'View All';
@@ -165,15 +171,14 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
                                 return combineLatest([scheduled([displayView], asap), new Observable((observer: Observer<boolean>) => {
 
-                                    const dereference = (lazyReference: LazyReference): Promise<void> => {
+                                    const dereference = (lazyReference: string): Promise<void> => {
                                         return new Promise((resolve, reject) => {
-                                            this.store.dispatch(new fromSdr.FetchLazyReferenceAction(params.collection, {
+                                            this.store.dispatch(new fromSdr.FetchLazyReferenceAction('individual', {
                                                 document,
-                                                collection: lazyReference.collection,
-                                                field: lazyReference.field
+                                                field: lazyReference
                                             }));
                                             this.subscriptions.push(this.store.pipe(
-                                                select(selectResourceIsDereferencing(params.collection)),
+                                                select(selectResourceIsDereferencing('individual')),
                                                 filter((dereferencing: boolean) => !dereferencing)
                                             ).subscribe(() => {
                                                 resolve();
@@ -181,11 +186,11 @@ export class DisplayComponent implements OnDestroy, OnInit {
                                         });
                                     };
 
-                                    const lazyReferences: LazyReference[] = [];
+                                    const lazyReferences: string[] = [];
 
                                     displayView.tabs.filter((tab: DisplayTabView) => !tab.hidden).forEach((tab: DisplayTabView) => {
                                         tab.sections.filter((section: DisplayTabSectionView) => !section.hidden).forEach((section: DisplayTabSectionView) => {
-                                            section.lazyReferences.filter((lr: LazyReference) => document[lr.field] !== undefined && !lazyReferences.find((r) => r.field === lr.field)).forEach((lazyReference: LazyReference) => {
+                                            section.lazyReferences.filter((lr: string) => document[lr] !== undefined && !lazyReferences.find((r) => r === lr)).forEach((lazyReference: string) => {
                                                 lazyReferences.push(lazyReference);
                                             });
                                         });
@@ -195,16 +200,12 @@ export class DisplayComponent implements OnDestroy, OnInit {
                                         observer.next(true);
                                         observer.complete();
                                     });
-
                                 })]);
                             }),
                             filter(([displayView, isReady]) => isReady),
                             map(([displayView, isReady]) => displayView)
                         );
-                        return combineLatest([scheduled([document], asap), this.displayView]);
-                    }),
-                    filter(([document, displayView]) => displayView !== undefined),
-                    map(([document, displayView]) => document)
+                    })
                 );
             }
         }));

@@ -1,4 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
@@ -17,6 +18,7 @@ describe('SidebarComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
+                NoopAnimationsModule,
                 SharedModule,
                 StoreModule.forRoot(reducers(testAppConfig), {
                     metaReducers,

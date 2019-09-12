@@ -5,7 +5,7 @@ import { TabComponent } from './tab/tab.component';
 
 export const routes: Routes = [
     {
-        path: ':collection/:id',
+        path: ':id',
         component: DisplayComponent,
         children: [
             { path: ':view/:tab', component: TabComponent }

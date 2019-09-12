@@ -27,9 +27,6 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()
     public display: string;
 
-    @Input()
-    public collection: string;
-
     public resources: BehaviorSubject<any[]>;
 
     public page: Observable<SdrPage>;
@@ -92,7 +89,7 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     public getEmbedSnippet(): string {
-        return `<div class="_scholars_embed_" data-collection="${this.collection}" data-individual="${this.document.id}" data-display="${this.display}" data-sections="${this.section.name}"></div>\n\n`
+        return `<div class="_scholars_embed_" data-collection="individual" data-individual="${this.document.id}" data-display="${this.display}" data-sections="${this.section.name}"></div>\n\n`
             + '<!-- This JavaScript only needs to be included once in your HTML -->\n'
             + `<script type="text/javascript" src="${this.appConfig.embedUrl}/scholars-embed.min.js" async></script>`;
     }

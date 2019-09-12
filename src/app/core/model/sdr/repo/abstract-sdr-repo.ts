@@ -25,7 +25,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     }
 
     public search(request: SdrRequest): Observable<SdrCollection> {
-        return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/facet${this.mapParameters(request)}`, {
+        return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/faceted${this.mapParameters(request)}`, {
             withCredentials: true
         });
     }
@@ -154,19 +154,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
         }
 
         if (request.facets && request.facets.length > 0) {
-            const fields: string[] = [];
-            request.facets.forEach((facet: Facetable) => {
-                fields.push(facet.field);
-                ['type', 'pageSize', 'pageNumber', 'sort'].forEach((key: string) => {
-                    if (facet[key]) {
-                        parameters.push(`${facet.field}.${key}=${facet[key]}`);
-                    }
-                });
-                if (facet.filter) {
-                    parameters.push(`${facet.field}.filter=${encodeURIComponent(facet.filter)}`);
-                }
-            });
-            parameters.push(`facets=${encodeURIComponent(fields.join(','))}`);
+            parameters = parameters.concat(this.mapFacets(request.facets));
         }
 
         return `?${parameters.join('&')}`;
