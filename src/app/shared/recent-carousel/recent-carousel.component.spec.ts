@@ -4,14 +4,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { StoreModule } from '@ngrx/store';
 import { metaReducers, reducers } from '../../core/store';
 
-import { RecentCarousalComponent } from './recent-carousal.component';
+import { RecentCarouselComponent } from './recent-carousel.component';
 import { testAppConfig } from '../../../test.config';
 import { SharedModule } from '../shared.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('RecentCarousalComponent', () => {
-    let component: RecentCarousalComponent;
-    let fixture: ComponentFixture<RecentCarousalComponent>;
+describe('RecentCarouselComponent', () => {
+    let component: RecentCarouselComponent;
+    let fixture: ComponentFixture<RecentCarouselComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -39,7 +39,7 @@ describe('RecentCarousalComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(RecentCarousalComponent);
+        fixture = TestBed.createComponent(RecentCarouselComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

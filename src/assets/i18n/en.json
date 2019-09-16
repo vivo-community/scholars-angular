@@ -3,13 +3,11 @@
     "DIRECTORY_VIEWS": {
       "TITLE": "Directory Views",
       "NAME": "Name",
-      "COLLECTION": "Collection",
       "LAYOUT": "Layout"
     },
     "DISCOVERY_VIEWS": {
       "TITLE": "Discovery Views",
       "NAME": "Name",
-      "COLLECTION": "Collection",
       "LAYOUT": "Layout"
     },
     "DISPLAY_VIEWS": {
@@ -50,6 +48,7 @@
   },
   "DISCOVERY": {
     "TITLE": "Discovery",
+    "RESULTS": "results for",
     "EXPORT": "Export Search Results"
   },
   "DISPLAY": {
@@ -157,6 +156,8 @@
     },
     "SEARCH_BOX": {
       "LABEL": "Find Research at {{organization}}",
+      "PLACEHOLDER": "Search...",
+      "VIEW_PLACEHOLDER": "Search {{view}}...",
       "DISCOVERY": "Discovery",
       "SEARCH_TIPS": "Search Tips"
     },

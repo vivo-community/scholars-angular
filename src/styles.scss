@@ -5,6 +5,10 @@
 @import 'styles/mixins';
 @import 'styles/overrides';
 
+html {
+  overflow-y: scroll; 
+}
+
 body {
   font-family: 'Lato', Calibri, Arial, sans-serif;
   min-width: 320px;

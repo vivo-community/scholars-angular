@@ -1,12 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-import { CollectionRepo } from './discovery/repo/collection.repo';
-import { ConceptRepo } from './discovery/repo/concept.repo';
-import { DocumentRepo } from './discovery/repo/document.repo';
-import { OrganizationRepo } from './discovery/repo/organization.repo';
-import { PersonRepo } from './discovery/repo/person.repo';
-import { ProcessRepo } from './discovery/repo/process.repo';
-import { RelationshipRepo } from './discovery/repo/relationship.repo';
+import { IndividualRepo } from './discovery/repo/individual.repo';
 import { DirectoryViewRepo } from './view/repo/directory-view.repo';
 import { DiscoveryViewRepo } from './view/repo/discovery-view.repo';
 import { DisplayViewRepo } from './view/repo/display-view.repo';
@@ -16,13 +10,7 @@ import { UserRepo } from './user/repo/user.repo';
 // NOTE: the keys must match the property of the Spring Data REST embedded response
 
 export const keys = {
-    collections: 'id',
-    concepts: 'id',
-    documents: 'id',
-    organizations: 'id',
-    persons: 'id',
-    processes: 'id',
-    relationships: 'id',
+    individual: 'id',
     themes: 'name',
     users: 'email',
     directoryViews: 'name',
@@ -31,13 +19,7 @@ export const keys = {
 };
 
 export const repos = {
-    collections: new InjectionToken<string>('CollectionRepo'),
-    concepts: new InjectionToken<string>('ConceptRepo'),
-    documents: new InjectionToken<string>('DocumentRepo'),
-    organizations: new InjectionToken<string>('OrganizationRepo'),
-    persons: new InjectionToken<string>('PersonRepo'),
-    processes: new InjectionToken<string>('ProcessRepo'),
-    relationships: new InjectionToken<string>('RelationshipRepo'),
+    individual: new InjectionToken<string>('IndividualRepo'),
     themes: new InjectionToken<string>('ThemeRepo'),
     users: new InjectionToken<string>('UserRepo'),
     directoryViews: new InjectionToken<string>('DirectoryViewRepo'),
@@ -46,13 +28,7 @@ export const repos = {
 };
 
 export const injectable = [
-    { provide: repos.collections, useExisting: CollectionRepo },
-    { provide: repos.concepts, useExisting: ConceptRepo },
-    { provide: repos.documents, useExisting: DocumentRepo },
-    { provide: repos.organizations, useExisting: OrganizationRepo },
-    { provide: repos.persons, useExisting: PersonRepo },
-    { provide: repos.processes, useExisting: ProcessRepo },
-    { provide: repos.relationships, useExisting: RelationshipRepo },
+    { provide: repos.individual, useExisting: IndividualRepo },
     { provide: repos.themes, useExisting: ThemeRepo },
     { provide: repos.users, useExisting: UserRepo },
     { provide: repos.directoryViews, useExisting: DirectoryViewRepo },

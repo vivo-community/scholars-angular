@@ -1,8 +1,8 @@
 <div class="search">
   <div class="container pt-2">
     <div class="row justify-content-center">
-      <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-        <scholars-search-box [live]="true" [view]="discoveryView | async"></scholars-search-box>
+      <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12" *ngIf="discoveryView | async; let discoveryView">
+        <scholars-search-box [live]="true" [view]="discoveryView" placeholder="{{ 'SHARED.SEARCH_BOX.VIEW_PLACEHOLDER' | translate: {view:discoveryView.name} }}"></scholars-search-box>
       </div>
     </div>
   </div>
@@ -12,12 +12,15 @@
     <div class="row flex-column-reverse flex-md-row">
       <div class="col-md-8">
         <span class="h4 text-primary">
-          <span class="mr-2">Search results for:</span>
-          <span>{{query | async}}</span>
+          <span>{{discoveryView.name}}</span>
+          <span *ngIf="query | async; let query">
+            <span> {{ 'DISCOVERY.RESULTS' | translate }}:</span>
+            <span> {{query}}</span>
+          </span>
         </span>
       </div>
-      <div class="col-md-4">
-        <span class="pull-right" *ngIf="hasExport(discoveryView)">
+      <div class="col-md-4 text-right">
+        <span *ngIf="hasExport(discoveryView)">
           <a [href]="getDiscoveryExportUrl(discoveryView, queryParams | async)" download>
             <span>{{ 'DISCOVERY.EXPORT' | translate }}</span>
           </a>
@@ -35,12 +38,14 @@
     </div>
     <ul role="tablist" class="list-unstyled mt-3 nav" *ngIf="discoveryViews | async; let discoveryViews" [ngClass]="{ 'nav-tabs': showTabs(windowDimensions | async), 'nav-pills flex-column': !showTabs(windowDimensions | async) }">
       <li class="nav-item" *ngFor="let discoveryView of discoveryViews">
-        <a class="nav-link" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, page | async, query | async)" [class.active]="isActive(discoveryView, url | async)">{{ discoveryView.name }}</a>
+        <a class="nav-link font-weight-bold" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, page | async, query | async)" [class.active]="isActive(discoveryView, url | async)">{{ discoveryView.name }}</a>
       </li>
     </ul>
-    <scholars-pagination *ngIf="documents | async; let documents" [page]="page" [ngSwitch]="discoveryView.layout" [pageSizeOptionsType]="'list'">
-      <scholars-grid-view *ngSwitchCase="'GRID'" [view]="discoveryView" [resources]="documents"></scholars-grid-view>
-      <scholars-list-view *ngSwitchCase="'LIST'" [view]="discoveryView" [resources]="documents"></scholars-list-view>
-    </scholars-pagination>
+    <div *ngIf="!(loading | async)" [@fadeIn]>
+      <scholars-pagination *ngIf="documents | async; let documents" [page]="page" [ngSwitch]="discoveryView.layout" [pageSizeOptionsType]="'list'">
+        <scholars-grid-view *ngSwitchCase="'GRID'" [view]="discoveryView" [resources]="documents"></scholars-grid-view>
+        <scholars-list-view *ngSwitchCase="'LIST'" [view]="discoveryView" [resources]="documents"></scholars-list-view>
+      </scholars-pagination>
+    </div>
   </div>
 </scholars-sidebar>

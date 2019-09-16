@@ -1,4 +1,4 @@
-import { OperationKey } from '../view';
+import { OpKey } from '../view';
 
 export enum Direction {
     ASC = 'asc',
@@ -16,12 +16,6 @@ export interface Pageable {
     readonly sort: Sort[];
 }
 
-export interface Indexable {
-    readonly field: string;
-    readonly operationKey: OperationKey;
-    readonly option: string;
-}
-
 export interface Facetable {
     readonly field: string;
     type?: string;
@@ -31,9 +25,21 @@ export interface Facetable {
     filter?: string;
 }
 
+export interface Filterable {
+    readonly field: string;
+    readonly value: string;
+    readonly opKey: OpKey;
+}
+
+export interface Boostable {
+    readonly field: string;
+    readonly value: number;
+}
+
 export interface SdrRequest {
-    readonly pageable?: Pageable;
-    readonly indexable?: Indexable;
+    readonly page?: Pageable;
+    readonly filters?: Filterable[];
     readonly facets?: Facetable[];
+    readonly boosts?: Boostable[];
     readonly query?: string;
 }

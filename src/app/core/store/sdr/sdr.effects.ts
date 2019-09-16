@@ -19,7 +19,7 @@ import { AbstractSdrRepo } from '../../model/sdr/repo/abstract-sdr-repo';
 import { SdrResource, SdrCollection, SdrFacet, SdrFacetEntry, Count } from '../../model/sdr';
 import { SidebarMenu, SidebarSection, SidebarItem, SidebarItemType } from '../../model/sidebar';
 import { SolrDocument } from '../../model/discovery';
-import { Facet, DiscoveryView, DirectoryView, FacetType } from '../../model/view';
+import { Facet, DiscoveryView, DirectoryView, FacetType, OpKey } from '../../model/view';
 
 import { injectable, repos } from '../../model/repos';
 
@@ -138,11 +138,10 @@ export class SdrEffects {
         ofType(...this.buildActions(fromSdr.SdrActionTypes.FETCH_LAZY_REFERENCE)),
         switchMap((action: fromSdr.FetchLazyReferenceAction) => {
             const field = action.payload.field;
-            const collection = action.payload.collection;
             const document = action.payload.document;
             const ids = document[field].map((property) => property.id);
-            return this.repos.get(collection).findByIdIn(ids).pipe(
-                map((resources: SdrCollection) => new fromSdr.FetchLazyReferenceSuccessAction(action.name, { document, collection, field, resources })),
+            return this.repos.get('individual').findByIdIn(ids).pipe(
+                map((resources: SdrCollection) => new fromSdr.FetchLazyReferenceSuccessAction(action.name, { document, field, resources })),
                 catchError((response) => scheduled([new fromSdr.FetchLazyReferenceFailureAction(action.name, { response })], asap))
             );
         })
@@ -216,8 +215,8 @@ export class SdrEffects {
     @Effect() count = this.actions.pipe(
         ofType(...this.buildActions(fromSdr.SdrActionTypes.COUNT)),
         mergeMap((action: fromSdr.CountResourcesAction) => this.repos.get(action.name).count(action.payload.request).pipe(
-            map((count: Count) => new fromSdr.CountResourcesSuccessAction(action.name, { count })),
-            catchError((response) => scheduled([new fromSdr.CountResourcesFailureAction(action.name, { response })], asap))
+            map((count: Count) => new fromSdr.CountResourcesSuccessAction(action.name, { label: action.payload.label, count })),
+            catchError((response) => scheduled([new fromSdr.CountResourcesFailureAction(action.name, { label: action.payload.label, response })], asap))
         ))
     );
 
@@ -228,7 +227,7 @@ export class SdrEffects {
 
     @Effect() recentlyUpdated = this.actions.pipe(
         ofType(...this.buildActions(fromSdr.SdrActionTypes.RECENTLY_UPDATED)),
-        mergeMap((action: fromSdr.RecentlyUpdatedResourcesAction) => this.repos.get(action.name).recentlyUpdated(action.payload.limit).pipe(
+        mergeMap((action: fromSdr.RecentlyUpdatedResourcesAction) => this.repos.get(action.name).recentlyUpdated(action.payload.limit, action.payload.filters).pipe(
             map((recentlyUpdated: SdrResource[]) => new fromSdr.RecentlyUpdatedResourcesSuccessAction(action.name, { recentlyUpdated })),
             catchError((response) => scheduled([new fromSdr.RecentlyUpdatedResourcesFailureAction(action.name, { response })], asap))
         ))
@@ -420,8 +419,6 @@ export class SdrEffects {
                 sections: []
             };
 
-            this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
-
             viewFacets.filter((viewFacet: Facet) => !viewFacet.hidden).forEach((viewFacet: Facet) => {
                 const sdrFacet = sdrFacets.find((sf: SdrFacet) => sf.field === viewFacet.field);
                 if (sdrFacet) {
@@ -460,21 +457,39 @@ export class SdrEffects {
                             selected: selected,
                             parenthetical: facetEntry.count,
                             route: [],
-                            queryParams: {},
+                            queryParams: Object.assign({}, routerState.queryParams)
                         };
 
                         if (viewFacet.type === FacetType.DATE_YEAR) {
                             const date = new Date(facetEntry.value);
                             const year = date.getUTCFullYear();
                             sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${year} TO ${year + 1}]` : undefined;
+                            sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
                         } else {
                             sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
+                            sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.EQUALS;
                         }
 
                         sidebarItem.queryParams.page = 1;
 
                         if (selected) {
                             sidebarSection.collapsed = false;
+                            if (sidebarItem.queryParams.filters && sidebarItem.queryParams.filters.indexOf(sdrFacet.field) >= 0) {
+                                const filters = sidebarItem.queryParams.filters.split(',').map(field => field.trim()).filter(field => field !== sdrFacet.field);
+                                if (filters.length > 0) {
+                                    sidebarItem.queryParams.filters = filters.join(',');
+                                } else {
+                                    delete sidebarItem.queryParams.filters;
+                                }
+                            }
+                        } else {
+                            if (sidebarItem.queryParams.filters) {
+                                if (sidebarItem.queryParams.filters.indexOf(sdrFacet.field) < 0) {
+                                    sidebarItem.queryParams.filters += `,${sdrFacet.field}`;
+                                }
+                            } else {
+                                sidebarItem.queryParams.filters = sdrFacet.field;
+                            }
                         }
 
                         sidebarSection.items.push(sidebarItem);
@@ -498,12 +513,14 @@ export class SdrEffects {
                         type: SidebarItemType.INFO,
                         label: this.translate.get('SHARED.SIDEBAR.INFO.NO_RESULTS_TEXT', { view: routerState.params.view, query: routerState.queryParams.query }),
                         route: [],
-                        queryParams: {},
+                        queryParams: {}
                     }],
                     collapsible: false,
                     collapsed: false
                 });
             }
+
+            this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
         }
         this.subscribeToResourceQueue(action.name, store.stomp);
     }

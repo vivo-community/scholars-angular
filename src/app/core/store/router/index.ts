@@ -17,13 +17,15 @@ export const selectRouterQueryParamFilters = createSelector(
     selectRouterQueryParams,
     (queryParams: Params): Filter[] => {
         const filters: Filter[] = [];
-        if (queryParams.facets) {
-            queryParams.facets.split(',').forEach((facet: string) => {
-                const value = queryParams[`${facet}.filter`];
+        if (queryParams.filters) {
+            queryParams.filters.split(',').forEach((field: string) => {
+                const value = queryParams[`${field}.filter`];
+                const opKey = queryParams[`${field}.opKey`];
                 if (value) {
                     filters.push({
-                        field: facet,
-                        value: value
+                        field,
+                        value,
+                        opKey
                     });
                 }
             });

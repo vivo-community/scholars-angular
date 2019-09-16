@@ -6,28 +6,28 @@ export enum Side {
     RIGHT = 'RIGHT'
 }
 
-export interface LazyReference {
-    readonly field: string;
-    readonly collection: string;
-}
-
 export interface Subsection {
     readonly name: string;
     readonly field: string;
     readonly filters: Filter[];
     readonly sort: Sort[];
-    readonly template: string;
     readonly pageSize: number;
+    readonly template: string;
     templateFunction?: (document: any) => string;
 }
 
 export interface DisplayTabSectionView extends View {
+    readonly field: string;
+    readonly filters: Filter[];
+    readonly sort: Sort[];
     readonly hidden: boolean;
     readonly shared: boolean;
+    readonly paginated: boolean;
+    readonly pageSize: number;
     readonly template: string;
     templateFunction?: (document: any) => string;
     readonly requiredFields: string[];
-    readonly lazyReferences: LazyReference[];
+    readonly lazyReferences: string[];
     readonly subsections: Subsection[];
 }
 

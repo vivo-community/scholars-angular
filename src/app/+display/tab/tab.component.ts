@@ -25,8 +25,6 @@ export class TabComponent implements OnDestroy, OnInit {
 
     public display: string;
 
-    public collection: string;
-
     private subscriptions: Subscription[];
 
     constructor(
@@ -41,11 +39,10 @@ export class TabComponent implements OnDestroy, OnInit {
             this.route.parent.params,
             this.route.params
         ]).subscribe((params: Params[]) => {
-            if (params[0].collection && params[0].id && params[1].view && params[1].tab) {
+            if (params[0].id && params[1].view && params[1].tab) {
                 this.tab = this.store.pipe(select(selectDisplayViewTab(params[1].view, params[1].tab)));
-                this.document = this.store.pipe(select(selectResourceById(params[0].collection, params[0].id)));
+                this.document = this.store.pipe(select(selectResourceById('individual', params[0].id)));
                 this.display = params[1].view;
-                this.collection = params[0].collection;
             }
         }));
     }

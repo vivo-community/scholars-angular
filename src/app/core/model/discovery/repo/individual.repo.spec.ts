@@ -6,14 +6,14 @@ import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { StoreModule } from '@ngrx/store';
 
 import { RestService } from '../../../service/rest.service';
-import { ProcessRepo } from './process.repo';
+import { IndividualRepo } from './individual.repo';
 
 import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
 import { testAppConfig } from '../../../../../test.config';
 
-describe('ProcessRepo', () => {
+describe('IndividualRepo', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -33,12 +33,12 @@ describe('ProcessRepo', () => {
                 { provide: REQUEST, useFactory: getRequest },
                 { provide: 'APP_CONFIG', useValue: testAppConfig },
                 RestService,
-                ProcessRepo
+                IndividualRepo
             ]
         });
     });
 
-    it('should be created', inject([ProcessRepo], (service: ProcessRepo) => {
+    it('should be created', inject([IndividualRepo], (service: IndividualRepo) => {
         expect(service).toBeTruthy();
     }));
 

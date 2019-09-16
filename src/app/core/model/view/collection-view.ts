@@ -1,5 +1,16 @@
-import { ResourceView } from './';
+import { View } from './';
 import { Direction } from '../request';
+
+export enum OpKey {
+    BETWEEN = 'BETWEEN',
+    CONTAINS = 'CONTAINS',
+    ENDS_WITH = 'ENDS_WITH',
+    EQUALS = 'EQUALS',
+    EXPRESSION = 'EXPRESSION',
+    FUZZY = 'FUZZY',
+    NOT_EQUALS = 'NOT_EQUALS',
+    STARTS_WITH = 'STARTS_WITH'
+}
 
 export enum Layout {
     LIST = 'LIST',
@@ -42,15 +53,22 @@ export interface Facet {
 export interface Filter {
     readonly field: string;
     readonly value: string;
+    readonly opKey: OpKey;
 }
 
-export interface CollectionView extends ResourceView {
+export interface Boost {
+    readonly field: string;
+    readonly value: number;
+}
+
+export interface CollectionView extends View {
     readonly layout: Layout;
     readonly templates: any;
     templateFunctions?: any;
     readonly styles: string[];
     readonly facets: Facet[];
     readonly filters: Filter[];
+    readonly boosts: Boost[];
     readonly sort: Sort[];
     readonly export: Export[];
 }

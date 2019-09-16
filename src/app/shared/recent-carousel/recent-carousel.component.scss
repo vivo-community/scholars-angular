@@ -25,20 +25,20 @@
       overflow-y: hidden;
       align-items: center;
       justify-content: center;
-      min-width: 150px;
+      min-width: 100px;
 
       .scroll-item {
         box-sizing: border-box;
         flex-direction: column;
-        height: 175px;
-        width: 150px;
-        margin: 8px;
-        line-height: 15px;
+        height: 125px;
+        width: 100px;
+        margin: 5px;
+        line-height: 12px;
         background-size: 100%;
         background-position: center top;
         background-repeat: no-repeat;
-        transition: all .35s ease-in-out;
         border-radius: 8px;
+        transition: all 0.3s ease-in;
 
         .card-body {
           color: white;
@@ -47,21 +47,20 @@
           text-decoration: none;
 
           .item-title {
-            font-size: 0.9em;
+            font-size: 0.65em;
           }
           .item-subtitle {
-            font-size: 0.8em;
-          }
-          .item-footer {
-            font-size: 0.7em;
+            font-size: 0.55em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
       }
       .scroll-item:hover {
-        height: 201.25px;
-        width: 172.5px;
-        transition: all .30s ease-in-out;
-        cursor: pointer;
+        border-color:  rgba(82,168,236,.8);
+        box-shadow: 0 0px 0px rgba(82,168,236,.8) inset, 0 0 8px rgba(82,168,236,.8);
+        outline: 0 none;
       }
       .scroll-item.hide {
         display: none;

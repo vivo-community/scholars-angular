@@ -23,7 +23,6 @@ describe('ResultViewComponent', () => {
         component = fixture.componentInstance;
         component.view = {
             name: 'Test',
-            collection: 'tests',
             layout: Layout.GRID,
             templates: {
                 default: '<span>Hello, World!</span>'
@@ -34,6 +33,7 @@ describe('ResultViewComponent', () => {
             styles: [],
             facets: [],
             filters: [],
+            boosts: [],
             sort: [],
             export: [],
             _links: {

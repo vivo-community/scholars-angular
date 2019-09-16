@@ -14,7 +14,7 @@ import { DiscoveryView, Facet, Filter } from '../../core/model/view';
 import { selectActiveThemeOrganization } from '../../core/store/theme';
 import { selectRouterSearchQuery } from '../../core/store/router';
 
-import { addFacetsToQueryParams, addFiltersToQueryParams, addSortToQueryParams } from '../utilities/view.utility';
+import { getQueryParams } from '../utilities/view.utility';
 
 export interface SearchBoxStyles {
     label: {
@@ -42,6 +42,8 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     };
 
     @Input() live = false;
+
+    @Input() placeholder = '';
 
     @Input() debounce = 750;
 
@@ -106,7 +108,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
                 });
             }
 
-            const collection = this.view.collection;
+            const collection = 'individual';
 
             this.form.patchValue({ collection });
 
@@ -150,12 +152,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     }
 
     public getDiscoveryQueryParams(query: string): Params {
-        const queryParams: Params = {};
-        queryParams.collection = this.view.collection;
-        addFacetsToQueryParams(queryParams, this.view);
-        addFiltersToQueryParams(queryParams, this.view);
-        // NOTE: only first sort is applied to query
-        addSortToQueryParams(queryParams, this.view);
+        const queryParams: Params = getQueryParams(this.view);
         if (query && query.length > 0) {
             queryParams.query = query;
         } else {
@@ -163,6 +160,10 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
         }
         queryParams.page = this.live ? 1 : undefined;
         return queryParams;
+    }
+
+    public getDiscoveryRouterLink(): string[] {
+        return [`/discovery/${this.view.name}`];
     }
 
     private buildUrlTree(queryParams: Params): UrlTree {

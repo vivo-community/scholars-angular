@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DiscoveryView, DisplayView, DirectoryView, CollectionView } from '../../model/view';
+import { DiscoveryView, DisplayView, DirectoryView, CollectionView, Filter } from '../../model/view';
 import { SdrResource } from '../../model/sdr';
 
 import * as fromSdr from './sdr.reducer';
@@ -18,37 +18,30 @@ export const selectResourceIsLoading = <R extends SdrResource>(name: string) => 
 export const selectResourceIsDereferencing = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.isDereferencing);
 export const selectResourceIsUpdating = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.isUpdating);
 
-export const selectResourcesCount = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getCount);
+export const selectResourcesCounts = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getCounts);
 export const selectResourcesPage = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getPage);
 export const selectResourcesFacets = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getFacets);
 export const selectResourcesLinks = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getLinks);
+export const selectResourcesRecentlyUpdated = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getRecentlyUpdated);
 
 export const selectResourceById = <R extends SdrResource>(name: string, id: string) => createSelector(
     selectResourceEntities<R>(name),
     resources => resources[id]
 );
 
-export const selectDefaultDiscoveryView = (collection: string) => createSelector(
+export const selectDirectoryViewByClass = (clazz: string) => createSelector(
+    selectAllResources<DirectoryView>('directoryViews'),
+    (resources) => resources.find((dv: DirectoryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz)
+);
+
+export const selectDiscoveryViewByClass = (clazz: string) => createSelector(
     selectAllResources<DiscoveryView>('discoveryViews'),
-    (resources) => resources.find((dv: DiscoveryView) => dv.collection === collection)
+    (resources) => resources.find((dv: DiscoveryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz)
 );
 
 export const selectCollectionViewByName = (collection: string, name: string) => createSelector(
     selectResourceEntities<CollectionView>(collection),
     (collectionViews) => collectionViews[name]
-);
-
-export const selectDirectoryViewByCollection = (collection: string) => createSelector(
-    selectResourceEntities<DirectoryView>('directoryViews'),
-    (directoryViews) => {
-        for (const key in directoryViews) {
-            if (directoryViews.hasOwnProperty(key)) {
-                if (directoryViews[key].collection === collection) {
-                    return directoryViews[key];
-                }
-            }
-        }
-    }
 );
 
 export const selectDisplayViewByTypes = (types: string[]) => createSelector(

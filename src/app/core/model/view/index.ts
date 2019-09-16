@@ -1,6 +1,5 @@
-export { Layout, Export, FacetType, FacetSort, Facet, Filter, Sort, CollectionView } from './collection-view';
-export { DisplayView, DisplayTabView, DisplayTabSectionView, LazyReference } from './display-view';
+export { Boost, Layout, Export, FacetType, FacetSort, Facet, Filter, OpKey, Sort, CollectionView } from './collection-view';
+export { DisplayView, DisplayTabView, DisplayTabSectionView } from './display-view';
 export { DiscoveryView } from './discovery-view';
-export { OperationKey, Index, DirectoryView } from './directory-view';
-export { ResourceView } from './resource-view';
+export { Index, DirectoryView } from './directory-view';
 export { View } from './view';

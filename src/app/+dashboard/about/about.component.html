@@ -2,7 +2,7 @@
   <div class="container pt-2">
     <div class="row justify-content-center">
       <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-        <scholars-search-box [view]="discoveryView | async"></scholars-search-box>
+        <scholars-search-box [view]="discoveryView | async" placeholder="{{ 'SHARED.SEARCH_BOX.PLACEHOLDER' | translate }}"></scholars-search-box>
       </div>
     </div>
   </div>
@@ -24,9 +24,10 @@
   <ul>
     <li><a href="http://scholars.library.tamu.edu/pdf/Scholars%20Admin%20Info%20Sheet.pdf">Benefits for Administrators</a></li>
     <li><a href="http://scholars.library.tamu.edu/pdf/Scholars%20Faculty%20Info%20Sheet.pdf">Benefits for Faculty</a></li>
+    <li><a href="http://scholars.library.tamu.edu/pdf/infoSheet_ScholarsVersion.pdf">Enhanced Features for Scholars@TAMU (Updates of September 2019)</a></li>
   </ul>
 
-  <div>
+  <div id="v2">
     <h4 class="text-primary">Enhanced Features for an Authoritative System of Record for Expertise and Scholarly Reputation</h4>
     <p>Scholars@TAMU v2 is in development. We plan to release this version on September to the public.&#160; Along with a new interface, the enhancement includes new data and additional features.&#160;&#160; We continue to host faculty profiles that contain accurate, authoritative, and up-to-date information to serve three use cases: (i) enhanced discovery of TAMU expertise to help form collaborative teams or highlight TAMU research to society, (ii) support accreditation and other organizational activities through the generation of custom reports using our SQL database, and (iii) characterize research at Texas A&amp;M, such as identifying areas of strength in interdisciplinary research, that can be used for strategic decision making.</p>
     <p><img alt="New Scholars Homepage Design" class="img-responsive" src="https://library.tamu.edu/services/scholarly_communication/scholars/images/interface1.png" style="display: block; margin-left: auto; margin-right: auto;" width="460" /></p>
@@ -75,11 +76,11 @@
   <p><strong>Explore Scholars@TAMU</strong></p>
   <ul>
     <li>Search by keywords to identify potential collaborators</li>
-    <li>Find scholars by&#160;<a href="directory/People?collection=persons&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=COUNT,DESC&positionOrganization.type=STRING&positionOrganization.pageSize=10&positionOrganization.pageNumber=1&positionOrganization.sort=COUNT,DESC&researchAreas.type=STRING&researchAreas.pageSize=10&researchAreas.pageNumber=1&researchAreas.sort=COUNT,DESC&facets=type,positionOrganization,researchAreas&sort=name,asc">name</a></li>
-    <li>Browse&#160;<a href="directory/Organizations?collection=organizations&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=INDEX,ASC&facets=type&sort=name,asc&type.filter=College&page=1">colleges</a>,&#160;
-      <a href="directory/Organizations?collection=organizations&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=INDEX,ASC&facets=type&sort=name,asc&page=1&type.filter=Department">departments</a>, and&#160;
-      <a href="directory/Organizations?collection=organizations&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=INDEX,ASC&facets=type&sort=name,asc&page=1&type.filter=Institute">institutes</a></li>
-    <li>Discover teaching and&#160;<a href="directory/Research?collection=documents&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=COUNT,DESC&publicationDate.type=DATE_YEAR&publicationDate.pageSize=10&publicationDate.pageNumber=1&publicationDate.sort=INDEX,DESC&authorOrganization.type=STRING&authorOrganization.pageSize=10&authorOrganization.pageNumber=1&authorOrganization.sort=COUNT,DESC&facets=type,publicationDate,authorOrganization&sort=title,asc">research</a>&#160;areas</li>
+    <li>Find scholars by&#160;<a href="directory/People?collection=individual&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=COUNT,DESC&positionOrganization.type=STRING&positionOrganization.pageSize=10&positionOrganization.pageNumber=1&positionOrganization.sort=INDEX,ASC&researchAreas.type=STRING&researchAreas.pageSize=10&researchAreas.pageNumber=1&researchAreas.sort=COUNT,DESC&facets=type,positionOrganization,researchAreas&class.filter=Person&class.opKey=EQUALS&filters=class&sort=name,ASC&page=1">name</a></li>
+    <li>Browse&#160;<a href="directory/Organizations?collection=individual&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=INDEX,ASC&facets=type&class.filter=Organization&class.opKey=EQUALS&filters=class,type&sort=name,ASC&page=1&type.opKey=EQUALS&type.filter=College">colleges</a>,&#160;
+      <a href="directory/Organizations?collection=individual&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=INDEX,ASC&facets=type&class.filter=Organization&class.opKey=EQUALS&filters=class,type&sort=name,ASC&page=1&type.opKey=EQUALS&type.filter=Department">departments</a>, and&#160;
+      <a href="directory/Organizations?collection=individual&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=INDEX,ASC&facets=type&class.filter=Organization&class.opKey=EQUALS&filters=class,type&sort=name,ASC&page=1&type.opKey=EQUALS&type.filter=Institute">institutes</a></li>
+    <li>Discover teaching and&#160;<a href="directory/Research?collection=individual&type.type=STRING&type.pageSize=10&type.pageNumber=1&type.sort=COUNT,DESC&publicationDate.type=DATE_YEAR&publicationDate.pageSize=10&publicationDate.pageNumber=1&publicationDate.sort=INDEX,DESC&authorOrganization.type=STRING&authorOrganization.pageSize=10&authorOrganization.pageNumber=1&authorOrganization.sort=COUNT,DESC&facets=type,publicationDate,authorOrganization&class.filter=Document&class.opKey=EQUALS&filters=class&sort=title,ASC&page=1">research</a>&#160;areas</li>
   </ul>
   <p id="searchTips"><strong>Search Tips</strong></p>
   <ul>
@@ -114,10 +115,10 @@
 
   <p><strong>The Team</strong></p>
   <ul class="user-icon">
-    <li><i class='fa fa-user mr-1'></i><a href="mailto:beherbert@library.tamu.edu" target="_top">Dr. Bruce Herbert</a>, Director, Office of Scholarly Communications</li>
-    <li><i class='fa fa-user mr-1'></i><a href="mailto:djlee@library.tamu.edu" target="_top">Dr. Dong Joon Lee</a>, Researcher Information Systems Librarian, Office of Scholarly Communications</li>
-    <li><i class='fa fa-user mr-1'></i><span>Ethel Mejia, Data Analyst, Office of Scholarly Communications</span></li>
-    <li><i class='fa fa-user mr-1'></i><span>Doug Hahn, Senior IT Manager, Applications, Digital Initiatives</span></li>
+    <li><i class='fa fa-user mr-1'></i><a href="display/nf489b17d">Dr. Bruce Herbert</a>, Director, Office of Scholarly Communications</li>
+    <li><i class='fa fa-user mr-1'></i><a href="display/nbef1f2f3">Dr. Dong Joon Lee</a>, Researcher Information Systems Librarian, Office of Scholarly Communications</li>
+    <li><i class='fa fa-user mr-1'></i><a href="display/n31ebd4a6">Ethel Mejia</a>, Data Analyst, Office of Scholarly Communications</li>
+    <li><i class='fa fa-user mr-1'></i><a href="display/n3e0f7747">Doug Hahn</a>, Senior IT Manager, Applications, Digital Initiatives</li>
   </ul>
 
   <span class="h4 text-primary">Early Beta Version in 2016</span>

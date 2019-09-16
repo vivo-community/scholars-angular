@@ -1,11 +1,11 @@
-import { ResourceView, CollectionView, DisplayView } from '../../core/model/view';
+import { CollectionView, DisplayView } from '../../core/model/view';
 
 import { compileTemplate, getTemplateFunction, getParsedTemplateFunction, initializeTemplateHelpers } from 'scholars-embed-utilities';
 
-const getParsedResourceViewTemplateFunction = (view: ResourceView, template: string, additionalContext: any) => {
+const getParsedResourceViewTemplateFunction = (template: string, additionalContext: any) => {
     compileTemplate(template);
     return (resource: any) => {
-        resource.collection = view.collection;
+        resource.collection = 'individual';
         const templateFunction = getTemplateFunction(template, additionalContext);
         return templateFunction(resource);
     };
@@ -15,7 +15,7 @@ const augmentCollectionViewTemplates = (view: CollectionView, additionalContext:
     view.templateFunctions = {};
     for (const k in view.templates) {
         if (view.templates.hasOwnProperty(k)) {
-            view.templateFunctions[k] = getParsedResourceViewTemplateFunction(view, view.templates[k], additionalContext);
+            view.templateFunctions[k] = getParsedResourceViewTemplateFunction(view.templates[k], additionalContext);
         }
     }
 };
