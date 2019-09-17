@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MetaDefinition } from '@angular/platform-browser';
 
 import { Store, select } from '@ngrx/store';
@@ -82,8 +82,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
     constructor(
         private store: Store<AppState>,
         private router: Router,
-        private route: ActivatedRoute,
-        private changeDetRef: ChangeDetectorRef
+        private route: ActivatedRoute
     ) {
         this.subscriptions = [];
     }
@@ -96,12 +95,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
     ngOnInit() {
         this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
-
-        this.subscriptions.push(this.router.events.pipe(
-            filter(event => event instanceof NavigationStart)
-        ).subscribe(() => {
-            this.changeDetRef.markForCheck();
-        }));
 
         this.subscriptions.push(this.route.params.subscribe((params: Params) => {
             if (params.id) {
