@@ -16,8 +16,7 @@ export const routes: Routes = [
                 path: 'about', component: AboutComponent, data: {
                     tags: [{ name: 'view', content: 'Scholars About' }]
                 }
-            },
-            { path: '**', redirectTo: '' }
+            }
         ]
     }
 ];
