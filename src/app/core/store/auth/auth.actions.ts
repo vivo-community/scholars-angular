@@ -76,7 +76,7 @@ export class ConfirmRegistrationFailureAction implements Action {
 
 export class CompleteRegistrationAction implements Action {
     readonly type = AuthActionTypes.COMPLETE_REGISTRATION;
-    constructor(public payload: { registration: RegistrationRequest }) { }
+    constructor(public payload: { key: string, registration: RegistrationRequest }) { }
 }
 
 export class CompleteRegistrationSuccessAction implements Action {

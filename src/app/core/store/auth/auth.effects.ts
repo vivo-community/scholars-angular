@@ -121,7 +121,6 @@ export class AuthEffects {
         switchMap((registration: RegistrationRequest) => {
             return [
                 new fromDialog.CloseDialogAction(),
-                new fromRouter.Go({ path: ['/'] }),
                 this.dialog.registrationDialog(RegistrationStep.COMPLETE, registration),
                 this.alert.confirmRegistrationSuccessAlert()
             ];
@@ -140,8 +139,8 @@ export class AuthEffects {
     @Effect() completeRegistration = this.actions.pipe(
         ofType(fromAuth.AuthActionTypes.COMPLETE_REGISTRATION),
         map((action: fromAuth.CompleteRegistrationAction) => action.payload),
-        switchMap((payload: { registration: RegistrationRequest }) =>
-            this.authService.completeRegistration(payload.registration).pipe(
+        switchMap((payload: { key: string, registration: RegistrationRequest }) =>
+            this.authService.completeRegistration(payload.key, payload.registration).pipe(
                 map((user: User) => new fromAuth.CompleteRegistrationSuccessAction({ user })),
                 catchError((response) => scheduled([new fromAuth.CompleteRegistrationFailureAction({ response })], asap))
             )
@@ -154,6 +153,7 @@ export class AuthEffects {
         map((payload: { user: User }) => payload.user),
         switchMap(() => [
             new fromDialog.CloseDialogAction(),
+            new fromRouter.Go({ path: ['/'] }),
             this.alert.completeRegistrationSuccessAlert()
         ])
     );
