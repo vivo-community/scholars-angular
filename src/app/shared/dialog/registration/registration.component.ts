@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Store, select } from '@ngrx/store';
 
-import { combineLatest, scheduled, Observable } from 'rxjs';
+import { combineLatest, scheduled, Observable, Subscription } from 'rxjs';
 import { queue } from 'rxjs/internal/scheduler/queue';
 import { map } from 'rxjs/operators';
 
@@ -32,7 +33,7 @@ export function confirmPasswordValidator(password: FormControl): ValidatorFn {
     templateUrl: './registration.component.html',
     styleUrls: ['./registration.component.scss']
 })
-export class RegistrationComponent implements OnInit {
+export class RegistrationComponent implements OnInit, OnDestroy {
 
     @Input() step: RegistrationStep;
 
@@ -40,12 +41,15 @@ export class RegistrationComponent implements OnInit {
 
     public dialog: DialogControl;
 
+    private subscriptions: Subscription[];
+
     constructor(
         private builder: FormBuilder,
         private translate: TranslateService,
-        private store: Store<AppState>,
+        private route: ActivatedRoute,
+        private store: Store<AppState>
     ) {
-
+        this.subscriptions = [];
     }
 
     ngOnInit() {
@@ -56,44 +60,52 @@ export class RegistrationComponent implements OnInit {
             Validators.maxLength(64)
         ] : []);
 
-        this.dialog = {
-            title: this.translate.get('SHARED.DIALOG.REGISTRATION.TITLE'),
-            form: this.builder.group({
-                firstName: new FormControl(this.isComplete() ? this.registration.firstName : '', this.isSubmit() ? [
-                    Validators.required,
-                    Validators.minLength(2),
-                    Validators.maxLength(64)
-                ] : []),
-                lastName: new FormControl(this.isComplete() ? this.registration.lastName : '', this.isSubmit() ? [
-                    Validators.required,
-                    Validators.minLength(2),
-                    Validators.maxLength(64)
-                ] : []),
-                email: new FormControl(this.isComplete() ? this.registration.email : '', this.isSubmit() ? [
-                    Validators.required,
-                    Validators.email
-                ] : []),
-                password: password,
-                confirm: new FormControl('', this.isComplete() ? [
-                    Validators.required,
-                    Validators.minLength(8),
-                    Validators.maxLength(64),
-                    confirmPasswordValidator(password)
-                ] : [])
-            }),
-            close: {
-                type: DialogButtonType.OUTLINE_WARNING,
-                label: this.translate.get('SHARED.DIALOG.REGISTRATION.CANCEL'),
-                action: () => this.store.dispatch(new fromDialog.CloseDialogAction()),
-                disabled: () => this.isCancelDisabled()
-            },
-            submit: {
-                type: DialogButtonType.OUTLINE_PRIMARY,
-                label: this.translate.get('SHARED.DIALOG.REGISTRATION.SUBMIT'),
-                action: () => this.submit(),
-                disabled: () => this.isSubmitDisabled()
-            }
-        };
+        this.subscriptions.push(this.route.queryParams.subscribe((params: Params) => {
+            this.dialog = {
+                title: this.translate.get('SHARED.DIALOG.REGISTRATION.TITLE'),
+                form: this.builder.group({
+                    firstName: new FormControl(this.isComplete() ? this.registration.firstName : '', this.isSubmit() ? [
+                        Validators.required,
+                        Validators.minLength(2),
+                        Validators.maxLength(64)
+                    ] : []),
+                    lastName: new FormControl(this.isComplete() ? this.registration.lastName : '', this.isSubmit() ? [
+                        Validators.required,
+                        Validators.minLength(2),
+                        Validators.maxLength(64)
+                    ] : []),
+                    email: new FormControl(this.isComplete() ? this.registration.email : '', this.isSubmit() ? [
+                        Validators.required,
+                        Validators.email
+                    ] : []),
+                    password: password,
+                    confirm: new FormControl('', this.isComplete() ? [
+                        Validators.required,
+                        Validators.minLength(8),
+                        Validators.maxLength(64),
+                        confirmPasswordValidator(password)
+                    ] : [])
+                }),
+                close: {
+                    type: DialogButtonType.OUTLINE_WARNING,
+                    label: this.translate.get('SHARED.DIALOG.REGISTRATION.CANCEL'),
+                    action: () => this.store.dispatch(new fromDialog.CloseDialogAction()),
+                    disabled: () => this.isCancelDisabled()
+                },
+                submit: {
+                    type: DialogButtonType.OUTLINE_PRIMARY,
+                    label: this.translate.get('SHARED.DIALOG.REGISTRATION.SUBMIT'),
+                    action: () => this.submit(params.key),
+                    disabled: () => this.isSubmitDisabled()
+                }
+            };
+        }));
+    }
+
+    ngOnDestroy() {
+        this.subscriptions.forEach((subscription: Subscription) => {
+            subscription.unsubscribe();
+        });
     }
 
     public isValid(field: string): boolean {
@@ -130,11 +142,11 @@ export class RegistrationComponent implements OnInit {
         return this.step === RegistrationStep.SUBMIT;
     }
 
-    private submit(): void {
+    private submit(key: string): void {
         if (this.isSubmit()) {
             this.store.dispatch(new fromAuth.SubmitRegistrationAction({ registration: this.dialog.form.value }));
         } else if (this.isComplete()) {
-            this.store.dispatch(new fromAuth.CompleteRegistrationAction({ registration: this.dialog.form.value }));
+            this.store.dispatch(new fromAuth.CompleteRegistrationAction({ key, registration: this.dialog.form.value }));
         } else {
             throw new Error('Unknown registration step!');
         }
