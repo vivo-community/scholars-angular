@@ -12,6 +12,16 @@
 
 <body>
   <scholars-root></scholars-root>
+  <!-- TODO: create google tag manager component and template id, which should be configurable in app config -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-54069646-2"></script>
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-54069646-2');
+  </script>
 </body>
 
 </html>

@@ -20,8 +20,11 @@
         </li>
       </ul>
       <ul class="navbar-nav">
-        <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}">
           <a class="nav-link" [routerLink]="['/about']" (click)="toggleNavigation()">{{ 'SHARED.NAVIGATION.ABOUT' | translate }}</a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link" href="https://scholars.library.tamu.edu/about_scholars">{{ 'SHARED.NAVIGATION.ABOUT' | translate }}</a>
         </li>
         <li *ngIf="vivoEditorUrl" class="nav-item d-sm-none">
           <a class="nav-link edit-profile-action" [href]="vivoEditorUrl">{{ 'SHARED.NAVIGATION.EDIT_PROFILE' | translate }}</a>
