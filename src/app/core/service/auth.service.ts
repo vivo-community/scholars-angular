@@ -51,12 +51,12 @@ export class AuthService {
         return this.restService.post<RegistrationRequest>(this.appConfig.serviceUrl + '/registration', registration);
     }
 
-    public completeRegistration(registration: RegistrationRequest): Observable<User> {
-        return this.restService.put<User>(this.appConfig.serviceUrl + '/registration', registration);
-    }
-
     public confirmRegistration(key: string): Observable<RegistrationRequest> {
         return this.restService.get<RegistrationRequest>(this.appConfig.serviceUrl + '/registration?key=' + key);
+    }
+
+    public completeRegistration(key: string, registration: RegistrationRequest): Observable<User> {
+        return this.restService.put<User>(this.appConfig.serviceUrl + '/registration?key=' + key, registration);
     }
 
     public getUser(): Observable<User> {

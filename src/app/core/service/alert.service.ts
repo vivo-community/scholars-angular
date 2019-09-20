@@ -46,7 +46,7 @@ export class AlertService {
     }
 
     public confirmRegistrationFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
-        return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
+        return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.error}`, true, 15000);
     }
 
     public completeRegistrationSuccessAlert(): fromAlert.AddAlertAction {
