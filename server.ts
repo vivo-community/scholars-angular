@@ -31,8 +31,8 @@ const BASE_HREF = process.env.BASE_HREF || '/';
 
 const SERVICE_URL = process.env.SERVICE_URL || 'http://localhost:9000';
 const EMBED_URL = process.env.EMBED_URL || 'http://localhost:4201';
-const VIVO_URL = process.env.VIVO_URL || 'https://vivo.library.tamu.edu/vivo';
-const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'https://scholars.library.tamu.edu/vivo_editor';
+const VIVO_URL = process.env.VIVO_URL || 'http://localhost:8080/vivo';
+const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'http://localhost:8080/vivo_editor';
 
 const appConfig: AppConfig = {
     host: HOST,
