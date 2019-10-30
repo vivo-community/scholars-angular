@@ -112,14 +112,30 @@ const equals = (filterOne: Filter, filterTwo: Filter): boolean => {
 
 const getResourcesPage = (resources: any[], sort: Sort[], page: SdrPage): any[] => {
     let sorted = [].concat(resources);
-    for (const s of sort) {
-        const asc = Direction[s.direction] === Direction.ASC;
-        sorted = sorted.sort((a, b) => {
+    // sort
+    sorted = sorted.sort((a, b) => {
+        let result = 0;
+        for (const s of sort) {
+            const isAsc = Direction[s.direction] === Direction.ASC;
+            if (a[s.field] === undefined) {
+                return isAsc ? -1 : 1;
+            }
+            if (b[s.field] === undefined) {
+                return isAsc ? 1 : -1;
+            }
             const av = s.date ? new Date(a[s.field]) : a[s.field];
             const bv = s.date ? new Date(b[s.field]) : b[s.field];
-            return asc ? (av > bv) ? 1 : ((bv > av) ? -1 : 0) : (bv > av) ? 1 : ((av > bv) ? -1 : 0);
-        });
-    }
+            if (isAsc) {
+                result = av > bv ? 1 : av < bv ? -1 : 0;
+            } else {
+                result = av < bv ? 1 : av > bv ? -1 : 0;
+            }
+            if (result !== 0) {
+                break;
+            }
+        }
+        return result;
+    });
     const pageStart = (page.number - 1) * page.size;
     const pageEnd = pageStart + page.size;
     return sorted.slice(pageStart, pageEnd);
