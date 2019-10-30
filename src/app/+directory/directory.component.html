@@ -29,8 +29,8 @@
           <a class="fa fa-close" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, filters, filter)"></a>
         </span>
       </span>
-      <span *ngIf="filters.length > 0" class="badge badge-light p-2 mr-2 mb-2">
-        <a [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, page | async, query | async)">Clear</a>
+      <span *ngIf="showClearFilters(directoryView, filters)" class="badge badge-light p-2 mr-2 mb-2">
+        <a [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, filters)">Clear</a>
       </span>
     </div>
     <div class="index">

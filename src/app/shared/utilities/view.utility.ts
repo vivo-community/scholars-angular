@@ -89,6 +89,10 @@ const showFilter = (collectionView: CollectionView, actualFilter: Filter): boole
     return actualFilter.opKey === OpKey.BETWEEN || actualFilter.opKey === OpKey.EQUALS;
 };
 
+const showClearFilters = (collectionView: CollectionView, filters: Filter[]): boolean => {
+    return filters.length > collectionView.filters.length;
+};
+
 const getFilterField = (collectionView: CollectionView, actualFilter: Filter): string => {
     return actualFilter.field;
 };
@@ -166,6 +170,7 @@ export {
     applyFiltersToQueryParams,
     getQueryParams,
     showFilter,
+    showClearFilters,
     getFilterField,
     getFilterValue,
     hasExport,
