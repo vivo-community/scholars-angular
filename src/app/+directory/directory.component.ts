@@ -17,7 +17,7 @@ import { fadeIn } from '../shared/utilities/animation.utility';
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByClass, selectResourceIsLoading } from '../core/store/sdr';
 import { selectRouterQueryParams, selectRouterQueryParamFilters } from '../core/store/router';
 
-import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
+import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
 
 @Component({
     selector: 'scholars-directory',
@@ -96,6 +96,10 @@ export class DirectoryComponent implements OnDestroy, OnInit {
         return showFilter(directoryView, actualFilter);
     }
 
+    public showClearFilters(directoryView: DirectoryView, filters: Filter[]): boolean {
+        return showClearFilters(directoryView, filters);
+    }
+
     public getFilterField(directoryView: DirectoryView, actualFilter: Filter): string {
         return getFilterField(directoryView, actualFilter);
     }
@@ -114,7 +118,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
 
     public getDirectoryQueryParams(directoryView: DirectoryView, option: string, filters: Filter[], filterToRemove: Filter): Params {
         const queryParams: Params = getQueryParams(directoryView);
-        applyFiltersToQueryParams(queryParams, filters, filterToRemove);
+        applyFiltersToQueryParams(queryParams, directoryView, filters, filterToRemove);
         queryParams.page = 1;
         if (option) {
             queryParams[`${directoryView.index.field}.filter`] = option;
