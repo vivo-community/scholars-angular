@@ -19,7 +19,7 @@ import { selectRouterSearchQuery, selectRouterUrl, selectRouterQueryParamFilters
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectResourceIsLoading } from '../core/store/sdr';
 import { selectWindowDimensions } from '../core/store/layout';
 
-import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
+import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
 
 @Component({
     selector: 'scholars-discovery',
@@ -102,6 +102,10 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
         return showFilter(discoveryView, actualFilter);
     }
 
+    public showClearFilters(discoveryView: DiscoveryView, filters: Filter[]): boolean {
+        return showClearFilters(discoveryView, filters);
+    }
+
     public getFilterField(discoveryView: DiscoveryView, actualFilter: Filter): string {
         return getFilterField(discoveryView, actualFilter);
     }
@@ -120,7 +124,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
 
     public getDiscoveryQueryParams(discoveryView: DiscoveryView, page: SdrPage, query: string, filters: Filter[] = [], filterToRemove: Filter): Params {
         const queryParams: Params = getQueryParams(discoveryView);
-        applyFiltersToQueryParams(queryParams, filters, filterToRemove);
+        applyFiltersToQueryParams(queryParams, discoveryView, filters, filterToRemove);
         if (query && query.length > 0) {
             queryParams.query = query;
         }
