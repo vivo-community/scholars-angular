@@ -68,8 +68,8 @@ const getQueryParams = (collectionView: CollectionView): Params => {
     return queryParams;
 };
 
-const applyFiltersToQueryParams = (queryParams: Params, filters: Filter[], filterToRemove: Filter): void => {
-    filters.filter((filter: Filter) => !equals(filter, filterToRemove)).forEach((filter: Filter) => {
+const applyFiltersToQueryParams = (queryParams: Params, collectionView: CollectionView, filters: Filter[], filterToRemove: Filter): void => {
+    filters.filter((filter: Filter) => !equals(filter, filterToRemove)).filter((filter: Filter) => showFilter(collectionView, filter)).forEach((filter: Filter) => {
         queryParams[`${filter.field}.filter`] = filter.value;
         queryParams[`${filter.field}.opKey`] = filter.opKey;
         if (!queryParams.filters) {
