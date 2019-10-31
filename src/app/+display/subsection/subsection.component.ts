@@ -27,7 +27,7 @@ export class SubsectionComponent implements AfterViewInit, OnInit, OnDestroy {
 
     public page: Observable<SdrPage>;
 
-    public pageSizeOptions = [5, 10, 25, 50, 100, 500, 1000];
+    public pageSizeOptions = [5, 10, 25, 50, 100];
 
     private subscriptions: Subscription[];
 
