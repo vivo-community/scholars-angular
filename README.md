@@ -29,9 +29,9 @@ In addition to having [Docker](https://docs.docker.com/) installed, a running [S
   -e PORT=4200 \
   -e BASE_HREF=/ \
   -e SERVICE_URL="http://localhost:9000" \
-  -e EMBED_URL="https://api.library.tamu.edu/scholars-embed" \
-  -e VIVO_URL="https://scholars.library.tamu.edu/vivo" \
-  -e VIVO_EDITOR_URL="https://scholars.library.tamu.edu/vivo_editor" \
+  -e EMBED_URL="http://localhost:4201" \
+  -e VIVO_URL="http://localhost:8080/vivo" \
+  -e VIVO_EDITOR_URL="http://localhost:8080/vivo_editor" \
   scholars/angular
 ```
 
