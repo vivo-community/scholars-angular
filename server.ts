@@ -18,27 +18,8 @@ import * as compression from 'compression';
 import { AppConfig } from './src/app/app.config';
 import { AppServerModule } from './src/main.server';
 
-const HOST = process.env.HOST || 'localhost';
-const PORT = Number(process.env.PORT) || 4200;
-const BASE_HREF = process.env.BASE_HREF || '/';
-
-const SERVICE_URL = process.env.SERVICE_URL || 'http://localhost:9000';
-const EMBED_URL = process.env.EMBED_URL || 'http://localhost:4201';
-const VIVO_URL = process.env.VIVO_URL || 'http://localhost:8080/vivo';
-const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'http://localhost:8080/vivo_editor';
-
-const appConfig: AppConfig = {
-  host: HOST,
-  port: PORT,
-  baseHref: BASE_HREF,
-  serviceUrl: SERVICE_URL,
-  embedUrl: EMBED_URL,
-  vivoUrl: VIVO_URL,
-  vivoEditorUrl: VIVO_EDITOR_URL,
-};
-
 // The Express app is exported so that it can be used by serverless Functions.
-export function app() {
+export function app(appConfig: AppConfig) {
   const server = express();
   const router = express.Router();
   const distFolder = join(process.cwd(), 'dist/scholars-angular/browser');
@@ -73,12 +54,9 @@ export function app() {
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
-  router.get(
-    '*.*',
-    express.static(distFolder, {
-      maxAge: '1y',
-    })
-  );
+  router.get('*.*', express.static(distFolder, {
+    maxAge: '1y',
+  }));
 
   // All regular routes use the Universal engine
   router.get('*', (req, res) => {
@@ -88,7 +66,7 @@ export function app() {
     });
   });
 
-  server.use(BASE_HREF, router);
+  server.use(appConfig.baseHref, router);
 
   server.use(compression());
 
@@ -96,11 +74,28 @@ export function app() {
 }
 
 function run() {
-  const port = process.env.PORT || 4000;
+  const HOST = process.env.HOST || 'localhost';
+  const PORT = Number(process.env.PORT) || 4200;
+  const BASE_HREF = process.env.BASE_HREF || '/';
+
+  const SERVICE_URL = process.env.SERVICE_URL || 'http://localhost:9000';
+  const EMBED_URL = process.env.EMBED_URL || 'http://localhost:4201';
+  const VIVO_URL = process.env.VIVO_URL || 'http://localhost:8080/vivo';
+  const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'http://localhost:8080/vivo_editor';
+
+  const appConfig: AppConfig = {
+    host: HOST,
+    port: PORT,
+    baseHref: BASE_HREF,
+    serviceUrl: SERVICE_URL,
+    embedUrl: EMBED_URL,
+    vivoUrl: VIVO_URL,
+    vivoEditorUrl: VIVO_EDITOR_URL,
+  };
 
   // Start up the Node server
-  const server = app();
-  server.listen(PORT, () => {
+  const server = app(appConfig);
+  server.listen(PORT, HOST, () => {
     console.log(`Node Express server listening on http://${HOST}:${PORT}${BASE_HREF}`);
   });
 }

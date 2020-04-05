@@ -8,13 +8,15 @@ if (environment.production) {
   enableProdMode();
 }
 
-// fetch runtime configuration, move to provider when Angular supports asynchronous providers
-fetch('assets/appConfig.json')
-  .then((response) => response.json())
-  .then((appConfig) => document.addEventListener('DOMContentLoaded', () => {
-    platformBrowserDynamic([{
-      provide: 'APP_CONFIG',
-      useValue: appConfig,
-    }]).bootstrapModule(AppBrowserModule)
-      .catch((err) => console.error(err));
-  }));
+document.addEventListener('DOMContentLoaded', () => {
+  // fetch runtime configuration, move to provider if and  when Angular supports asynchronous providers
+  fetch('assets/appConfig.json')
+    .then((response) => response.json())
+    .then((appConfig) => {
+      platformBrowserDynamic([{
+        provide: 'APP_CONFIG',
+        useValue: appConfig
+      }]).bootstrapModule(AppBrowserModule)
+        .catch((err) => console.error(err));
+    });
+});
