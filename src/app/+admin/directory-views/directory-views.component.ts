@@ -10,24 +10,20 @@ import { DirectoryView } from '../../core/model/view';
 import { selectAllResources, selectResourcesPage } from '../../core/store/sdr';
 
 @Component({
-    selector: 'scholars-directory-views',
-    templateUrl: './directory-views.component.html',
-    styleUrls: ['./directory-views.component.scss'],
-    encapsulation: ViewEncapsulation.None
+  selector: 'scholars-directory-views',
+  templateUrl: './directory-views.component.html',
+  styleUrls: ['./directory-views.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class DirectoryViewsComponent implements OnInit {
+  public directoryViews: Observable<DirectoryView[]>;
 
-    public directoryViews: Observable<DirectoryView[]>;
+  public page: Observable<SdrPage>;
 
-    public page: Observable<SdrPage>;
+  constructor(private store: Store<AppState>) {}
 
-    constructor(private store: Store<AppState>) {
-
-    }
-
-    ngOnInit() {
-        this.directoryViews = this.store.pipe(select(selectAllResources<DirectoryView>('directoryViews')));
-        this.page = this.store.pipe(select(selectResourcesPage<DirectoryView>('directoryViews')));
-    }
-
+  ngOnInit() {
+    this.directoryViews = this.store.pipe(select(selectAllResources<DirectoryView>('directoryViews')));
+    this.page = this.store.pipe(select(selectResourcesPage<DirectoryView>('directoryViews')));
+  }
 }

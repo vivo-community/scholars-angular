@@ -14,32 +14,30 @@ import { getRequest } from '../../../../app.browser.module';
 import { testAppConfig } from '../../../../../test.config';
 
 describe('UserRepo', () => {
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                HttpClientTestingModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                })
-            ],
-            providers: [
-                { provide: REQUEST, useFactory: getRequest },
-                { provide: 'APP_CONFIG', useValue: testAppConfig },
-                RestService,
-                UserRepo
-            ]
-        });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+      ],
+      providers: [
+        { provide: REQUEST, useFactory: getRequest },
+        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        RestService,
+        UserRepo
+      ],
     });
+  });
 
-    it('should be created', inject([UserRepo], (service: UserRepo) => {
-        expect(service).toBeTruthy();
-    }));
-
+  it('should be created', inject([UserRepo], (service: UserRepo) => {
+    expect(service).toBeTruthy();
+  }));
 });

@@ -18,166 +18,157 @@ import * as fromAuth from '../../../core/store/auth/auth.actions';
 import * as fromDialog from '../../../core/store/dialog/dialog.actions';
 
 export enum RegistrationStep {
-    SUBMIT = 'submit',
-    COMPLETE = 'complete'
+  SUBMIT = 'submit',
+  COMPLETE = 'complete',
 }
 
 export function confirmPasswordValidator(password: FormControl): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-        return password.value !== control.value ? { confirmPassword: { value: control.value } } : null;
-    };
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    return password.value !== control.value ? { confirmPassword: { value: control.value } } : null;
+  };
 }
 
 @Component({
-    selector: 'scholars-registration',
-    templateUrl: './registration.component.html',
-    styleUrls: ['./registration.component.scss']
+  selector: 'scholars-registration',
+  templateUrl: './registration.component.html',
+  styleUrls: ['./registration.component.scss'],
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
+  @Input() step: RegistrationStep;
 
-    @Input() step: RegistrationStep;
+  @Input() registration: RegistrationRequest;
 
-    @Input() registration: RegistrationRequest;
+  public dialog: DialogControl;
 
-    public dialog: DialogControl;
+  private subscriptions: Subscription[];
 
-    private subscriptions: Subscription[];
+  constructor(private builder: FormBuilder, private translate: TranslateService, private route: ActivatedRoute, private store: Store<AppState>) {
+    this.subscriptions = [];
+  }
 
-    constructor(
-        private builder: FormBuilder,
-        private translate: TranslateService,
-        private route: ActivatedRoute,
-        private store: Store<AppState>
-    ) {
-        this.subscriptions = [];
-    }
+  ngOnInit() {
+    const password = new FormControl('', this.isComplete() ? [Validators.required, Validators.minLength(8), Validators.maxLength(64)] : []);
 
-    ngOnInit() {
+    this.subscriptions.push(
+      this.route.queryParams.subscribe((params: Params) => {
+        this.dialog = {
+          title: this.translate.get('SHARED.DIALOG.REGISTRATION.TITLE'),
+          form: this.builder.group({
+            firstName: new FormControl(this.isComplete() ? this.registration.firstName : '', this.isSubmit() ? [Validators.required, Validators.minLength(2), Validators.maxLength(64)] : []),
+            lastName: new FormControl(this.isComplete() ? this.registration.lastName : '', this.isSubmit() ? [Validators.required, Validators.minLength(2), Validators.maxLength(64)] : []),
+            email: new FormControl(this.isComplete() ? this.registration.email : '', this.isSubmit() ? [Validators.required, Validators.email] : []),
+            password,
+            confirm: new FormControl('', this.isComplete() ? [Validators.required, Validators.minLength(8), Validators.maxLength(64), confirmPasswordValidator(password)] : []),
+          }),
+          close: {
+            type: DialogButtonType.OUTLINE_WARNING,
+            label: this.translate.get('SHARED.DIALOG.REGISTRATION.CANCEL'),
+            action: () => this.store.dispatch(new fromDialog.CloseDialogAction()),
+            disabled: () => this.isCancelDisabled(),
+          },
+          submit: {
+            type: DialogButtonType.OUTLINE_PRIMARY,
+            label: this.translate.get('SHARED.DIALOG.REGISTRATION.SUBMIT'),
+            action: () => this.submit(params.key),
+            disabled: () => this.isSubmitDisabled(),
+          },
+        };
+      })
+    );
+  }
 
-        const password = new FormControl('', this.isComplete() ? [
-            Validators.required,
-            Validators.minLength(8),
-            Validators.maxLength(64)
-        ] : []);
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
-        this.subscriptions.push(this.route.queryParams.subscribe((params: Params) => {
-            this.dialog = {
-                title: this.translate.get('SHARED.DIALOG.REGISTRATION.TITLE'),
-                form: this.builder.group({
-                    firstName: new FormControl(this.isComplete() ? this.registration.firstName : '', this.isSubmit() ? [
-                        Validators.required,
-                        Validators.minLength(2),
-                        Validators.maxLength(64)
-                    ] : []),
-                    lastName: new FormControl(this.isComplete() ? this.registration.lastName : '', this.isSubmit() ? [
-                        Validators.required,
-                        Validators.minLength(2),
-                        Validators.maxLength(64)
-                    ] : []),
-                    email: new FormControl(this.isComplete() ? this.registration.email : '', this.isSubmit() ? [
-                        Validators.required,
-                        Validators.email
-                    ] : []),
-                    password: password,
-                    confirm: new FormControl('', this.isComplete() ? [
-                        Validators.required,
-                        Validators.minLength(8),
-                        Validators.maxLength(64),
-                        confirmPasswordValidator(password)
-                    ] : [])
-                }),
-                close: {
-                    type: DialogButtonType.OUTLINE_WARNING,
-                    label: this.translate.get('SHARED.DIALOG.REGISTRATION.CANCEL'),
-                    action: () => this.store.dispatch(new fromDialog.CloseDialogAction()),
-                    disabled: () => this.isCancelDisabled()
-                },
-                submit: {
-                    type: DialogButtonType.OUTLINE_PRIMARY,
-                    label: this.translate.get('SHARED.DIALOG.REGISTRATION.SUBMIT'),
-                    action: () => this.submit(params.key),
-                    disabled: () => this.isSubmitDisabled()
-                }
-            };
-        }));
-    }
+  public isValid(field: string): boolean {
+    const formControl = this.dialog.form.controls[field];
+    return formControl.touched && formControl.valid;
+  }
 
-    ngOnDestroy() {
-        this.subscriptions.forEach((subscription: Subscription) => {
-            subscription.unsubscribe();
-        });
-    }
+  public isInvalid(field: string): boolean {
+    const formControl = this.dialog.form.controls[field];
+    return formControl.dirty && formControl.invalid;
+  }
 
-    public isValid(field: string): boolean {
-        const formControl = this.dialog.form.controls[field];
-        return formControl.touched && formControl.valid;
-    }
-
-    public isInvalid(field: string): boolean {
-        const formControl = this.dialog.form.controls[field];
-        return formControl.dirty && formControl.invalid;
-    }
-
-    public getErrorMessage(field: string): Observable<string> {
-        const errors = this.dialog.form.controls[field].errors;
-        for (const validation in errors) {
-            if (errors.hasOwnProperty(validation)) {
-                switch (validation) {
-                    case 'required': return this.translate.get('SHARED.DIALOG.VALIDATION.REQUIRED', { field });
-                    case 'email': return this.translate.get('SHARED.DIALOG.VALIDATION.EMAIL', { field });
-                    case 'minlength': return this.translate.get('SHARED.DIALOG.VALIDATION.MIN_LENGTH', { field, min: errors[validation].requiredLength });
-                    case 'maxlength': return this.translate.get('SHARED.DIALOG.VALIDATION.MAX_LENGTH', { field, max: errors[validation].requiredLength });
-                    case 'confirmPassword': return this.translate.get('SHARED.DIALOG.VALIDATION.CONFIRM_PASSWORD', { field });
-                    default: return scheduled(['unknown error'], queue);
-                }
-            }
+  public getErrorMessage(field: string): Observable<string> {
+    const errors = this.dialog.form.controls[field].errors;
+    for (const validation in errors) {
+      if (errors.hasOwnProperty(validation)) {
+        switch (validation) {
+          case 'required':
+            return this.translate.get('SHARED.DIALOG.VALIDATION.REQUIRED', {
+              field,
+            });
+          case 'email':
+            return this.translate.get('SHARED.DIALOG.VALIDATION.EMAIL', {
+              field,
+            });
+          case 'minlength':
+            return this.translate.get('SHARED.DIALOG.VALIDATION.MIN_LENGTH', {
+              field,
+              min: errors[validation].requiredLength,
+            });
+          case 'maxlength':
+            return this.translate.get('SHARED.DIALOG.VALIDATION.MAX_LENGTH', {
+              field,
+              max: errors[validation].requiredLength,
+            });
+          case 'confirmPassword':
+            return this.translate.get('SHARED.DIALOG.VALIDATION.CONFIRM_PASSWORD', { field });
+          default:
+            return scheduled(['unknown error'], queue);
         }
+      }
     }
+  }
 
-    public isComplete(): boolean {
-        return this.step === RegistrationStep.COMPLETE;
+  public isComplete(): boolean {
+    return this.step === RegistrationStep.COMPLETE;
+  }
+
+  public isSubmit(): boolean {
+    return this.step === RegistrationStep.SUBMIT;
+  }
+
+  private submit(key: string): void {
+    if (this.isSubmit()) {
+      this.store.dispatch(
+        new fromAuth.SubmitRegistrationAction({
+          registration: this.dialog.form.value,
+        })
+      );
+    } else if (this.isComplete()) {
+      this.store.dispatch(
+        new fromAuth.CompleteRegistrationAction({
+          key,
+          registration: this.dialog.form.value,
+        })
+      );
+    } else {
+      throw new Error('Unknown registration step!');
     }
+  }
 
-    public isSubmit(): boolean {
-        return this.step === RegistrationStep.SUBMIT;
+  private isSubmitDisabled(): Observable<boolean> {
+    if (this.isSubmit()) {
+      return combineLatest([scheduled([this.dialog.form.invalid], queue), scheduled([this.dialog.form.pristine], queue), this.store.pipe(select(selectIsSubmittingRegistration))]).pipe(map((results) => results[0] || results[1] || results[2]));
+    } else if (this.isComplete()) {
+      return combineLatest([scheduled([this.dialog.form.invalid], queue), scheduled([this.dialog.form.pristine], queue), this.store.pipe(select(selectIsCompletingRegistration))]).pipe(map((results) => results[0] || results[1] || results[2]));
+    } else {
+      throw new Error('Unknown registration step!');
     }
+  }
 
-    private submit(key: string): void {
-        if (this.isSubmit()) {
-            this.store.dispatch(new fromAuth.SubmitRegistrationAction({ registration: this.dialog.form.value }));
-        } else if (this.isComplete()) {
-            this.store.dispatch(new fromAuth.CompleteRegistrationAction({ key, registration: this.dialog.form.value }));
-        } else {
-            throw new Error('Unknown registration step!');
-        }
+  private isCancelDisabled(): Observable<boolean> {
+    if (this.isSubmit()) {
+      return this.store.pipe(select(selectIsSubmittingRegistration));
+    } else if (this.isComplete()) {
+      return this.store.pipe(select(selectIsCompletingRegistration));
+    } else {
+      throw new Error('Unknown registration step!');
     }
-
-    private isSubmitDisabled(): Observable<boolean> {
-        if (this.isSubmit()) {
-            return combineLatest([
-                scheduled([this.dialog.form.invalid], queue),
-                scheduled([this.dialog.form.pristine], queue),
-                this.store.pipe(select(selectIsSubmittingRegistration))
-            ]).pipe(map(results => results[0] || results[1] || results[2]));
-        } else if (this.isComplete()) {
-            return combineLatest([
-                scheduled([this.dialog.form.invalid], queue),
-                scheduled([this.dialog.form.pristine], queue),
-                this.store.pipe(select(selectIsCompletingRegistration))
-            ]).pipe(map(results => results[0] || results[1] || results[2]));
-        } else {
-            throw new Error('Unknown registration step!');
-        }
-    }
-
-    private isCancelDisabled(): Observable<boolean> {
-        if (this.isSubmit()) {
-            return this.store.pipe(select(selectIsSubmittingRegistration));
-        } else if (this.isComplete()) {
-            return this.store.pipe(select(selectIsCompletingRegistration));
-        } else {
-            throw new Error('Unknown registration step!');
-        }
-    }
-
+  }
 }

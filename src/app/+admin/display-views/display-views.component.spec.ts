@@ -16,47 +16,44 @@ import { metaReducers, reducers } from '../../core/store';
 import { testAppConfig } from '../../../test.config';
 
 describe('DisplayViewsComponent', () => {
-    let component: DisplayViewsComponent;
-    let fixture: ComponentFixture<DisplayViewsComponent>;
+  let component: DisplayViewsComponent;
+  let fixture: ComponentFixture<DisplayViewsComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                DisplayViewsComponent
-            ],
-            providers: [
-                DialogService,
-                {
-                    provide: APP_BASE_HREF,
-                    useValue: '/'
-                }
-            ],
-            imports: [
-                NoopAnimationsModule,
-                SharedModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                TranslateModule.forRoot(),
-                RouterTestingModule.withRoutes([])
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [DisplayViewsComponent],
+      providers: [
+        DialogService,
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+      ],
+      imports: [
+        NoopAnimationsModule,
+        SharedModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+      ],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(DisplayViewsComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(DisplayViewsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

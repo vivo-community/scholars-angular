@@ -15,47 +15,44 @@ import { metaReducers, reducers } from '../../core/store';
 import { testAppConfig } from '../../../test.config';
 
 describe('ThemesComponent', () => {
-    let component: ThemesComponent;
-    let fixture: ComponentFixture<ThemesComponent>;
+  let component: ThemesComponent;
+  let fixture: ComponentFixture<ThemesComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                ThemesComponent
-            ],
-            providers: [
-                {
-                    provide: APP_BASE_HREF,
-                    useValue: '/'
-                }
-            ],
-            imports: [
-                NoopAnimationsModule,
-                CoreModule,
-                SharedModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                TranslateModule.forRoot(),
-                RouterTestingModule.withRoutes([])
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ThemesComponent],
+      providers: [
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+      ],
+      imports: [
+        NoopAnimationsModule,
+        CoreModule,
+        SharedModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+      ],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(ThemesComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ThemesComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

@@ -4,172 +4,172 @@ import { User } from '../../model/user';
 import { RegistrationRequest } from '../../model/request';
 
 export interface AuthState {
-    checkingSession: boolean;
-    loggingIn: boolean;
-    loggingOut: boolean;
-    submittingRegistration: boolean;
-    confirmingRegistration: boolean;
-    completingRegistration: boolean;
-    gettingUser: boolean;
-    authenticated: boolean;
-    redirect: RouterNavigation;
-    user: User;
-    registration: RegistrationRequest;
-    error: any;
+  checkingSession: boolean;
+  loggingIn: boolean;
+  loggingOut: boolean;
+  submittingRegistration: boolean;
+  confirmingRegistration: boolean;
+  completingRegistration: boolean;
+  gettingUser: boolean;
+  authenticated: boolean;
+  redirect: RouterNavigation;
+  user: User;
+  registration: RegistrationRequest;
+  error: any;
 }
 
 export const initialState: AuthState = {
-    checkingSession: false,
-    loggingIn: false,
-    loggingOut: false,
-    submittingRegistration: false,
-    confirmingRegistration: false,
-    completingRegistration: false,
-    gettingUser: false,
-    authenticated: false,
-    redirect: undefined,
-    user: undefined,
-    registration: undefined,
-    error: undefined
+  checkingSession: false,
+  loggingIn: false,
+  loggingOut: false,
+  submittingRegistration: false,
+  confirmingRegistration: false,
+  completingRegistration: false,
+  gettingUser: false,
+  authenticated: false,
+  redirect: undefined,
+  user: undefined,
+  registration: undefined,
+  error: undefined,
 };
 
 export function reducer(state = initialState, action: AuthActions): AuthState {
-    switch (action.type) {
-        case AuthActionTypes.CHECK_SESSION:
-            return {
-                ...state,
-                checkingSession: true
-            };
-        case AuthActionTypes.SESSION_STATUS:
-            return {
-                ...state,
-                authenticated: action.payload.authenticated,
-                checkingSession: false
-            };
-        case AuthActionTypes.LOGIN:
-            return {
-                ...state,
-                loggingIn: true
-            };
-        case AuthActionTypes.LOGIN_SUCCESS:
-            return {
-                ...state,
-                loggingIn: false,
-                authenticated: true
-            };
-        case AuthActionTypes.LOGIN_FAILURE:
-            console.error(action);
-            return {
-                ...state,
-                loggingIn: false,
-                error: action.payload.response
-            };
-        case AuthActionTypes.SUBMIT_REGISTRATION:
-            return {
-                ...state,
-                submittingRegistration: true
-            };
-        case AuthActionTypes.SUBMIT_REGISTRATION_SUCCESS:
-            return {
-                ...state,
-                submittingRegistration: false,
-                registration: action.payload.registration
-            };
-        case AuthActionTypes.SUBMIT_REGISTRATION_FAILURE:
-            console.error(action);
-            return {
-                ...state,
-                submittingRegistration: false,
-                error: action.payload.response
-            };
-        case AuthActionTypes.CONFIRM_REGISTRATION:
-            return {
-                ...state,
-                confirmingRegistration: true
-            };
-        case AuthActionTypes.CONFIRM_REGISTRATION_SUCCESS:
-            return {
-                ...state,
-                confirmingRegistration: false,
-                registration: action.payload.registration
-            };
-        case AuthActionTypes.CONFIRM_REGISTRATION_FAILURE:
-            console.error(action);
-            return {
-                ...state,
-                confirmingRegistration: false,
-                error: action.payload.response
-            };
-        case AuthActionTypes.COMPLETE_REGISTRATION:
-            return {
-                ...state,
-                completingRegistration: true
-            };
-        case AuthActionTypes.COMPLETE_REGISTRATION_SUCCESS:
-            return {
-                ...state,
-                completingRegistration: false,
-                registration: undefined
-            };
-        case AuthActionTypes.COMPLETE_REGISTRATION_FAILURE:
-            console.error(action);
-            return {
-                ...state,
-                completingRegistration: false,
-                error: action.payload.response
-            };
-        case AuthActionTypes.GET_USER:
-            return {
-                ...state,
-                gettingUser: true,
-            };
-        case AuthActionTypes.GET_USER_SUCCESS:
-            return {
-                ...state,
-                gettingUser: false,
-                authenticated: true,
-                user: action.payload.user
-            };
-        case AuthActionTypes.GET_USER_FAILURE:
-            console.error(action);
-            return {
-                ...state,
-                gettingUser: false,
-                authenticated: false,
-                error: action.payload.response
-            };
-        case AuthActionTypes.LOGOUT:
-            return {
-                ...state,
-                loggingOut: true
-            };
-        case AuthActionTypes.LOGOUT_SUCCESS:
-            return {
-                ...state,
-                loggingOut: false,
-                authenticated: false,
-                user: undefined
-            };
-        case AuthActionTypes.LOGOUT_FAILURE:
-            console.error(action);
-            return {
-                ...state,
-                loggingOut: false,
-                error: action.payload.response
-            };
-        case AuthActionTypes.SET_LOGIN_REDIRECT:
-            return {
-                ...state,
-                redirect: action.payload.navigation
-            };
-        case AuthActionTypes.UNSET_LOGIN_REDIRECT:
-            return {
-                ...state,
-                redirect: undefined
-            };
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case AuthActionTypes.CHECK_SESSION:
+      return {
+        ...state,
+        checkingSession: true,
+      };
+    case AuthActionTypes.SESSION_STATUS:
+      return {
+        ...state,
+        authenticated: action.payload.authenticated,
+        checkingSession: false,
+      };
+    case AuthActionTypes.LOGIN:
+      return {
+        ...state,
+        loggingIn: true,
+      };
+    case AuthActionTypes.LOGIN_SUCCESS:
+      return {
+        ...state,
+        loggingIn: false,
+        authenticated: true,
+      };
+    case AuthActionTypes.LOGIN_FAILURE:
+      console.error(action);
+      return {
+        ...state,
+        loggingIn: false,
+        error: action.payload.response,
+      };
+    case AuthActionTypes.SUBMIT_REGISTRATION:
+      return {
+        ...state,
+        submittingRegistration: true,
+      };
+    case AuthActionTypes.SUBMIT_REGISTRATION_SUCCESS:
+      return {
+        ...state,
+        submittingRegistration: false,
+        registration: action.payload.registration,
+      };
+    case AuthActionTypes.SUBMIT_REGISTRATION_FAILURE:
+      console.error(action);
+      return {
+        ...state,
+        submittingRegistration: false,
+        error: action.payload.response,
+      };
+    case AuthActionTypes.CONFIRM_REGISTRATION:
+      return {
+        ...state,
+        confirmingRegistration: true,
+      };
+    case AuthActionTypes.CONFIRM_REGISTRATION_SUCCESS:
+      return {
+        ...state,
+        confirmingRegistration: false,
+        registration: action.payload.registration,
+      };
+    case AuthActionTypes.CONFIRM_REGISTRATION_FAILURE:
+      console.error(action);
+      return {
+        ...state,
+        confirmingRegistration: false,
+        error: action.payload.response,
+      };
+    case AuthActionTypes.COMPLETE_REGISTRATION:
+      return {
+        ...state,
+        completingRegistration: true,
+      };
+    case AuthActionTypes.COMPLETE_REGISTRATION_SUCCESS:
+      return {
+        ...state,
+        completingRegistration: false,
+        registration: undefined,
+      };
+    case AuthActionTypes.COMPLETE_REGISTRATION_FAILURE:
+      console.error(action);
+      return {
+        ...state,
+        completingRegistration: false,
+        error: action.payload.response,
+      };
+    case AuthActionTypes.GET_USER:
+      return {
+        ...state,
+        gettingUser: true,
+      };
+    case AuthActionTypes.GET_USER_SUCCESS:
+      return {
+        ...state,
+        gettingUser: false,
+        authenticated: true,
+        user: action.payload.user,
+      };
+    case AuthActionTypes.GET_USER_FAILURE:
+      console.error(action);
+      return {
+        ...state,
+        gettingUser: false,
+        authenticated: false,
+        error: action.payload.response,
+      };
+    case AuthActionTypes.LOGOUT:
+      return {
+        ...state,
+        loggingOut: true,
+      };
+    case AuthActionTypes.LOGOUT_SUCCESS:
+      return {
+        ...state,
+        loggingOut: false,
+        authenticated: false,
+        user: undefined,
+      };
+    case AuthActionTypes.LOGOUT_FAILURE:
+      console.error(action);
+      return {
+        ...state,
+        loggingOut: false,
+        error: action.payload.response,
+      };
+    case AuthActionTypes.SET_LOGIN_REDIRECT:
+      return {
+        ...state,
+        redirect: action.payload.navigation,
+      };
+    case AuthActionTypes.UNSET_LOGIN_REDIRECT:
+      return {
+        ...state,
+        redirect: undefined,
+      };
+    default:
+      return state;
+  }
 }
 
 export const isCheckingSession = (state: AuthState) => state.checkingSession;

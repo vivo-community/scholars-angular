@@ -9,34 +9,33 @@ import { metaReducers, reducers } from '../../core/store';
 import { testAppConfig } from '../../../test.config';
 
 describe('AlertComponent', () => {
-    let component: AlertComponent;
-    let fixture: ComponentFixture<AlertComponent>;
+  let component: AlertComponent;
+  let fixture: ComponentFixture<AlertComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                })
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        SharedModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+      ],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(AlertComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AlertComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

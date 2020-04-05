@@ -20,63 +20,62 @@ import * as fromRouter from '../store/router/router.actions';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  constructor(@Inject(PLATFORM_ID) private platformId: string, private alert: AlertService, private dialog: DialogService, private store: Store<AppState>) {}
 
-    constructor(
-        @Inject(PLATFORM_ID) private platformId: string,
-        private alert: AlertService,
-        private dialog: DialogService,
-        private store: Store<AppState>
-    ) {
+  public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    const roles = route.data.roles;
+    return this.requiresAuthorization(roles).pipe(
+      switchMap((authorize: boolean) => {
+        return authorize ? this.isAuthorized(state.url, roles) : this.isAuthenticated(state.url);
+      })
+    );
+  }
 
-    }
+  private requiresAuthorization(roles: Role[]): Observable<boolean> {
+    return roles ? scheduled([true], asap) : scheduled([false], asap);
+  }
 
-    public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-        const roles = route.data.roles;
-        return this.requiresAuthorization(roles).pipe(
-            switchMap((authorize: boolean) => {
-                return authorize ? this.isAuthorized(state.url, roles) : this.isAuthenticated(state.url);
-            })
-        );
-    }
-
-    private requiresAuthorization(roles: Role[]): Observable<boolean> {
-        return roles ? scheduled([true], asap) : scheduled([false], asap);
-    }
-
-    private isAuthorized(url: string, roles: Role[]): Observable<boolean> {
-        return this.isAuthenticated(url).pipe(
-            switchMap((authenticated: boolean) => authenticated ? this.store.pipe(
-                select(selectUser),
-                filter((user: User) => user !== undefined),
-                map((user: User) => {
-                    const authorized = user ? roles.indexOf(Role[user.role]) >= 0 : false;
-                    if (!authorized) {
-                        this.store.dispatch(new fromRouter.Go({ path: ['/'] }));
-                        if (isPlatformBrowser(this.platformId)) {
-                            this.store.dispatch(this.alert.unsubscribeFailureAlert());
-                        }
-                    }
-                    return authorized;
-                })
-            ) : scheduled([false], asap))
-        );
-    }
-
-    private isAuthenticated(url: string): Observable<boolean> {
-        return this.store.pipe(
-            select(selectIsAuthenticated),
-            map((authenticated: boolean) => {
-                if (!authenticated) {
-                    this.store.dispatch(new fromRouter.Go({ path: ['/'] }));
-                    if (isPlatformBrowser(this.platformId)) {
-                        this.store.dispatch(new fromAuth.SetLoginRedirectAction({ navigation: { path: [url] } }));
-                        this.store.dispatch(this.dialog.loginDialog());
-                        this.store.dispatch(this.alert.forbiddenAlert());
-                    }
+  private isAuthorized(url: string, roles: Role[]): Observable<boolean> {
+    return this.isAuthenticated(url).pipe(
+      switchMap((authenticated: boolean) =>
+        authenticated
+          ? this.store.pipe(
+              select(selectUser),
+              filter((user: User) => user !== undefined),
+              map((user: User) => {
+                const authorized = user ? roles.indexOf(Role[user.role]) >= 0 : false;
+                if (!authorized) {
+                  this.store.dispatch(new fromRouter.Go({ path: ['/'] }));
+                  if (isPlatformBrowser(this.platformId)) {
+                    this.store.dispatch(this.alert.unsubscribeFailureAlert());
+                  }
                 }
-                return authenticated;
-            })
-        );
-    }
+                return authorized;
+              })
+            )
+          : scheduled([false], asap)
+      )
+    );
+  }
 
+  private isAuthenticated(url: string): Observable<boolean> {
+    return this.store.pipe(
+      select(selectIsAuthenticated),
+      map((authenticated: boolean) => {
+        if (!authenticated) {
+          this.store.dispatch(new fromRouter.Go({ path: ['/'] }));
+          if (isPlatformBrowser(this.platformId)) {
+            this.store.dispatch(
+              new fromAuth.SetLoginRedirectAction({
+                navigation: { path: [url] },
+              })
+            );
+            this.store.dispatch(this.dialog.loginDialog());
+            this.store.dispatch(this.alert.forbiddenAlert());
+          }
+        }
+        return authenticated;
+      })
+    );
+  }
 }

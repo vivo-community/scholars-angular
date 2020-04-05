@@ -12,30 +12,26 @@ import { selectAlertsByLocation } from '../../core/store/alert';
 import * as fromAlert from '../../core/store/alert/alert.actions';
 
 @Component({
-    selector: 'scholars-alert',
-    templateUrl: './alert.component.html',
-    styleUrls: ['./alert.component.scss']
+  selector: 'scholars-alert',
+  templateUrl: './alert.component.html',
+  styleUrls: ['./alert.component.scss'],
 })
 export class AlertComponent implements OnInit {
+  @Input() location: AlertLocation;
 
-    @Input() location: AlertLocation;
+  public alerts: Observable<Alert[]>;
 
-    public alerts: Observable<Alert[]>;
+  constructor(private store: Store<AppState>) {}
 
-    constructor(private store: Store<AppState>) {
+  ngOnInit() {
+    this.alerts = this.store.pipe(select(selectAlertsByLocation(this.location)));
+  }
 
-    }
+  public close(alert: Alert): void {
+    this.store.dispatch(new fromAlert.DismissAlertAction({ alert }));
+  }
 
-    ngOnInit() {
-        this.alerts = this.store.pipe(select(selectAlertsByLocation(this.location)));
-    }
-
-    public close(alert: Alert): void {
-        this.store.dispatch(new fromAlert.DismissAlertAction({ alert }));
-    }
-
-    public isMain(): boolean {
-        return this.location === AlertLocation.MAIN;
-    }
-
+  public isMain(): boolean {
+    return this.location === AlertLocation.MAIN;
+  }
 }

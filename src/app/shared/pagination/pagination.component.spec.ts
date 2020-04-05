@@ -14,46 +14,43 @@ import { metaReducers, reducers } from '../../core/store';
 import { testAppConfig } from '../../../test.config';
 
 describe('PaginationComponent', () => {
-    let component: PaginationComponent;
-    let fixture: ComponentFixture<PaginationComponent>;
+  let component: PaginationComponent;
+  let fixture: ComponentFixture<PaginationComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                NoopAnimationsModule,
-                SharedModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                TranslateModule.forRoot(),
-                RouterTestingModule.withRoutes([])
-            ],
-            providers: [
-                {
-                    provide: APP_BASE_HREF,
-                    useValue: '/'
-                }
-            ],
-            schemas: [
-                CUSTOM_ELEMENTS_SCHEMA
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        NoopAnimationsModule,
+        SharedModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+      ],
+      providers: [
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(PaginationComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(PaginationComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

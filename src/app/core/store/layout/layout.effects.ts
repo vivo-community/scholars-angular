@@ -17,43 +17,38 @@ import * as fromSidebar from '../sidebar/sidebar.actions';
 
 @Injectable()
 export class LayoutEffects {
+  constructor(@Inject(PLATFORM_ID) private platformId: string, @Inject(DOCUMENT) private document: Document, private actions: Actions, private store: Store<AppState>) {}
 
-    constructor(
-        @Inject(PLATFORM_ID) private platformId: string,
-        @Inject(DOCUMENT) private document: Document,
-        private actions: Actions,
-        private store: Store<AppState>
-    ) {
+  @Effect() checkSidebarOnResize = this.actions.pipe(
+    ofType(fromLayout.LayoutActionTypes.RESIZE_WINDOW),
+    map((action: fromLayout.ResizeWindowAction) => action.payload.windowDimensions),
+    map((windowDimensions: WindowDimensions) => this.checkSidebar(windowDimensions))
+  );
 
+  @Effect() checkSidebarOnLoad = this.actions.pipe(
+    ofType(fromSidebar.SidebarActionTypes.LOAD_SIDEBAR),
+    withLatestFrom(this.store.pipe(select(selectWindowDimensions))),
+    map(([action, windowDimensions]) => this.checkSidebar(windowDimensions))
+  );
+
+  @Effect() initLayout = defer(() => {
+    if (isPlatformBrowser(this.platformId)) {
+      return scheduled(
+        [
+          new fromLayout.ResizeWindowAction({
+            windowDimensions: {
+              width: window.innerWidth,
+              height: window.innerHeight,
+            },
+          }),
+        ],
+        asap
+      );
     }
+    return EMPTY;
+  });
 
-    @Effect() checkSidebarOnResize = this.actions.pipe(
-        ofType(fromLayout.LayoutActionTypes.RESIZE_WINDOW),
-        map((action: fromLayout.ResizeWindowAction) => action.payload.windowDimensions),
-        map((windowDimensions: WindowDimensions) => this.checkSidebar(windowDimensions))
-    );
-
-    @Effect() checkSidebarOnLoad = this.actions.pipe(
-        ofType(fromSidebar.SidebarActionTypes.LOAD_SIDEBAR),
-        withLatestFrom(this.store.pipe(select(selectWindowDimensions))),
-        map(([action, windowDimensions]) => this.checkSidebar(windowDimensions))
-    );
-
-    @Effect() initLayout = defer(() => {
-        if (isPlatformBrowser(this.platformId)) {
-            return scheduled([new fromLayout.ResizeWindowAction({
-                windowDimensions: {
-                    width: window.innerWidth,
-                    height: window.innerHeight
-                }
-            })], asap);
-        }
-        return EMPTY;
-    });
-
-
-    private checkSidebar(windowDimensions: WindowDimensions): fromLayout.LayoutActions {
-        return windowDimensions.width <= 991 ? new fromLayout.CloseSidebarAction() : new fromLayout.OpenSidebarAction();
-    }
-
+  private checkSidebar(windowDimensions: WindowDimensions): fromLayout.LayoutActions {
+    return windowDimensions.width <= 991 ? new fromLayout.CloseSidebarAction() : new fromLayout.OpenSidebarAction();
+  }
 }

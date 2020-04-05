@@ -18,56 +18,51 @@ import { routes } from '../display.routes';
 import { testAppConfig } from '../../../test.config';
 
 describe('TabComponent', () => {
-    let component: TabComponent;
-    let fixture: ComponentFixture<TabComponent>;
+  let component: TabComponent;
+  let fixture: ComponentFixture<TabComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                TabComponent
-            ],
-            imports: [
-                SharedModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                RouterTestingModule.withRoutes(routes[0].children)
-            ],
-            providers: [
-                {
-                    provide: APP_BASE_HREF,
-                    useValue: '/'
-                },
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        params: scheduled([{ view: 'People', tab: 'View All' }], queue),
-                        parent: {
-                            params: scheduled([{ collection: 'individual', id: 'test' }], queue),
-                        }
-                    }
-                }
-            ],
-            schemas: [
-                CUSTOM_ELEMENTS_SCHEMA
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [TabComponent],
+      imports: [
+        SharedModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        RouterTestingModule.withRoutes(routes[0].children),
+      ],
+      providers: [
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: scheduled([{ view: 'People', tab: 'View All' }], queue),
+            parent: {
+              params: scheduled([{ collection: 'individual', id: 'test' }], queue),
+            },
+          },
+        },
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(TabComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TabComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

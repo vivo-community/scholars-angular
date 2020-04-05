@@ -1,4 +1,4 @@
 export type StompSubscription = Readonly<{
-    id: string;
-    unsubscribe: () => {};
+  id: string;
+  unsubscribe: () => {};
 }>;

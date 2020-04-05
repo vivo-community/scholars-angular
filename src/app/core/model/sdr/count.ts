@@ -1,3 +1,3 @@
 export interface Count {
-    readonly value: number;
+  readonly value: number;
 }

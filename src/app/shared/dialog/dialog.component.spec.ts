@@ -15,46 +15,45 @@ import { metaReducers, reducers } from '../../core/store';
 import { testAppConfig } from '../../../test.config';
 
 describe('DialogComponent', () => {
-    let component: DialogComponent;
-    let fixture: ComponentFixture<DialogComponent>;
+  let component: DialogComponent;
+  let fixture: ComponentFixture<DialogComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                NoopAnimationsModule,
-                SharedModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                TranslateModule.forRoot()
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        NoopAnimationsModule,
+        SharedModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        TranslateModule.forRoot(),
+      ],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(DialogComponent);
-        component = fixture.componentInstance;
-        component.dialog = {
-            title: scheduled(['Login'], asap),
-            form: undefined,
-            close: {
-                type: DialogButtonType.OUTLINE_WARNING,
-                label: scheduled(['Cancel'], asap),
-                action: () => { },
-                disabled: () => scheduled([false], asap)
-            }
-        };
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(DialogComponent);
+    component = fixture.componentInstance;
+    component.dialog = {
+      title: scheduled(['Login'], asap),
+      form: undefined,
+      close: {
+        type: DialogButtonType.OUTLINE_WARNING,
+        label: scheduled(['Cancel'], asap),
+        action: () => {},
+        disabled: () => scheduled([false], asap),
+      },
+    };
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

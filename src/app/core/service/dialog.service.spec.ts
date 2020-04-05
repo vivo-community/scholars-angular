@@ -4,21 +4,14 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { DialogService } from './dialog.service';
 
 describe('DialogService', () => {
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                DialogService,
-                TranslateService
-            ],
-            imports: [
-                TranslateModule.forRoot()
-            ]
-        });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [DialogService, TranslateService],
+      imports: [TranslateModule.forRoot()],
     });
+  });
 
-    it('should be created', inject([DialogService], (service: DialogService) => {
-        expect(service).toBeTruthy();
-    }));
-
+  it('should be created', inject([DialogService], (service: DialogService) => {
+    expect(service).toBeTruthy();
+  }));
 });

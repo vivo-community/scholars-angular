@@ -5,25 +5,22 @@ import { SharedModule } from '../shared.module';
 import { TwitterComponent } from './twitter.component';
 
 describe('TwitterComponent', () => {
-    let component: TwitterComponent;
-    let fixture: ComponentFixture<TwitterComponent>;
+  let component: TwitterComponent;
+  let fixture: ComponentFixture<TwitterComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [SharedModule],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(TwitterComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TwitterComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

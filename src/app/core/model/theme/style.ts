@@ -1,4 +1,4 @@
 export interface Style {
-    readonly key: string;
-    readonly value: string;
+  readonly key: string;
+  readonly value: string;
 }

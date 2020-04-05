@@ -12,44 +12,37 @@ import { metaReducers, reducers } from '../core/store';
 import { testAppConfig } from '../../test.config';
 
 describe('FooterComponent', () => {
-    let component: FooterComponent;
-    let fixture: ComponentFixture<FooterComponent>;
+  let component: FooterComponent;
+  let fixture: ComponentFixture<FooterComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                FooterComponent
-            ],
-            providers: [
-                DialogService
-            ],
-            imports: [
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                TranslateModule.forRoot(),
-                RouterTestingModule.withRoutes([])
-            ],
-            schemas: [
-                CUSTOM_ELEMENTS_SCHEMA
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [FooterComponent],
+      providers: [DialogService],
+      imports: [
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(FooterComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FooterComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

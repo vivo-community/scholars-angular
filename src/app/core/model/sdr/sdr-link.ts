@@ -1,4 +1,4 @@
 export interface SdrLink {
-    readonly href: string;
-    readonly templated?: boolean;
+  readonly href: string;
+  readonly templated?: boolean;
 }

@@ -16,47 +16,42 @@ import { metaReducers, reducers } from '../core/store';
 import { testAppConfig } from '../../test.config';
 
 describe('DirectoryComponent', () => {
-    let component: DirectoryComponent;
-    let fixture: ComponentFixture<DirectoryComponent>;
+  let component: DirectoryComponent;
+  let fixture: ComponentFixture<DirectoryComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                DirectoryComponent
-            ],
-            imports: [
-                NoopAnimationsModule,
-                SharedModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                TranslateModule.forRoot(),
-                RouterTestingModule.withRoutes(routes)
-            ],
-            providers: [
-                { provide: 'APP_CONFIG', useValue: testAppConfig },
-                { provide: APP_BASE_HREF, useValue: '/' }
-            ],
-            schemas: [
-                CUSTOM_ELEMENTS_SCHEMA
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [DirectoryComponent],
+      imports: [
+        NoopAnimationsModule,
+        SharedModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes(routes),
+      ],
+      providers: [
+        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_BASE_HREF, useValue: '/' },
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(DirectoryComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(DirectoryComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

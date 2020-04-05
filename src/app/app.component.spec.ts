@@ -12,49 +12,43 @@ import { AppComponent } from './app.component';
 
 import { metaReducers, reducers } from './core/store';
 
-import { routes } from './app.routes';
 import { testAppConfig } from '../test.config';
 
 describe('AppComponent', () => {
-    let component: AppComponent;
-    let fixture: ComponentFixture<AppComponent>;
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                AppComponent
-            ],
-            imports: [
-                SharedModule,
-                HeaderModule,
-                FooterModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                NoopAnimationsModule,
-                TranslateModule.forRoot(),
-                RouterTestingModule.withRoutes(routes)
-            ],
-            providers: [
-                { provide: 'APP_CONFIG', useValue: testAppConfig }
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      imports: [
+        SharedModule,
+        HeaderModule,
+        FooterModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        NoopAnimationsModule,
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+      ],
+      providers: [{ provide: 'APP_CONFIG', useValue: testAppConfig }],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(AppComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', async(() => {
-        expect(component).toBeTruthy();
-    }));
-
+  it('should create', async(() => {
+    expect(component).toBeTruthy();
+  }));
 });
