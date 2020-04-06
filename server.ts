@@ -95,7 +95,7 @@ function run() {
 
   // Start up the Node server
   const server = app(appConfig);
-  server.listen(PORT, HOST, () => {
+  server.listen(PORT, () => {
     console.log(`Node Express server listening on http://${HOST}:${PORT}${BASE_HREF}`);
   });
 }
