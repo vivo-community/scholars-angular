@@ -6,18 +6,8 @@ import { FooterComponent } from './footer.component';
 import { CopyrightComponent } from './copyright/copyright.component';
 
 @NgModule({
-    declarations: [
-        FooterComponent,
-        CopyrightComponent
-    ],
-    imports: [
-        CommonModule,
-        SharedModule
-    ],
-    exports: [
-        FooterComponent
-    ]
+  declarations: [FooterComponent, CopyrightComponent],
+  imports: [CommonModule, SharedModule],
+  exports: [FooterComponent],
 })
-export class FooterModule {
-
-}
+export class FooterModule {}

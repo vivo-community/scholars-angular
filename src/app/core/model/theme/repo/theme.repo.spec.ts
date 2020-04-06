@@ -14,32 +14,30 @@ import { getRequest } from '../../../../app.browser.module';
 import { testAppConfig } from '../../../../../test.config';
 
 describe('ThemeRepo', () => {
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                HttpClientTestingModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                })
-            ],
-            providers: [
-                { provide: REQUEST, useFactory: getRequest },
-                { provide: 'APP_CONFIG', useValue: testAppConfig },
-                RestService,
-                ThemeRepo
-            ]
-        });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+      ],
+      providers: [
+        { provide: REQUEST, useFactory: getRequest },
+        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        RestService,
+        ThemeRepo
+      ],
     });
+  });
 
-    it('should be created', inject([ThemeRepo], (service: ThemeRepo) => {
-        expect(service).toBeTruthy();
-    }));
-
+  it('should be created', inject([ThemeRepo], (service: ThemeRepo) => {
+    expect(service).toBeTruthy();
+  }));
 });

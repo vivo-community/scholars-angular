@@ -32,72 +32,70 @@ import { SafeHtmlPipe } from './utilities/safe-html.pipe';
 import { SafeUrlPipe } from './utilities/safe-url.pipe';
 
 const MODULES = [
-    CommonModule,
-    NgbModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    RouterModule
+  CommonModule,
+  NgbModule,
+  FormsModule,
+  ReactiveFormsModule,
+  TranslateModule,
+  RouterModule
 ];
 
 const PIPES = [
-    FilterPipe,
-    FormalizePipe,
-    SafeHtmlPipe,
-    SafeUrlPipe
+  FilterPipe,
+  FormalizePipe,
+  SafeHtmlPipe,
+  SafeUrlPipe
 ];
 
 const COMPONENTS = [
-    AlertComponent,
-    DialogComponent,
-    FacetEntriesComponent,
-    GridViewComponent,
-    ListViewComponent,
-    LoginComponent,
-    NavigationComponent,
-    PaginationComponent,
-    RecentCarouselComponent,
-    RegistrationComponent,
-    ResultViewComponent,
-    SearchBoxComponent,
-    SidebarComponent,
-    StatsBoxComponent,
-    TwitterComponent,
-    YouTubeComponent
+  AlertComponent,
+  DialogComponent,
+  FacetEntriesComponent,
+  GridViewComponent,
+  ListViewComponent,
+  LoginComponent,
+  NavigationComponent,
+  PaginationComponent,
+  RecentCarouselComponent,
+  RegistrationComponent,
+  ResultViewComponent,
+  SearchBoxComponent,
+  SidebarComponent,
+  StatsBoxComponent,
+  TwitterComponent,
+  YouTubeComponent
 ];
 
 const DIRECTIVES = [
-    LoaderDirective
+  LoaderDirective
 ];
 
 const ENTRY_COMPONENTS = [
-    FacetEntriesComponent,
-    LoginComponent,
-    RegistrationComponent,
-    NotificationComponent,
-    UserEditComponent
+  FacetEntriesComponent,
+  LoginComponent,
+  RegistrationComponent,
+  NotificationComponent,
+  UserEditComponent
 ];
 
 @NgModule({
-    declarations: [
-        ...PIPES,
-        ...COMPONENTS,
-        ...DIRECTIVES,
-        ...ENTRY_COMPONENTS
-    ],
-    entryComponents: [
-        ...ENTRY_COMPONENTS
-    ],
-    exports: [
-        ...MODULES,
-        ...PIPES,
-        ...COMPONENTS,
-        ...DIRECTIVES
-    ],
-    imports: [
-        ...MODULES
-    ]
+  declarations: [
+    ...PIPES,
+    ...COMPONENTS,
+    ...DIRECTIVES,
+    ...ENTRY_COMPONENTS
+  ],
+  entryComponents: [
+    ...ENTRY_COMPONENTS
+  ],
+  exports: [
+    ...MODULES,
+    ...PIPES,
+    ...COMPONENTS,
+    ...DIRECTIVES
+  ],
+  imports: [
+    ...MODULES
+  ],
 })
-export class SharedModule {
-
-}
+export class SharedModule { }

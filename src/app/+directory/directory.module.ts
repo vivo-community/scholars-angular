@@ -12,24 +12,20 @@ import { DirectoryComponent } from './directory.component';
 import { routes } from './directory.routes';
 
 @NgModule({
-    declarations: [
-        DirectoryComponent
-    ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        TranslateModule.forChild({
-            missingTranslationHandler: {
-                provide: MissingTranslationHandler,
-                useClass: CustomMissingTranslationHandler
-            },
-            isolate: false
-        }),
-        RouterModule.forChild(routes)
-    ]
+  declarations: [DirectoryComponent],
+  imports: [
+    CommonModule,
+    SharedModule,
+    TranslateModule.forChild({
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler,
+      },
+      isolate: false,
+    }),
+    RouterModule.forChild(routes),
+  ],
 })
 export class DirectoryModule {
-
-    public static routes = routes;
-
+  public static routes = routes;
 }

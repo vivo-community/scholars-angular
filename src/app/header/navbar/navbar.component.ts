@@ -13,33 +13,29 @@ import { selectActiveThemeHeaderNavbar } from '../../core/store/theme';
 import * as fromLayout from '../../core/store/layout/layout.actions';
 
 @Component({
-    selector: 'scholars-navbar',
-    templateUrl: 'navbar.component.html',
-    styleUrls: ['navbar.component.scss']
+  selector: 'scholars-navbar',
+  templateUrl: 'navbar.component.html',
+  styleUrls: ['navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
+  public isNavbarCollapsed: Observable<boolean>;
 
-    public isNavbarCollapsed: Observable<boolean>;
+  public isNavbarExpanded: Observable<boolean>;
 
-    public isNavbarExpanded: Observable<boolean>;
+  public navbar: Observable<Navbar>;
 
-    public navbar: Observable<Navbar>;
+  constructor(private store: Store<AppState>) {}
 
-    constructor(private store: Store<AppState>) {
+  ngOnInit() {
+    this.isNavbarCollapsed = this.store.pipe(select(selectIsNavbarCollapsed));
+    this.isNavbarExpanded = this.store.pipe(select(selectIsNavbarExpanded));
+    this.navbar = this.store.pipe(
+      select(selectActiveThemeHeaderNavbar),
+      skipWhile((navbar: Navbar) => navbar === undefined)
+    );
+  }
 
-    }
-
-    ngOnInit() {
-        this.isNavbarCollapsed = this.store.pipe(select(selectIsNavbarCollapsed));
-        this.isNavbarExpanded = this.store.pipe(select(selectIsNavbarExpanded));
-        this.navbar = this.store.pipe(
-            select(selectActiveThemeHeaderNavbar),
-            skipWhile((navbar: Navbar) => navbar === undefined)
-        );
-    }
-
-    public toggleNavbar(): void {
-        this.store.dispatch(new fromLayout.ToggleNavbarAction());
-    }
-
+  public toggleNavbar(): void {
+    this.store.dispatch(new fromLayout.ToggleNavbarAction());
+  }
 }

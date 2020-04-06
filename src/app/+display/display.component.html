@@ -7,7 +7,7 @@
     </div>
   </div>
 </div>
-<div *ngIf="!(loading | async)" [@fadeIn]>
+<div *ngIf="(loading | async) === false" [@fadeIn]>
   <div class="document container" *ngIf="document | async; let document">
     <div *ngIf="displayView | async; let displayView" class="row">
       <div *ngIf="showAsideLeft(displayView)" class="d-none d-lg-block col-lg-3 p-0">

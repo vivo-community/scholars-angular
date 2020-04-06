@@ -17,161 +17,153 @@ import { selectRouterSearchQuery } from '../../core/store/router';
 import { getQueryParams } from '../utilities/view.utility';
 
 export interface SearchBoxStyles {
-    label: {
-        margin: string;
-        color: string;
-    };
-    inputBoxShadow: string;
+  label: {
+    margin: string;
+    color: string;
+  };
+  inputBoxShadow: string;
 }
 
 @Component({
-    selector: 'scholars-search-box',
-    templateUrl: 'search-box.component.html',
-    styleUrls: ['search-box.component.scss']
+  selector: 'scholars-search-box',
+  templateUrl: 'search-box.component.html',
+  styleUrls: ['search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit, OnDestroy {
+  @Input() view: DiscoveryView;
 
-    @Input() view: DiscoveryView;
+  @Input() styles: SearchBoxStyles = {
+    label: {
+      margin: '0px 0px 5x 0px',
+      color: '#4d4d4d',
+    },
+    inputBoxShadow: '1px 1px 0px 0px #bbb',
+  };
 
-    @Input() styles: SearchBoxStyles = {
-        label: {
-            margin: '0px 0px 5x 0px',
-            color: '#4d4d4d'
-        },
-        inputBoxShadow: '1px 1px 0px 0px #bbb'
-    };
+  @Input() live = false;
 
-    @Input() live = false;
+  @Input() placeholder = '';
 
-    @Input() placeholder = '';
+  @Input() debounce = 750;
 
-    @Input() debounce = 750;
+  public form: FormGroup;
 
-    public form: FormGroup;
+  public organization: Observable<string>;
 
-    public organization: Observable<string>;
+  private subscriptions: Subscription[];
 
-    private subscriptions: Subscription[];
+  private setup = false;
 
-    private setup = false;
+  constructor(@Inject(APP_BASE_HREF) private baseHref: string, @Inject(PLATFORM_ID) private platformId: string, private formBuilder: FormBuilder, private store: Store<AppState>, private router: Router) {
+    this.subscriptions = [];
+  }
 
-    constructor(
-        @Inject(APP_BASE_HREF) private baseHref: string,
-        @Inject(PLATFORM_ID) private platformId: string,
-        private formBuilder: FormBuilder,
-        private store: Store<AppState>,
-        private router: Router
-    ) {
-        this.subscriptions = [];
-    }
+  ngOnInit(): void {
+    this.organization = this.store.pipe(select(selectActiveThemeOrganization));
+  }
 
-    ngOnInit(): void {
-        this.organization = this.store.pipe(select(selectActiveThemeOrganization));
-    }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
-    ngOnDestroy(): void {
-        this.subscriptions.forEach((subscription: Subscription) => {
-            subscription.unsubscribe();
+  public setupForm(): boolean {
+    if (!this.setup) {
+      const formGroup = {
+        query: new FormControl(),
+        collection: new FormControl(),
+        facets: new FormControl(),
+      };
+
+      if (this.view.filters && this.view.filters.length > 0) {
+        this.view.filters.forEach((filter: Filter) => {
+          formGroup[`${filter.field}.filter`] = new FormControl();
         });
-    }
+      }
 
-    public setupForm(): boolean {
-        if (!this.setup) {
+      this.form = this.formBuilder.group(formGroup);
 
-            const formGroup = {
-                query: new FormControl(),
-                collection: new FormControl(),
-                facets: new FormControl()
-            };
-
-            if (this.view.filters && this.view.filters.length > 0) {
-                this.view.filters.forEach((filter: Filter) => {
-                    formGroup[`${filter.field}.filter`] = new FormControl();
-                });
-            }
-
-            this.form = this.formBuilder.group(formGroup);
-
-            if (this.view.facets && this.view.facets.length > 0) {
-                let facets = '';
-                this.view.facets.forEach((facet: Facet) => {
-                    facets += facets.length > 0 ? `,${facet.field}` : facet.field;
-                });
-                this.form.patchValue({ facets });
-            }
-
-            if (this.view.filters && this.view.filters.length > 0) {
-                this.view.filters.forEach((filter: Filter) => {
-                    const field = {};
-                    field[`${filter.field}.filter`] = filter.value;
-                    this.form.patchValue(field);
-                });
-            }
-
-            const collection = 'individual';
-
-            this.form.patchValue({ collection });
-
-            this.subscriptions.push(this.store.pipe(
-                select(selectRouterSearchQuery),
-                skipWhile((query: string) => query === undefined)
-            ).subscribe((query: string) => this.form.patchValue({ query })));
-
-            if (this.live) {
-                this.subscriptions.push(this.form.controls.query.valueChanges.pipe(
-                    debounceTime(this.debounce),
-                    distinctUntilChanged()
-                ).subscribe(() => this.onSearch()));
-            }
-
-            this.setup = true;
-        }
-        return this.setup;
-    }
-
-    public isBrowserRendered(): boolean {
-        return isPlatformBrowser(this.platformId);
-    }
-
-    public isServerRendered(): boolean {
-        return isPlatformServer(this.platformId);
-    }
-
-    public onSearch(): void {
-        const queryParams: Params = this.getDiscoveryQueryParams(this.form.value.query);
-        const urlTree = this.buildUrlTree(queryParams);
-        this.router.navigateByUrl(urlTree);
-    }
-
-    public getAction(): string {
-        return `${this.baseHref}discovery/${this.view.name}`;
-    }
-
-    public getFilterName(filter: Filter): string {
-        return `${filter.field}.filter`;
-    }
-
-    public getDiscoveryQueryParams(query: string): Params {
-        const queryParams: Params = getQueryParams(this.view);
-        if (query && query.length > 0) {
-            queryParams.query = query;
-        } else {
-            queryParams.query = undefined;
-        }
-        queryParams.page = this.live ? 1 : undefined;
-        return queryParams;
-    }
-
-    public getDiscoveryRouterLink(): string[] {
-        return [`/discovery/${this.view.name}`];
-    }
-
-    private buildUrlTree(queryParams: Params): UrlTree {
-        return this.router.createUrlTree([`/discovery/${this.view.name}`], {
-            queryParams: queryParams,
-            queryParamsHandling: this.live ? 'merge' : undefined,
-            preserveFragment: true
+      if (this.view.facets && this.view.facets.length > 0) {
+        let facets = '';
+        this.view.facets.forEach((facet: Facet) => {
+          facets += facets.length > 0 ? `,${facet.field}` : facet.field;
         });
-    }
+        this.form.patchValue({ facets });
+      }
 
+      if (this.view.filters && this.view.filters.length > 0) {
+        this.view.filters.forEach((filter: Filter) => {
+          const field = {};
+          field[`${filter.field}.filter`] = filter.value;
+          this.form.patchValue(field);
+        });
+      }
+
+      const collection = 'individual';
+
+      this.form.patchValue({ collection });
+
+      this.subscriptions.push(
+        this.store
+          .pipe(
+            select(selectRouterSearchQuery),
+            skipWhile((query: string) => query === undefined)
+          )
+          .subscribe((query: string) => this.form.patchValue({ query }))
+      );
+
+      if (this.live) {
+        this.subscriptions.push(this.form.controls.query.valueChanges.pipe(debounceTime(this.debounce), distinctUntilChanged()).subscribe(() => this.onSearch()));
+      }
+
+      this.setup = true;
+    }
+    return this.setup;
+  }
+
+  public isBrowserRendered(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
+
+  public isServerRendered(): boolean {
+    return isPlatformServer(this.platformId);
+  }
+
+  public onSearch(): void {
+    const queryParams: Params = this.getDiscoveryQueryParams(this.form.value.query);
+    const urlTree = this.buildUrlTree(queryParams);
+    this.router.navigateByUrl(urlTree);
+  }
+
+  public getAction(): string {
+    return `${this.baseHref}discovery/${this.view.name}`;
+  }
+
+  public getFilterName(filter: Filter): string {
+    return `${filter.field}.filter`;
+  }
+
+  public getDiscoveryQueryParams(query?: string): Params {
+    const queryParams: Params = getQueryParams(this.view);
+    if (query && query.length > 0) {
+      queryParams.query = query;
+    } else {
+      queryParams.query = undefined;
+    }
+    queryParams.page = this.live ? 1 : undefined;
+    return queryParams;
+  }
+
+  public getDiscoveryRouterLink(): string[] {
+    return [`/discovery/${this.view.name}`];
+  }
+
+  private buildUrlTree(params: Params): UrlTree {
+    return this.router.createUrlTree([`/discovery/${this.view.name}`], {
+      queryParams: params,
+      queryParamsHandling: this.live ? 'merge' : undefined,
+      preserveFragment: true,
+    });
+  }
 }

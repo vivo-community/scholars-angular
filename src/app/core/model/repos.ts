@@ -10,28 +10,28 @@ import { UserRepo } from './user/repo/user.repo';
 // NOTE: the keys must match the property of the Spring Data REST embedded response
 
 export const keys = {
-    individual: 'id',
-    themes: 'name',
-    users: 'email',
-    directoryViews: 'name',
-    discoveryViews: 'name',
-    displayViews: 'name'
+  individual: 'id',
+  themes: 'name',
+  users: 'email',
+  directoryViews: 'name',
+  discoveryViews: 'name',
+  displayViews: 'name',
 };
 
 export const repos = {
-    individual: new InjectionToken<string>('IndividualRepo'),
-    themes: new InjectionToken<string>('ThemeRepo'),
-    users: new InjectionToken<string>('UserRepo'),
-    directoryViews: new InjectionToken<string>('DirectoryViewRepo'),
-    discoveryViews: new InjectionToken<string>('DiscoveryViewRepo'),
-    displayViews: new InjectionToken<string>('DisplayViewRepo')
+  individual: new InjectionToken<string>('IndividualRepo'),
+  themes: new InjectionToken<string>('ThemeRepo'),
+  users: new InjectionToken<string>('UserRepo'),
+  directoryViews: new InjectionToken<string>('DirectoryViewRepo'),
+  discoveryViews: new InjectionToken<string>('DiscoveryViewRepo'),
+  displayViews: new InjectionToken<string>('DisplayViewRepo'),
 };
 
 export const injectable = [
-    { provide: repos.individual, useExisting: IndividualRepo },
-    { provide: repos.themes, useExisting: ThemeRepo },
-    { provide: repos.users, useExisting: UserRepo },
-    { provide: repos.directoryViews, useExisting: DirectoryViewRepo },
-    { provide: repos.discoveryViews, useExisting: DiscoveryViewRepo },
-    { provide: repos.displayViews, useExisting: DisplayViewRepo }
+  { provide: repos.individual, useExisting: IndividualRepo },
+  { provide: repos.themes, useExisting: ThemeRepo },
+  { provide: repos.users, useExisting: UserRepo },
+  { provide: repos.directoryViews, useExisting: DirectoryViewRepo },
+  { provide: repos.discoveryViews, useExisting: DiscoveryViewRepo },
+  { provide: repos.displayViews, useExisting: DisplayViewRepo },
 ];

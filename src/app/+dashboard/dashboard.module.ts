@@ -14,26 +14,24 @@ import { HomeComponent } from './home/home.component';
 import { routes } from './dashboard.routes';
 
 @NgModule({
-    declarations: [
-        AboutComponent,
-        DashboardComponent,
-        HomeComponent
-    ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        TranslateModule.forChild({
-            missingTranslationHandler: {
-                provide: MissingTranslationHandler,
-                useClass: CustomMissingTranslationHandler
-            },
-            isolate: false
-        }),
-        RouterModule.forChild(routes)
-    ]
+  declarations: [
+    AboutComponent,
+    DashboardComponent,
+    HomeComponent
+  ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    TranslateModule.forChild({
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler,
+      },
+      isolate: false,
+    }),
+    RouterModule.forChild(routes),
+  ],
 })
 export class DashboardModule {
-
-    public static routes = routes;
-
+  public static routes = routes;
 }

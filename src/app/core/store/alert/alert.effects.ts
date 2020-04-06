@@ -12,25 +12,18 @@ import * as fromAlert from '../alert/alert.actions';
 
 @Injectable()
 export class AlertEffects {
+  constructor(private actions: Actions, private store: Store<AppState>) {}
 
-    constructor(
-        private actions: Actions,
-        private store: Store<AppState>
-    ) {
-
-    }
-
-    @Effect({ dispatch: false }) setAlertTimer = this.actions.pipe(
-        ofType(fromAlert.AlertActionTypes.ADD_ALERT),
-        map((action: fromAlert.AddAlertAction) => action.payload),
-        map((payload: { alert: Alert }) => payload.alert),
-        map((alert: Alert) => {
-            if (alert.timer !== undefined) {
-                setTimeout(() => {
-                    this.store.dispatch(new fromAlert.DismissAlertAction({ alert }));
-                }, alert.timer);
-            }
-        })
-    );
-
+  @Effect({ dispatch: false }) setAlertTimer = this.actions.pipe(
+    ofType(fromAlert.AlertActionTypes.ADD_ALERT),
+    map((action: fromAlert.AddAlertAction) => action.payload),
+    map((payload: { alert: Alert }) => payload.alert),
+    map((alert: Alert) => {
+      if (alert.timer !== undefined) {
+        setTimeout(() => {
+          this.store.dispatch(new fromAlert.DismissAlertAction({ alert }));
+        }, alert.timer);
+      }
+    })
+  );
 }

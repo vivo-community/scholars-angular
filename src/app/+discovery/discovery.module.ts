@@ -12,24 +12,20 @@ import { DiscoveryComponent } from './discovery.component';
 import { routes } from './discovery.routes';
 
 @NgModule({
-    declarations: [
-        DiscoveryComponent
-    ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        TranslateModule.forChild({
-            missingTranslationHandler: {
-                provide: MissingTranslationHandler,
-                useClass: CustomMissingTranslationHandler
-            },
-            isolate: false
-        }),
-        RouterModule.forChild(routes)
-    ]
+  declarations: [DiscoveryComponent],
+  imports: [
+    CommonModule,
+    SharedModule,
+    TranslateModule.forChild({
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler,
+      },
+      isolate: false,
+    }),
+    RouterModule.forChild(routes),
+  ],
 })
 export class DiscoveryModule {
-
-    public static routes = routes;
-
+  public static routes = routes;
 }

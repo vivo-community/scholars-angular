@@ -9,39 +9,66 @@ import { DiscoveryViewsComponent } from './discovery-views/discovery-views.compo
 import { DisplayViewsComponent } from './display-views/display-views.component';
 
 export const routes: Routes = [
-    {
-        path: '', component: AdminComponent, children: [
+  {
+    path: '',
+    component: AdminComponent,
+    children: [
+      {
+        path: 'DirectoryViews',
+        component: DirectoryViewsComponent,
+        data: {
+          collection: 'directoryViews',
+          tags: [
             {
-                path: 'DirectoryViews', component: DirectoryViewsComponent, data: {
-                    collection: 'directoryViews',
-                    tags: [{ name: 'view', content: 'Scholars Administration - Directory Views' }]
-                }
+              name: 'view',
+              content: 'Scholars Administration - Directory Views',
             },
+          ],
+        },
+      },
+      {
+        path: 'DiscoveryViews',
+        component: DiscoveryViewsComponent,
+        data: {
+          collection: 'discoveryViews',
+          tags: [
             {
-                path: 'DiscoveryViews', component: DiscoveryViewsComponent, data: {
-                    collection: 'discoveryViews',
-                    tags: [{ name: 'view', content: 'Scholars Administration - Discovery Views' }]
-                }
+              name: 'view',
+              content: 'Scholars Administration - Discovery Views',
             },
+          ],
+        },
+      },
+      {
+        path: 'DisplayViews',
+        component: DisplayViewsComponent,
+        data: {
+          collection: 'displayViews',
+          tags: [
             {
-                path: 'DisplayViews', component: DisplayViewsComponent, data: {
-                    collection: 'displayViews',
-                    tags: [{ name: 'view', content: 'Scholars Administration - Display Views' }]
-                }
+              name: 'view',
+              content: 'Scholars Administration - Display Views',
             },
-            {
-                path: 'Themes', component: ThemesComponent, data: {
-                    collection: 'themes',
-                    tags: [{ name: 'view', content: 'Scholars Administration - Themes' }]
-                }
-            },
-            {
-                path: 'Users', component: UsersComponent, data: {
-                    collection: 'users',
-                    tags: [{ name: 'view', content: 'Scholars Administration - Users' }]
-                }
-            },
-            { path: '**', redirectTo: 'DirectoryViews' }
-        ]
-    }
+          ],
+        },
+      },
+      {
+        path: 'Themes',
+        component: ThemesComponent,
+        data: {
+          collection: 'themes',
+          tags: [{ name: 'view', content: 'Scholars Administration - Themes' }],
+        },
+      },
+      {
+        path: 'Users',
+        component: UsersComponent,
+        data: {
+          collection: 'users',
+          tags: [{ name: 'view', content: 'Scholars Administration - Users' }],
+        },
+      },
+      { path: '**', redirectTo: 'DirectoryViews' },
+    ],
+  },
 ];

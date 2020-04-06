@@ -13,28 +13,20 @@ import { ComputedStyleLoader } from '../computed-style-loader';
 import { testAppConfig } from '../../../test.config';
 
 describe('ThemeService', () => {
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                HttpClientTestingModule
-            ],
-            providers: [
-                { provide: REQUEST, useFactory: getRequest },
-                { provide: 'APP_CONFIG', useValue: testAppConfig },
-                {
-                    provide: ComputedStyleLoader,
-                    useFactory: (createStyleLoader),
-                    deps: [DOCUMENT]
-                },
-                RestService,
-                ThemeService
-            ]
-        });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        { provide: REQUEST, useFactory: getRequest },
+        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: ComputedStyleLoader, useFactory: createStyleLoader, deps: [DOCUMENT] },
+        RestService,
+        ThemeService,
+      ],
     });
+  });
 
-    it('should be created', inject([ThemeService], (service: ThemeService) => {
-        expect(service).toBeTruthy();
-    }));
-
+  it('should be created', inject([ThemeService], (service: ThemeService) => {
+    expect(service).toBeTruthy();
+  }));
 });

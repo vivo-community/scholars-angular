@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'scholars-header',
-    templateUrl: 'header.component.html',
-    styleUrls: ['header.component.scss']
+  selector: 'scholars-header',
+  templateUrl: 'header.component.html',
+  styleUrls: ['header.component.scss'],
 })
-export class HeaderComponent {
-
-}
+export class HeaderComponent {}
