@@ -17,48 +17,42 @@ import { metaReducers, reducers } from '../core/store';
 import { testAppConfig } from '../../test.config';
 
 describe('DisplayComponent', () => {
-    let component: DisplayComponent;
-    let fixture: ComponentFixture<DisplayComponent>;
+  let component: DisplayComponent;
+  let fixture: ComponentFixture<DisplayComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                DisplayComponent,
-                TabComponent
-            ],
-            imports: [
-                NoopAnimationsModule,
-                SharedModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                TranslateModule.forRoot(),
-                RouterTestingModule.withRoutes(routes)
-            ],
-            providers: [
-                { provide: 'APP_CONFIG', useValue: testAppConfig },
-                { provide: APP_BASE_HREF, useValue: '/' }
-            ],
-            schemas: [
-                CUSTOM_ELEMENTS_SCHEMA
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [DisplayComponent, TabComponent],
+      imports: [
+        NoopAnimationsModule,
+        SharedModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes(routes),
+      ],
+      providers: [
+        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_BASE_HREF, useValue: '/' },
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(DisplayComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(DisplayComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

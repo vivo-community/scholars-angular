@@ -13,33 +13,26 @@ import { metaReducers, reducers } from '../store';
 import { testAppConfig } from '../../../test.config';
 
 describe('AuthGuard', () => {
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                AuthGuard,
-                AlertService,
-                DialogService,
-                TranslateService
-            ],
-            imports: [
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                TranslateModule.forRoot(),
-                RouterTestingModule.withRoutes([])
-            ]
-        });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [AuthGuard, AlertService, DialogService, TranslateService],
+      imports: [
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+      ],
     });
+  });
 
-    it('should be created', inject([AuthGuard], (service: AuthGuard) => {
-        expect(service).toBeTruthy();
-    }));
-
+  it('should be created', inject([AuthGuard], (service: AuthGuard) => {
+    expect(service).toBeTruthy();
+  }));
 });

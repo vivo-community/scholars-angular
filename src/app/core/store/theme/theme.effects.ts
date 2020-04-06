@@ -15,48 +15,40 @@ import * as fromTheme from './theme.actions';
 
 @Injectable()
 export class ThemeEffects {
+  constructor(private actions: Actions, private themeService: ThemeService, private alert: AlertService) {}
 
-    constructor(
-        private actions: Actions,
-        private themeService: ThemeService,
-        private alert: AlertService
-    ) {
+  @Effect() loadActiveTheme = this.actions.pipe(
+    ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE),
+    switchMap(() =>
+      this.themeService.getActiveTheme().pipe(
+        map((theme: Theme) => new fromTheme.LoadActiveThemeSuccessAction({ theme })),
+        catchError((response) => scheduled([new fromTheme.LoadActiveThemeFailureAction({ response })], asap))
+      )
+    )
+  );
 
-    }
+  @Effect() loadActiveThemeSuccess = this.actions.pipe(
+    ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE_SUCCESS),
+    map((action: fromTheme.LoadActiveThemeSuccessAction) => action.payload.theme),
+    switchMap((theme: Theme) =>
+      this.themeService.applyActiveTheme(theme).pipe(
+        map((style: SafeStyle) => new fromTheme.ApplyActiveThemeSuccessAction({ style })),
+        catchError((error) => scheduled([new fromTheme.ApplyActiveThemeFailureAction({ error })], asap))
+      )
+    )
+  );
 
-    @Effect() loadActiveTheme = this.actions.pipe(
-        ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE),
-        switchMap(() =>
-            this.themeService.getActiveTheme().pipe(
-                map((theme: Theme) => new fromTheme.LoadActiveThemeSuccessAction({ theme })),
-                catchError((response) => scheduled([new fromTheme.LoadActiveThemeFailureAction({ response })], asap))
-            )
-        )
-    );
+  @Effect() loadActiveThemeFailure = this.actions.pipe(
+    ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE_FAILURE),
+    map((action: fromTheme.LoadActiveThemeFailureAction) => this.alert.loadActiveThemeFailureAlert(action.payload))
+  );
 
-    @Effect() loadActiveThemeSuccess = this.actions.pipe(
-        ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE_SUCCESS),
-        map((action: fromTheme.LoadActiveThemeSuccessAction) => action.payload.theme),
-        switchMap((theme: Theme) =>
-            this.themeService.applyActiveTheme(theme).pipe(
-                map((style: SafeStyle) => new fromTheme.ApplyActiveThemeSuccessAction({ style })),
-                catchError((error) => scheduled([new fromTheme.ApplyActiveThemeFailureAction({ error })], asap))
-            )
-        )
-    );
+  @Effect() applyActiveThemeFailure = this.actions.pipe(
+    ofType(fromTheme.ThemeActionTypes.APPLY_ACTIVE_FAILURE),
+    map((action: fromTheme.ApplyActiveThemeFailureAction) => this.alert.applyActiveThemeFailureAlert(action.payload))
+  );
 
-    @Effect() loadActiveThemeFailure = this.actions.pipe(
-        ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE_FAILURE),
-        map((action: fromTheme.LoadActiveThemeFailureAction) => this.alert.loadActiveThemeFailureAlert(action.payload))
-    );
-
-    @Effect() applyActiveThemeFailure = this.actions.pipe(
-        ofType(fromTheme.ThemeActionTypes.APPLY_ACTIVE_FAILURE),
-        map((action: fromTheme.ApplyActiveThemeFailureAction) => this.alert.applyActiveThemeFailureAlert(action.payload))
-    );
-
-    @Effect() init = defer(() => {
-        return scheduled([new fromTheme.LoadActiveThemeAction()], asap);
-    });
-
+  @Effect() init = defer(() => {
+    return scheduled([new fromTheme.LoadActiveThemeAction()], asap);
+  });
 }

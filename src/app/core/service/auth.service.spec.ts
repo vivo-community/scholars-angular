@@ -10,23 +10,19 @@ import { getRequest } from '../../app.browser.module';
 import { testAppConfig } from '../../../test.config';
 
 describe('AuthService', () => {
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                HttpClientTestingModule
-            ],
-            providers: [
-                { provide: REQUEST, useFactory: getRequest },
-                { provide: 'APP_CONFIG', useValue: testAppConfig },
-                RestService,
-                AuthService
-            ]
-        });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        { provide: REQUEST, useFactory: getRequest },
+        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        RestService,
+        AuthService
+      ],
     });
+  });
 
-    it('should be created', inject([AuthService], (service: AuthService) => {
-        expect(service).toBeTruthy();
-    }));
-
+  it('should be created', inject([AuthService], (service: AuthService) => {
+    expect(service).toBeTruthy();
+  }));
 });

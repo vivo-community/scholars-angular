@@ -2,16 +2,16 @@
 <div class="footer">
   <ul class="list-inline text-center" *ngIf="footer | async; let footer">
     <li class="list-inline-item" *ngFor="let link of footer.links"><a href="{{link.uri}}">{{link.label}}</a></li>
-    <!-- <li class="list-inline-item" *ngIf="(isAdmin | async)">
+    <!-- <li class="list-inline-item" *ngIf="(isAdmin | async) === true">
       <a [routerLink]="['/admin']">{{ 'FOOTER.ADMINISTRATION' | translate }}</a>
     </li>
-    <li class="list-inline-item" *ngIf="!(isAuthenticated | async)">
+    <li class="list-inline-item" *ngIf="(isAuthenticated | async) === false">
       <a class="link" (click)="openRegistrationDialog()">{{ 'FOOTER.REGISTRATION' | translate }}</a>
     </li>
-    <li class="list-inline-item" *ngIf="!(isAuthenticated | async)">
+    <li class="list-inline-item" *ngIf="(isAuthenticated | async) === false">
       <a class="link" (click)="openLoginDialog()">{{ 'FOOTER.LOGIN' | translate }}</a>
     </li>
-    <li class="list-inline-item" *ngIf="(isAuthenticated | async)">
+    <li class="list-inline-item" *ngIf="(isAuthenticated | async) === true">
       <a class="link" (click)="logout()">{{ 'FOOTER.LOGOUT' | translate }}</a>
     </li>
     <li class="list-inline-item" *ngIf="user | async; let user">

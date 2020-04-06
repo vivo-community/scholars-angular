@@ -26,11 +26,11 @@
         <span *ngIf="showFilter(directoryView, filter)">
           <span class="mr-1">{{getFilterField(directoryView, filter) | formalize}}:</span>
           <span class="mr-2">{{getFilterValue(directoryView, filter) | formalize}}</span>
-          <a class="fa fa-close" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, filters, filter)"></a>
+          <a class="fa fa-close" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, filters, filter)"></a>
         </span>
       </span>
       <span *ngIf="showClearFilters(directoryView, filters)" class="badge badge-light p-2 mr-2 mb-2">
-        <a [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, filters)">Clear</a>
+        <a [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, filters)">Clear</a>
       </span>
     </div>
     <div class="index">
@@ -38,12 +38,12 @@
         <span *ngIf="isActive(directoryView, queryParams | async, 'All')" class="fa fa-caret-right mr-1"></span>
         <span>{{ 'DIRECTORY.ALL' | translate }}</span>
       </a>
-      <a class="option" *ngFor="let option of directoryView.index.options" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, option, filters | async)">
+      <a class="option" *ngFor="let option of directoryView.index.options" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryOptionQueryParams(directoryView, option, filters | async)">
         <span *ngIf="isActive(directoryView, queryParams | async, option)" class="fa fa-caret-right mr-1"></span>
         <span>{{option}}</span>
       </a>
     </div>
-    <div *ngIf="!(loading | async)" [@fadeIn]>
+    <div *ngIf="(loading | async) === false" [@fadeIn]>
       <scholars-pagination *ngIf="documents | async; let documents" [page]="page" [ngSwitch]="directoryView.layout" [pageSizeOptionsType]="'list'">
         <scholars-grid-view *ngSwitchCase="'GRID'" [view]="directoryView" [resources]="documents"></scholars-grid-view>
         <scholars-list-view *ngSwitchCase="'LIST'" [view]="directoryView" [resources]="documents"></scholars-list-view>

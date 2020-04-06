@@ -24,63 +24,49 @@ export const selectResourcesFacets = <R extends SdrResource>(name: string) => cr
 export const selectResourcesLinks = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getLinks);
 export const selectResourcesRecentlyUpdated = <R extends SdrResource>(name: string) => createSelector(selectSdrState<R>(name), fromSdr.getRecentlyUpdated);
 
-export const selectResourceById = <R extends SdrResource>(name: string, id: string) => createSelector(
-    selectResourceEntities<R>(name),
-    resources => resources[id]
-);
+export const selectResourceById = <R extends SdrResource>(name: string, id: string) => createSelector(selectResourceEntities<R>(name), (resources) => resources[id]);
 
-export const selectDirectoryViewByClass = (clazz: string) => createSelector(
-    selectAllResources<DirectoryView>('directoryViews'),
-    (resources) => resources.find((dv: DirectoryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz)
-);
+// tslint:disable-next-line: max-line-length
+export const selectDirectoryViewByClass = (clazz: string) => createSelector(selectAllResources<DirectoryView>('directoryViews'), (resources) => resources.find((dv: DirectoryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz));
 
-export const selectDiscoveryViewByClass = (clazz: string) => createSelector(
-    selectAllResources<DiscoveryView>('discoveryViews'),
-    (resources) => resources.find((dv: DiscoveryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz)
-);
+// tslint:disable-next-line: max-line-length
+export const selectDiscoveryViewByClass = (clazz: string) => createSelector(selectAllResources<DiscoveryView>('discoveryViews'), (resources) => resources.find((dv: DiscoveryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz));
 
-export const selectCollectionViewByName = (collection: string, name: string) => createSelector(
-    selectResourceEntities<CollectionView>(collection),
-    (collectionViews) => collectionViews[name]
-);
+export const selectCollectionViewByName = (collection: string, name: string) => createSelector(selectResourceEntities<CollectionView>(collection), (collectionViews) => collectionViews[name]);
 
-export const selectDisplayViewByTypes = (types: string[]) => createSelector(
-    selectResourceEntities<DisplayView>('displayViews'),
-    (displayViews) => {
-        let defaultDisplayView;
-        for (const key in displayViews) {
-            if (displayViews.hasOwnProperty(key)) {
-                for (const i in types) {
-                    if (displayViews.hasOwnProperty(key)) {
-                        if (displayViews[key].types.indexOf(types[i]) >= 0) {
-                            return displayViews[key];
-                        }
-                    }
-                }
-                if (displayViews[key].name === 'Default') {
-                    defaultDisplayView = displayViews[key];
-                }
+export const selectDisplayViewByTypes = (types: string[]) =>
+  createSelector(selectResourceEntities<DisplayView>('displayViews'), (displayViews) => {
+    let defaultDisplayView;
+    for (const key in displayViews) {
+      if (displayViews.hasOwnProperty(key)) {
+        for (const i in types) {
+          if (displayViews.hasOwnProperty(key)) {
+            if (displayViews[key].types.indexOf(types[i]) >= 0) {
+              return displayViews[key];
             }
+          }
         }
-        return defaultDisplayView;
+        if (displayViews[key].name === 'Default') {
+          defaultDisplayView = displayViews[key];
+        }
+      }
     }
-);
+    return defaultDisplayView;
+  });
 
-export const selectDisplayViewTab = (view: string, tab: string) => createSelector(
-    selectResourceEntities<DisplayView>('displayViews'),
-    (displayViews) => {
-        for (const i in displayViews) {
-            if (displayViews.hasOwnProperty(i)) {
-                if (displayViews[i].name === view) {
-                    for (const j in displayViews[i].tabs) {
-                        if (displayViews[i].tabs.hasOwnProperty(j)) {
-                            if (displayViews[i].tabs[j].name === tab) {
-                                return displayViews[i].tabs[j];
-                            }
-                        }
-                    }
-                }
+export const selectDisplayViewTab = (view: string, tab: string) =>
+  createSelector(selectResourceEntities<DisplayView>('displayViews'), (displayViews) => {
+    for (const i in displayViews) {
+      if (displayViews.hasOwnProperty(i)) {
+        if (displayViews[i].name === view) {
+          for (const j in displayViews[i].tabs) {
+            if (displayViews[i].tabs.hasOwnProperty(j)) {
+              if (displayViews[i].tabs[j].name === tab) {
+                return displayViews[i].tabs[j];
+              }
             }
+          }
         }
+      }
     }
-);
+  });

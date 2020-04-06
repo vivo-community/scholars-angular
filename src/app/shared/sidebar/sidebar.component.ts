@@ -15,38 +15,31 @@ import { fadeIn, expandCollapse } from '../utilities/animation.utility';
 import * as fromSidebar from '../../core/store/sidebar/sidebar.actions';
 
 @Component({
-    selector: 'scholars-sidebar',
-    templateUrl: 'sidebar.component.html',
-    styleUrls: ['sidebar.component.scss'],
-    animations: [
-        fadeIn,
-        expandCollapse
-    ]
+  selector: 'scholars-sidebar',
+  templateUrl: 'sidebar.component.html',
+  styleUrls: ['sidebar.component.scss'],
+  animations: [fadeIn, expandCollapse],
 })
 export class SidebarComponent implements OnInit {
+  public isSidebarCollapsed: Observable<boolean>;
 
-    public isSidebarCollapsed: Observable<boolean>;
+  public menu: Observable<SidebarMenu>;
 
-    public menu: Observable<SidebarMenu>;
+  public loading: Observable<boolean>;
 
-    public loading: Observable<boolean>;
+  constructor(private store: Store<AppState>) {}
 
-    constructor(private store: Store<AppState>) {
+  ngOnInit() {
+    this.isSidebarCollapsed = this.store.pipe(select(selectIsSidebarCollapsed));
+    this.menu = this.store.pipe(select(selectMenu));
+    this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
+  }
 
-    }
+  public toggleSectionCollapse(sectionIndex: number): void {
+    this.store.dispatch(new fromSidebar.ToggleCollapsibleSectionAction({ sectionIndex }));
+  }
 
-    ngOnInit() {
-        this.isSidebarCollapsed = this.store.pipe(select(selectIsSidebarCollapsed));
-        this.menu = this.store.pipe(select(selectMenu));
-        this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
-    }
-
-    public toggleSectionCollapse(sectionIndex: number): void {
-        this.store.dispatch(new fromSidebar.ToggleCollapsibleSectionAction({ sectionIndex }));
-    }
-
-    public dispatchAction(action: Action): void {
-        this.store.dispatch(action);
-    }
-
+  public dispatchAction(action: Action): void {
+    this.store.dispatch(action);
+  }
 }

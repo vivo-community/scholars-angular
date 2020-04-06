@@ -16,22 +16,23 @@ export const selectUser = createSelector(selectAuthState, fromAuth.getUser);
 export const selectLoginRedirect = createSelector(selectAuthState, fromAuth.getLoginRedirect);
 export const selectError = createSelector(selectAuthState, fromAuth.getError);
 
-export const selectHasRole = (role: Role) => createSelector(selectUser, (user: User) => {
+export const selectHasRole = (role: Role) =>
+  createSelector(selectUser, (user: User) => {
     if (user) {
-        const roles = Object.values(Role);
-        return roles.indexOf(Role[user.role]) >= roles.indexOf(role);
+      const roles = Object.values(Role);
+      return roles.indexOf(Role[user.role]) >= roles.indexOf(role);
     }
     return false;
-});
+  });
 
 export const selectIsSuperadmin = createSelector(selectUser, (user: User) => {
-    return user && Role[user.role] === Role.ROLE_SUPER_ADMIN;
+  return user && Role[user.role] === Role.ROLE_SUPER_ADMIN;
 });
 
 export const selectIsAdmin = createSelector(selectUser, (user: User) => {
-    return user && Role[user.role] === Role.ROLE_ADMIN;
+  return user && Role[user.role] === Role.ROLE_ADMIN;
 });
 
 export const selectIsUser = createSelector(selectUser, (user: User) => {
-    return user && Role[user.role] === Role.ROLE_USER;
+  return user && Role[user.role] === Role.ROLE_USER;
 });

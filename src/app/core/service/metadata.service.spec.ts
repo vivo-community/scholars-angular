@@ -4,18 +4,13 @@ import { Meta } from '@angular/platform-browser';
 import { MetadataService } from './metadata.service';
 
 describe('MetadataService', () => {
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                Meta,
-                MetadataService
-            ]
-        });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [Meta, MetadataService],
     });
+  });
 
-    it('should be created', inject([MetadataService], (service: MetadataService) => {
-        expect(service).toBeTruthy();
-    }));
-
+  it('should be created', inject([MetadataService], (service: MetadataService) => {
+    expect(service).toBeTruthy();
+  }));
 });

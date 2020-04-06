@@ -8,21 +8,17 @@ import { RestService } from './rest.service';
 import { getRequest } from '../../app.browser.module';
 
 describe('RestService', () => {
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                HttpClientTestingModule
-            ],
-            providers: [
-                { provide: REQUEST, useFactory: getRequest },
-                RestService
-            ]
-        });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        { provide: REQUEST, useFactory: getRequest },
+        RestService
+      ],
     });
+  });
 
-    it('should be created', inject([RestService], (service: RestService) => {
-        expect(service).toBeTruthy();
-    }));
-
+  it('should be created', inject([RestService], (service: RestService) => {
+    expect(service).toBeTruthy();
+  }));
 });
