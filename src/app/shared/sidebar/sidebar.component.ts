@@ -26,14 +26,11 @@ export class SidebarComponent implements OnInit {
 
   public menu: Observable<SidebarMenu>;
 
-  public loading: Observable<boolean>;
-
   constructor(private store: Store<AppState>) { }
 
   ngOnInit() {
     this.isSidebarCollapsed = this.store.pipe(select(selectIsSidebarCollapsed));
     this.menu = this.store.pipe(select(selectMenu));
-    this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
   }
 
   public toggleSectionCollapse(sectionIndex: number): void {

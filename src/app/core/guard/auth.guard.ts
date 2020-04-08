@@ -20,7 +20,13 @@ import * as fromRouter from '../store/router/router.actions';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(@Inject(PLATFORM_ID) private platformId: string, private alert: AlertService, private dialog: DialogService, private store: Store<AppState>) {}
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: string,
+    private alert: AlertService,
+    private dialog: DialogService,
+    private store: Store<AppState>
+  ) { }
 
   public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     const roles = route.data.roles;
@@ -36,26 +42,20 @@ export class AuthGuard implements CanActivate {
   }
 
   private isAuthorized(url: string, roles: Role[]): Observable<boolean> {
-    return this.isAuthenticated(url).pipe(
-      switchMap((authenticated: boolean) =>
-        authenticated
-          ? this.store.pipe(
-              select(selectUser),
-              filter((user: User) => user !== undefined),
-              map((user: User) => {
-                const authorized = user ? roles.indexOf(Role[user.role]) >= 0 : false;
-                if (!authorized) {
-                  this.store.dispatch(new fromRouter.Go({ path: ['/'] }));
-                  if (isPlatformBrowser(this.platformId)) {
-                    this.store.dispatch(this.alert.unsubscribeFailureAlert());
-                  }
-                }
-                return authorized;
-              })
-            )
-          : scheduled([false], asap)
-      )
-    );
+    return this.isAuthenticated(url).pipe(switchMap((authenticated: boolean) => authenticated ?
+      this.store.pipe(
+        select(selectUser),
+        filter((user: User) => user !== undefined),
+        map((user: User) => {
+          const authorized = user ? roles.indexOf(Role[user.role]) >= 0 : false;
+          if (!authorized) {
+            this.store.dispatch(new fromRouter.Go({ path: ['/'] }));
+            if (isPlatformBrowser(this.platformId)) {
+              this.store.dispatch(this.alert.unsubscribeFailureAlert());
+            }
+          }
+          return authorized;
+        })) : scheduled([false], asap)));
   }
 
   private isAuthenticated(url: string): Observable<boolean> {
@@ -65,11 +65,9 @@ export class AuthGuard implements CanActivate {
         if (!authenticated) {
           this.store.dispatch(new fromRouter.Go({ path: ['/'] }));
           if (isPlatformBrowser(this.platformId)) {
-            this.store.dispatch(
-              new fromAuth.SetLoginRedirectAction({
-                navigation: { path: [url] },
-              })
-            );
+            this.store.dispatch(new fromAuth.SetLoginRedirectAction({
+              navigation: { path: [url] },
+            }));
             this.store.dispatch(this.dialog.loginDialog());
             this.store.dispatch(this.alert.forbiddenAlert());
           }

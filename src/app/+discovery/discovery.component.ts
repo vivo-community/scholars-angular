@@ -54,7 +54,12 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
 
   private subscriptions: Subscription[];
 
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, private store: Store<AppState>, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    @Inject('APP_CONFIG') private appConfig: AppConfig,
+    private store: Store<AppState>,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.subscriptions = [];
   }
 
