@@ -33,23 +33,23 @@ export class AdminComponent implements OnInit {
     this.tabs = [
       {
         route: ['/admin/DirectoryViews'],
-        translateKey: 'SHARED.SIDEBAR.ADMINISTRATION.DIRECTORY_VIEWS',
+        translateKey: 'ADMIN.DIRECTORY_VIEWS.TITLE',
       },
       {
         route: ['/admin/DiscoveryViews'],
-        translateKey: 'SHARED.SIDEBAR.ADMINISTRATION.DISCOVERY_VIEWS',
+        translateKey: 'ADMIN.DISCOVERY_VIEWS.TITLE',
       },
       {
         route: ['/admin/DisplayViews'],
-        translateKey: 'SHARED.SIDEBAR.ADMINISTRATION.DISPLAY_VIEWS',
+        translateKey: 'ADMIN.DISPLAY_VIEWS.TITLE',
       },
       {
         route: ['/admin/Themes'],
-        translateKey: 'SHARED.SIDEBAR.ADMINISTRATION.THEMES',
+        translateKey: 'ADMIN.THEMES.TITLE',
       },
       {
         route: ['/admin/Users'],
-        translateKey: 'SHARED.SIDEBAR.ADMINISTRATION.USERS',
+        translateKey: 'ADMIN.USERS.TITLE',
       },
     ];
   }

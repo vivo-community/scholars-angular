@@ -9,22 +9,23 @@ export enum OpKey {
   EXPRESSION = 'EXPRESSION',
   FUZZY = 'FUZZY',
   NOT_EQUALS = 'NOT_EQUALS',
-  STARTS_WITH = 'STARTS_WITH',
+  STARTS_WITH = 'STARTS_WITH'
 }
 
 export enum Layout {
   LIST = 'LIST',
-  GRID = 'GRID',
+  GRID = 'GRID'
 }
 
 export enum FacetType {
   STRING = 'STRING',
   DATE_YEAR = 'DATE_YEAR',
+  RANGE_SLIDER = 'RANGE_SLIDER'
 }
 
 export enum FacetSort {
   COUNT = 'COUNT',
-  INDEX = 'INDEX',
+  INDEX = 'INDEX'
 }
 
 export interface Sort {
@@ -48,6 +49,8 @@ export interface Facet {
   readonly direction: Direction;
   readonly collapsed: boolean;
   readonly hidden: boolean;
+  readonly rangeMin?: number;
+  readonly rangeMax?: number;
 }
 
 export interface Filter {
