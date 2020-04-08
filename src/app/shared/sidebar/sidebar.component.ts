@@ -41,7 +41,7 @@ export class SidebarComponent implements OnInit {
     this.store.dispatch(action);
   }
 
-  public onUserChangeEnd(sidebarItem: SidebarItem) {
+  public onSliderChange(sidebarItem: SidebarItem) {
     const filters = sidebarItem.queryParams.filters;
     sidebarItem.queryParams[`${sidebarItem.facet.field}.filter`] = `[${sidebarItem.rangeValues.from} TO ${sidebarItem.rangeValues.to}]`;
     if (sidebarItem.queryParams.filters.indexOf(sidebarItem.facet.field) < 0) {
