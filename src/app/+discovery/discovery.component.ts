@@ -29,6 +29,7 @@ import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, show
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiscoveryComponent implements OnDestroy, OnInit {
+
   public windowDimensions: Observable<WindowDimensions>;
 
   public url: Observable<string>;

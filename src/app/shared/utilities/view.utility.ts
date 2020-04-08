@@ -103,7 +103,9 @@ const getFilterField = (collectionView: CollectionView, actualFilter: Filter): s
 const getFilterValue = (collectionView: CollectionView, actualFilter: Filter): string => {
   for (const facet of collectionView.facets) {
     if (facet.type === FacetType.DATE_YEAR && facet.field === actualFilter.field) {
-      return actualFilter.value.substring(1, actualFilter.value.length - 1).split(' TO ')[0];
+      const from = actualFilter.value.substring(1, actualFilter.value.length - 1).split(' TO ')[0];
+      const year = new Date(from).getFullYear() + 1;
+      return year.toString();
     }
   }
   return actualFilter.value;

@@ -11,7 +11,6 @@ import { AppState } from '../';
 import { selectLoginRedirect } from '../auth';
 
 import * as fromAuth from '../auth/auth.actions';
-import * as fromDialog from '../dialog/dialog.actions';
 import * as fromRouter from './router.actions';
 
 @Injectable()
