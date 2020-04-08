@@ -604,7 +604,9 @@ export class SdrEffects {
       viewFacets
         .filter((viewFacet: Facet) => !viewFacet.hidden)
         .forEach((viewFacet: Facet) => {
+
           const sdrFacet = sdrFacets.find((sf: SdrFacet) => sf.field === viewFacet.field);
+
           if (sdrFacet) {
             const sidebarSection: SidebarSection = {
               title: scheduled([viewFacet.name], asap),
@@ -614,6 +616,41 @@ export class SdrEffects {
             };
 
             sidebarMenu.sections.push(sidebarSection);
+
+            if (viewFacet.type === FacetType.RANGE_SLIDER) {
+
+              const requestFilter = routerState.queryParams.filters.split(',').find((rf: string) => rf === sdrFacet.field);
+
+              const rangeOptions = {
+                floor: viewFacet.rangeMin,
+                ceil: viewFacet.rangeMax
+              };
+              const rangeValues = {
+                from: viewFacet.rangeMin,
+                to: viewFacet.rangeMax
+              };
+
+              if (requestFilter) {
+                const filterValue = routerState.queryParams[`${requestFilter}.filter`];
+                const range = filterValue.substring(1, filterValue.length - 1).split(' TO ');
+                rangeValues.from = range[0];
+                rangeValues.to = range[1];
+                sidebarSection.collapsed = false;
+              }
+
+              const sidebarItem: SidebarItem = {
+                type: SidebarItemType.RANGE_SLIDER,
+                label: scheduled([], asap),
+                facet: viewFacet,
+                route: [],
+                queryParams: Object.assign({}, routerState.queryParams),
+                rangeOptions,
+                rangeValues
+              };
+              sidebarItem.queryParams[`${sdrFacet.field}.filter`] = `[${sidebarItem.rangeValues.from} TO ${sidebarItem.rangeValues.to}]`;
+              sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
+              sidebarSection.items.push(sidebarItem);
+            }
 
             sdrFacet.entries.content
               .filter((facetEntry: SdrFacetEntry) => facetEntry.value.length > 0)
@@ -626,7 +663,9 @@ export class SdrEffects {
                   if (viewFacet.type === FacetType.DATE_YEAR) {
                     const date = new Date(facetEntry.value);
                     const year = date.getUTCFullYear();
-                    if (routerState.queryParams[`${requestFacet}.filter`] === `[${year} TO ${year + 1}]`) {
+                    const from = new Date(year, 0, 1, -6).toISOString();
+                    const to = new Date(year + 1, 0, 1, -6).toISOString();
+                    if (routerState.queryParams[`${requestFacet}.filter`] === `[${from} TO ${to}]`) {
                       selected = true;
                     }
                   } else {
@@ -643,13 +682,15 @@ export class SdrEffects {
                   selected,
                   parenthetical: facetEntry.count,
                   route: [],
-                  queryParams: Object.assign({}, routerState.queryParams),
+                  queryParams: Object.assign({}, routerState.queryParams)
                 };
 
                 if (viewFacet.type === FacetType.DATE_YEAR) {
                   const date = new Date(facetEntry.value);
                   const year = date.getUTCFullYear();
-                  sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${year} TO ${year + 1}]` : undefined;
+                  const from = new Date(year, 0, 1, -6).toISOString();
+                  const to = new Date(year + 1, 0, 1, -6).toISOString();
+                  sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${from} TO ${to}]` : undefined;
                   sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
                 } else {
                   sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
@@ -680,7 +721,6 @@ export class SdrEffects {
                     sidebarItem.queryParams.filters = sdrFacet.field;
                   }
                 }
-
                 sidebarSection.items.push(sidebarItem);
               });
 
@@ -720,4 +760,5 @@ export class SdrEffects {
     }
     this.subscribeToResourceQueue(action.name, store.stomp);
   }
+
 }

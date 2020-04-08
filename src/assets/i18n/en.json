@@ -1,5 +1,6 @@
 {
   "ADMIN": {
+    "TITLE": "Administration",
     "DIRECTORY_VIEWS": {
       "TITLE": "Directory Views",
       "NAME": "Name",
@@ -162,14 +163,6 @@
       "SEARCH_TIPS": "Search Tips"
     },
     "SIDEBAR": {
-      "ADMINISTRATION": {
-        "TITLE": "Administration",
-        "DIRECTORY_VIEWS": "Directory Views",
-        "DISCOVERY_VIEWS": "Discovery Views",
-        "DISPLAY_VIEWS": "Display Views",
-        "THEMES": "Themes",
-        "USERS": "Users"
-      },
       "MENU": "Menu",
       "BACK": "Back",
       "LINK": {

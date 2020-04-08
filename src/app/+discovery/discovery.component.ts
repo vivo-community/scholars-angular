@@ -29,6 +29,7 @@ import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, show
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiscoveryComponent implements OnDestroy, OnInit {
+
   public windowDimensions: Observable<WindowDimensions>;
 
   public url: Observable<string>;
@@ -53,7 +54,12 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
 
   private subscriptions: Subscription[];
 
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, private store: Store<AppState>, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    @Inject('APP_CONFIG') private appConfig: AppConfig,
+    private store: Store<AppState>,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.subscriptions = [];
   }
 
