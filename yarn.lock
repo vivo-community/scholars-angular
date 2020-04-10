@@ -8072,10 +8072,10 @@ schema-utils@^2.5.0, schema-utils@^2.6.1, schema-utils@^2.6.4, schema-utils@^2.6
     ajv "^6.12.0"
     ajv-keywords "^3.4.1"
 
-scholars-embed-utilities@0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.2.1.tgz#e08e2144c9185595f47be6715c7dfc5623389b7d"
-  integrity sha512-5R59CjAXtmEy6crp+vniQ1SVgpO/VlOIVs74YzEDLJn89Rfnbynnqo4t6MNqRY48c6Zwu9U6M1HiV9b9R/YUaA==
+scholars-embed-utilities@0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.2.2.tgz#38c0b30e6e001023ce0c6ce9bcfc6ef35eaf584d"
+  integrity sha512-MwUU5bJG5y4hREUhRzk++xxftIRZQ02NKmumBZIfs7HCQUrUcwfvdUR2P8aIDgzhrN2J1Hf6mhAe6lgQwDHBpw==
   dependencies:
     handlebars "4.7.6"
     handlebars-loader "1.7.1"
