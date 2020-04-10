@@ -66,6 +66,7 @@ export const sectionsToShow = (sections: DisplayTabSectionView[], document: Solr
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DisplayComponent implements OnDestroy, OnInit {
+
   public windowDimensions: Observable<WindowDimensions>;
 
   public displayView: Observable<DisplayView>;
