@@ -4,9 +4,9 @@ import { MetaDefinition } from '@angular/platform-browser';
 
 import { Store, select } from '@ngrx/store';
 
-import { Observable, Subscription, combineLatest, scheduled, Observer, pipe } from 'rxjs';
+import { Observable, Subscription, combineLatest, scheduled, Observer } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { filter, map, take, switchMap, tap } from 'rxjs/operators';
+import { filter, map, take, switchMap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
