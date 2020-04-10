@@ -208,7 +208,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
                           (previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)),
                           Promise.resolve()
                         ).then(() => {
-                          console.log('ready');
                           observer.next(true);
                           observer.complete();
                         });
