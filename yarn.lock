@@ -6329,7 +6329,7 @@ next-tick@~1.0.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
-ng5-slider@^1.2.4:
+ng5-slider@1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/ng5-slider/-/ng5-slider-1.2.4.tgz#2bbc110b73fbc00991e4ec73ac064a7b2efe4094"
   integrity sha512-4EwMNaOwy0p0mjUjRHem6vq4ZIqFMkej66Vmky1PSMb3e9r10tF2m29kS94EDB9y4inYoEf3tVrZ3YXfd7R5ag==
@@ -8095,10 +8095,10 @@ schema-utils@^2.5.0, schema-utils@^2.6.1, schema-utils@^2.6.4, schema-utils@^2.6
     ajv "^6.12.0"
     ajv-keywords "^3.4.1"
 
-scholars-embed-utilities@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.2.0.tgz#1a49480c163c85de91101e7f23bb64d073439532"
-  integrity sha512-MyqWKtfss47Wdi5/RU63Ea7buyBG3iChB9LCoG/uQbZL8s92NMQRJ3Z349IqikTYyWU1EqCTw8me1cbGz6HjQQ==
+scholars-embed-utilities@0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.2.2.tgz#38c0b30e6e001023ce0c6ce9bcfc6ef35eaf584d"
+  integrity sha512-MwUU5bJG5y4hREUhRzk++xxftIRZQ02NKmumBZIfs7HCQUrUcwfvdUR2P8aIDgzhrN2J1Hf6mhAe6lgQwDHBpw==
   dependencies:
     handlebars "4.7.6"
     handlebars-loader "1.7.1"
