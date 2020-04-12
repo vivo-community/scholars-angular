@@ -111,8 +111,10 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
       case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, name):
         const changes = {};
         const id = action.payload.document.id;
+        const isArray = Array.isArray(state.entities[id][action.payload.field]);
         // tslint:disable-next-line: no-string-literal
-        changes[action.payload.field] = action.payload.resources._embedded['individual'];
+        const embedded = action.payload.resources._embedded['individual'];
+        changes[action.payload.field] = isArray ? embedded : embedded[0];
         return getSdrAdapter<R>(keys[name]).updateOne(
           { id, changes },
           {
