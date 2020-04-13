@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription, combineLatest, scheduled, Observer } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { filter, map, take, switchMap, tap } from 'rxjs/operators';
+import { filter, map, take, switchMap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
@@ -66,6 +66,7 @@ export const sectionsToShow = (sections: DisplayTabSectionView[], document: Solr
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DisplayComponent implements OnDestroy, OnInit {
+
   public windowDimensions: Observable<WindowDimensions>;
 
   public displayView: Observable<DisplayView>;
@@ -96,11 +97,15 @@ export class DisplayComponent implements OnDestroy, OnInit {
         if (params.id) {
           this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
           this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
-          this.document = this.store.pipe(
-            select(selectResourceById('individual', params.id)),
-            filter((document: SolrDocument) => document !== undefined),
-            take(1),
-            tap((document: SolrDocument) => {
+          this.document = this.store.pipe(select(selectResourceById('individual', params.id)));
+
+          this.subscriptions.push(
+            this.store.pipe(
+              select(selectResourceById('individual', params.id)),
+              filter((document: SolrDocument) => document !== undefined),
+              take(1)
+            ).subscribe((document: SolrDocument) => {
+
               this.store.dispatch(
                 new fromSdr.FindByTypesInResourceAction('displayViews', {
                   types: document.type,
@@ -117,6 +122,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
                 filter((displayView: DisplayView) => displayView !== undefined),
                 take(1),
                 switchMap((displayView: DisplayView) => {
+
                   if (this.route.children.length === 0) {
                     let tabName = 'View All';
                     if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
@@ -173,14 +179,10 @@ export class DisplayComponent implements OnDestroy, OnInit {
                             })
                           );
                           this.subscriptions.push(
-                            this.store
-                              .pipe(
-                                select(selectResourceIsDereferencing('individual')),
-                                filter((dereferencing: boolean) => !dereferencing)
-                              )
-                              .subscribe(() => {
-                                resolve();
-                              })
+                            this.store.pipe(
+                              select(selectResourceIsDereferencing('individual')),
+                              filter((dereferencing: boolean) => !dereferencing)
+                            ).subscribe(() => resolve())
                           );
                         });
                       };
@@ -202,11 +204,14 @@ export class DisplayComponent implements OnDestroy, OnInit {
                         });
 
                       lazyReferences
-                        .reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve())
-                        .then(() => {
+                        .reduce(
+                          (previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)),
+                          Promise.resolve()
+                        ).then(() => {
                           observer.next(true);
                           observer.complete();
                         });
+
                     }),
                   ]);
                 }),

@@ -202,7 +202,7 @@ export class SdrEffects {
     switchMap((action: fromSdr.FetchLazyReferenceAction) => {
       const field = action.payload.field;
       const document = action.payload.document;
-      const ids = document[field].map((property) => property.id);
+      const ids = Array.isArray(document[field]) ? document[field].map((property) => property.id) : [document[field].id];
       return this.repos
         .get('individual')
         .findByIdIn(ids)
