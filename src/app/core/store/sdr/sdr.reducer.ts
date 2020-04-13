@@ -102,9 +102,10 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
           error: undefined,
         });
       case getSdrAction(SdrActionTypes.RECENTLY_UPDATED_SUCCESS, name):
+        const recentlyUpdated = action.payload.recentlyUpdated._embedded !== undefined ? action.payload.recentlyUpdated._embedded[name] : [];
         return {
           ...state,
-          recentlyUpdated: action.payload.recentlyUpdated._embedded[name],
+          recentlyUpdated,
           loading: true,
           error: undefined,
         };
