@@ -66,6 +66,7 @@ export const sectionsToShow = (sections: DisplayTabSectionView[], document: Solr
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DisplayComponent implements OnDestroy, OnInit {
+
   public windowDimensions: Observable<WindowDimensions>;
 
   public displayView: Observable<DisplayView>;
@@ -207,7 +208,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
                           (previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)),
                           Promise.resolve()
                         ).then(() => {
-                          console.log('ready');
                           observer.next(true);
                           observer.complete();
                         });
