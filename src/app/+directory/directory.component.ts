@@ -27,6 +27,7 @@ import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, show
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DirectoryComponent implements OnDestroy, OnInit {
+
   public queryParams: Observable<Params>;
 
   public filters: Observable<any[]>;
@@ -160,7 +161,6 @@ export class DirectoryComponent implements OnDestroy, OnInit {
 
   public getDirectoryExportUrl(directoryView: DirectoryView, params: Params): string {
     const queryParams: Params = Object.assign({}, params);
-    queryParams.filters = queryParams.filters;
     queryParams.facets = null;
     queryParams.collection = null;
     addExportToQueryParams(queryParams, directoryView);

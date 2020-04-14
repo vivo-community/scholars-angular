@@ -162,7 +162,9 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   private buildUrlTree(params: Params): UrlTree {
     return this.router.createUrlTree([`/discovery/${this.view.name}`], {
       queryParams: params,
-      queryParamsHandling: this.live ? 'merge' : undefined,
+      // TODO: fix merging of query params
+      // this is broken as filters is overwritten with discovery view filters and not including additional applied filters
+      // queryParamsHandling: this.live ? 'merge' : undefined,
       preserveFragment: true,
     });
   }
