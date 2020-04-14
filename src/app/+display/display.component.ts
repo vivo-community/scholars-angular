@@ -25,21 +25,38 @@ import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByType
 import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
 
-const hasDataAfterFilter = (filteredSubsections: Subsection[], document: SolrDocument): boolean => {
-  for (const filteredSubsection of filteredSubsections) {
-    // tslint:disable-next-line: no-shadowed-variable
-    if (filteredSubsection.filters.filter((filter: Filter) => {
-      return (
-        document[filteredSubsection.field].filter((resource: any) => {
-          const value = resource[filter.field];
-          return Array.isArray(value) ? value.indexOf(filter.value) >= 0 : value === filter.value;
-        }).length > 0
-      );
-    }).length > 0) {
-      return true;
+const hasDataAfterFilter = (fltr: Filter, obj: any): boolean => {
+  return Array.isArray(obj[fltr.field]) ? obj[fltr.field].indexOf(fltr.value) >= 0 : obj[fltr.field] === fltr.value;
+};
+
+const hasDataAfterFilters = (filters: Filter[], prop: any): boolean => {
+  if (Array.isArray(prop)) {
+    return prop.filter((obj) => {
+      for (const fltr of filters) {
+        if (hasDataAfterFilter(fltr, obj)) {
+          return true;
+        }
+      }
+      return false;
+    }).length > 0;
+  } else {
+    for (const fltr of filters) {
+      if (hasDataAfterFilter(fltr, prop)) {
+        return true;
+      }
     }
+    return false;
   }
-  return false;
+};
+
+const hasDataAfterSubsectionFilters = (subsection: Subsection, prop: any): boolean => {
+  return subsection.filters.length === 0 || hasDataAfterFilters(subsection.filters, prop);
+};
+
+const hasDataAfterSectionFilters = (section: DisplayTabSectionView, document: SolrDocument): boolean => {
+  return (section.filters.length === 0 || hasDataAfterFilters(section.filters, document[section.field])) && (section.subsections.length === 0 || section.subsections.filter((subsection: Subsection) => {
+    return hasDataAfterSubsectionFilters(subsection, document[subsection.field]);
+  }).length > 0);
 };
 
 const hasRequiredFields = (requiredFields: string[], document: SolrDocument): boolean => {
@@ -53,8 +70,7 @@ const hasRequiredFields = (requiredFields: string[], document: SolrDocument): bo
 
 export const sectionsToShow = (sections: DisplayTabSectionView[], document: SolrDocument): DisplayTabSectionView[] => {
   return sections.filter((section: DisplayTabSectionView) => {
-    const filteredSubsections = section.subsections.filter((subsection: Subsection) => subsection.filters.length);
-    return !section.hidden && hasRequiredFields(section.requiredFields.concat([section.field]), document) && (filteredSubsections.length === 0 || hasDataAfterFilter(filteredSubsections, document));
+    return !section.hidden && hasRequiredFields(section.requiredFields.concat([section.field]), document) && hasDataAfterSectionFilters(section, document);
   });
 };
 
@@ -127,10 +143,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
                     let tabName = 'View All';
                     if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
                       for (const tab of this.getTabsToShow(displayView.tabs, document)) {
-                        if (!tab.hidden) {
-                          tabName = tab.name;
-                          break;
-                        }
+                        tabName = tab.name;
                       }
                     }
                     this.router.navigate([displayView.name, tabName], {
