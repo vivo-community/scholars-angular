@@ -4,9 +4,8 @@ import { MetaDefinition } from '@angular/platform-browser';
 
 import { Store, select } from '@ngrx/store';
 
-import { Observable, Subscription, combineLatest, scheduled, Observer } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
-import { filter, map, take, switchMap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { filter, take, switchMap, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
@@ -113,32 +112,36 @@ export class DisplayComponent implements OnDestroy, OnInit {
         if (params.id) {
           this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
           this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
-          this.document = this.store.pipe(select(selectResourceById('individual', params.id)));
 
-          this.subscriptions.push(
-            this.store.pipe(
-              select(selectResourceById('individual', params.id)),
-              filter((document: SolrDocument) => document !== undefined),
-              take(1)
-            ).subscribe((document: SolrDocument) => {
+          // listen to document changes
+          this.document = this.store.pipe(
+            select(selectResourceById('individual', params.id)),
+            filter((document: SolrDocument) => document !== undefined)
+          );
 
-              this.store.dispatch(
-                new fromSdr.FindByTypesInResourceAction('displayViews', {
-                  types: document.type,
-                })
-              );
-
-              this.discoveryView = this.store.pipe(
+          // one first defined document, get discovery view
+          this.discoveryView = this.store.pipe(
+            select(selectResourceById('individual', params.id)),
+            filter((document: SolrDocument) => document !== undefined),
+            take(1),
+            switchMap((document: SolrDocument) => {
+              return this.store.pipe(
                 select(selectDiscoveryViewByClass(document.class)),
                 filter((view: DiscoveryView) => view !== undefined)
               );
+            })
+          );
 
-              this.displayView = this.store.pipe(
+          // listen to document changes, updating display view tabs
+          this.displayView = this.store.pipe(
+            select(selectResourceById('individual', params.id)),
+            filter((document: SolrDocument) => document !== undefined),
+            switchMap((document: SolrDocument) => {
+
+              return this.store.pipe(
                 select(selectDisplayViewByTypes(document.type)),
                 filter((displayView: DisplayView) => displayView !== undefined),
-                take(1),
-                switchMap((displayView: DisplayView) => {
-
+                tap((displayView: DisplayView) => {
                   if (this.route.children.length === 0) {
                     let tabName = 'View All';
                     if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
@@ -179,60 +182,72 @@ export class DisplayComponent implements OnDestroy, OnInit {
                   });
 
                   displayView.tabs.push(viewAllTab);
-
-                  return combineLatest([
-                    scheduled([displayView], asap),
-                    new Observable((observer: Observer<boolean>) => {
-                      const dereference = (lazyReference: string): Promise<void> => {
-                        return new Promise((resolve, reject) => {
-                          this.store.dispatch(
-                            new fromSdr.FetchLazyReferenceAction('individual', {
-                              document,
-                              field: lazyReference,
-                            })
-                          );
-                          this.subscriptions.push(
-                            this.store.pipe(
-                              select(selectResourceIsDereferencing('individual')),
-                              filter((dereferencing: boolean) => !dereferencing)
-                            ).subscribe(() => resolve())
-                          );
-                        });
-                      };
-
-                      const lazyReferences: string[] = [];
-
-                      displayView.tabs
-                        .filter((tab: DisplayTabView) => !tab.hidden)
-                        .forEach((tab: DisplayTabView) => {
-                          tab.sections
-                            .filter((section: DisplayTabSectionView) => !section.hidden)
-                            .forEach((section: DisplayTabSectionView) => {
-                              section.lazyReferences
-                                .filter((lr: string) => document[lr] !== undefined && !lazyReferences.find((r) => r === lr))
-                                .forEach((lazyReference: string) => {
-                                  lazyReferences.push(lazyReference);
-                                });
-                            });
-                        });
-
-                      lazyReferences
-                        .reduce(
-                          (previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)),
-                          Promise.resolve()
-                        ).then(() => {
-                          observer.next(true);
-                          observer.complete();
-                        });
-
-                    }),
-                  ]);
-                }),
-                filter(([displayView, isReady]) => isReady),
-                map(([displayView, isReady]) => displayView)
+                })
               );
             })
           );
+
+          // subscribe to first defined document to find display view
+          this.subscriptions.push(this.store.pipe(
+            select(selectResourceById('individual', params.id)),
+            filter((document: SolrDocument) => document !== undefined),
+            take(1),
+            switchMap((document: SolrDocument) => {
+
+              this.store.dispatch(
+                new fromSdr.FindByTypesInResourceAction('displayViews', {
+                  types: document.type,
+                })
+              );
+
+              // subscribe to first defined display view to lazily fetch references
+              return this.store.pipe(
+                select(selectDisplayViewByTypes(document.type)),
+                filter((displayView: DisplayView) => displayView !== undefined),
+                take(1),
+                tap((displayView: DisplayView) => {
+
+                  const dereference = (lazyReference: string): Promise<void> => {
+                    return new Promise((resolve, reject) => {
+                      this.store.dispatch(
+                        new fromSdr.FetchLazyReferenceAction('individual', {
+                          document,
+                          field: lazyReference,
+                        })
+                      );
+                      this.subscriptions.push(
+                        this.store.pipe(
+                          select(selectResourceIsDereferencing('individual')),
+                          filter((dereferencing: boolean) => !dereferencing)
+                        ).subscribe(() => resolve())
+                      );
+                    });
+                  };
+
+                  const lazyReferences: string[] = [];
+
+                  displayView.tabs
+                    .filter((tab: DisplayTabView) => !tab.hidden)
+                    .forEach((tab: DisplayTabView) => {
+                      tab.sections
+                        .filter((section: DisplayTabSectionView) => !section.hidden)
+                        .forEach((section: DisplayTabSectionView) => {
+                          section.lazyReferences
+                            .filter((lr: string) => document[lr] !== undefined && !lazyReferences.find((r) => r === lr))
+                            .forEach((lazyReference: string) => {
+                              lazyReferences.push(lazyReference);
+                            });
+                        });
+                    });
+
+                  // lazily fetch references sequentially
+                  lazyReferences.reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve());
+
+
+                })
+              );
+            })
+          ).subscribe());
         }
       })
     );
