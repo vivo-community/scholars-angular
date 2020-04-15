@@ -1,4 +1,5 @@
 import { OpKey } from '../view';
+import { NgbHighlight } from '@ng-bootstrap/ng-bootstrap';
 
 export enum Direction {
   ASC = 'asc',
@@ -36,6 +37,12 @@ export interface Boostable {
   readonly value: number;
 }
 
+export interface Highlight {
+  readonly fields: string[];
+  readonly pre?: string;
+  readonly post?: string;
+}
+
 export interface SdrRequest {
   readonly page?: Pageable;
   readonly filters?: Filterable[];
@@ -43,4 +50,5 @@ export interface SdrRequest {
   readonly boosts?: Boostable[];
   readonly query?: string;
   readonly df?: string;
+  readonly highlight?: Highlight;
 }

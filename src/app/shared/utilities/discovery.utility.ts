@@ -3,6 +3,7 @@ import { Params } from '@angular/router';
 import { CustomRouterState } from '../../core/store/router/router.reducer';
 import { SdrRequest, Pageable, Sort, Direction, Facetable, Filterable, Boostable } from '../../core/model/request';
 import { OpKey } from '../../core/model/view';
+import { Highlight } from 'src/app/core/model/request/sdr.request';
 
 export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => {
   const queryParams = routerState.queryParams;
@@ -11,9 +12,26 @@ export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => 
     filters: buildFilters(queryParams),
     facets: buildFacets(queryParams),
     boosts: buildBoosts(queryParams),
+    highlight: buildHightlight(queryParams),
     query: queryParams.query,
     df: queryParams.df,
   };
+};
+
+const buildHightlight = (queryParams: Params): Highlight => {
+  const highlight: any = {
+    fields: []
+  };
+  if (queryParams.hl && queryParams.hl.length > 0) {
+    highlight.fields = queryParams.hl;
+  }
+  if (queryParams['hl.pre'] && queryParams['hl.pre'].length > 0) {
+    highlight.pre = queryParams['hl.pre'];
+  }
+  if (queryParams['hl.post'] && queryParams['hl.post'].length > 0) {
+    highlight.post = queryParams['hl.post'];
+  }
+  return highlight as Highlight;
 };
 
 const buildPage = (queryParams: Params): Pageable => {

@@ -195,4 +195,16 @@ const loadBadges = (platformId: string): void => {
   }
 };
 
-export { addExportToQueryParams, applyFiltersToQueryParams, getQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport, getResourcesPage, getSubsectionResources, loadBadges };
+export {
+  addExportToQueryParams,
+  applyFiltersToQueryParams,
+  getQueryParams,
+  showFilter,
+  showClearFilters,
+  getFilterField,
+  getFilterValue,
+  hasExport,
+  getResourcesPage,
+  getSubsectionResources,
+  loadBadges
+};
