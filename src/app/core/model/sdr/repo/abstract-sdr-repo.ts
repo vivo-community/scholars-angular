@@ -16,7 +16,7 @@ import { SdrCollection } from '../sdr-collection';
   providedIn: 'root',
 })
 export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<R> {
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, protected restService: RestService) {}
+  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, protected restService: RestService) { }
 
   public search(request: SdrRequest): Observable<SdrCollection> {
     return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/faceted${this.mapParameters(request)}`, {
@@ -141,6 +141,10 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
 
     if (request.query && request.query.length > 0) {
       parameters.push(`query=${encodeURIComponent(request.query)}`);
+    }
+
+    if (request.df && request.df.length > 0) {
+      parameters.push(`df=${request.df}`);
     }
 
     if (request.filters && request.filters.length > 0) {

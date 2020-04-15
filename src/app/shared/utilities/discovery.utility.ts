@@ -12,6 +12,7 @@ export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => 
     facets: buildFacets(queryParams),
     boosts: buildBoosts(queryParams),
     query: queryParams.query,
+    df: queryParams.df,
   };
 };
 

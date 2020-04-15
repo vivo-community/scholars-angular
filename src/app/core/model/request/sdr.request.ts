@@ -42,4 +42,5 @@ export interface SdrRequest {
   readonly facets?: Facetable[];
   readonly boosts?: Boostable[];
   readonly query?: string;
+  readonly df?: string;
 }
