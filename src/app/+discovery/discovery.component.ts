@@ -97,7 +97,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
   }
 
   public isActive(discoveryView: DiscoveryView, url: string): boolean {
-    return url.startsWith(`/discovery/${discoveryView.name}`);
+    return url.startsWith(`/discovery/${encodeURI(discoveryView.name)}`);
   }
 
   public showFilter(discoveryView: DiscoveryView, actualFilter: Filter): boolean {

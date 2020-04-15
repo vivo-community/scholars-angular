@@ -143,12 +143,19 @@ export class DisplayComponent implements OnDestroy, OnInit {
                 filter((displayView: DisplayView) => displayView !== undefined),
                 tap((displayView: DisplayView) => {
                   if (this.route.children.length === 0) {
-                    let tabName = 'View All';
+                    let tabName;
+
                     if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
                       for (const tab of this.getTabsToShow(displayView.tabs, document)) {
-                        tabName = tab.name;
+                        if (tabName === undefined) {
+                          tabName = tab.name;
+                          break;
+                        }
                       }
+                    } else {
+                      tabName = 'View All';
                     }
+
                     this.router.navigate([displayView.name, tabName], {
                       relativeTo: this.route,
                       replaceUrl: true,
