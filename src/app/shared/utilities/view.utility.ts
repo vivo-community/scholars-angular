@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Params } from '@angular/router';
 
-import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType } from '../../core/model/view';
+import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType, DiscoveryView } from '../../core/model/view';
 import { SdrPage } from '../../core/model/sdr';
 import { Direction } from '../../core/model/request';
 
@@ -49,6 +49,27 @@ const addSortToQueryParams = (queryParams: Params, collectionView: CollectionVie
   }
 };
 
+const addDefaultSearchFieldToQueryParams = (queryParams: Params, discoveryView: DiscoveryView): void => {
+  if (discoveryView.defaultSearchField && discoveryView.defaultSearchField.length > 0) {
+    queryParams.df = discoveryView.defaultSearchField;
+  }
+};
+
+const addHighlightsToQueryParams = (queryParams: Params, discoveryView: DiscoveryView): void => {
+  if (discoveryView.highlightFields && discoveryView.highlightFields.length > 0) {
+    queryParams.hl = [];
+    discoveryView.highlightFields.forEach((field: string) => {
+      queryParams.hl.push(field);
+    });
+  }
+  if (discoveryView.highlightPre && discoveryView.highlightPre.length > 0) {
+    queryParams['hl.pre'] = discoveryView.highlightPre;
+  }
+  if (discoveryView.highlightPost && discoveryView.highlightPost.length > 0) {
+    queryParams['hl.post'] = discoveryView.highlightPost;
+  }
+};
+
 const addExportToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.export && collectionView.export.length > 0) {
     queryParams.export = [];
@@ -65,6 +86,8 @@ const getQueryParams = (collectionView: CollectionView): Params => {
   addFiltersToQueryParams(queryParams, collectionView);
   addBoostToQueryParams(queryParams, collectionView);
   addSortToQueryParams(queryParams, collectionView);
+  addDefaultSearchFieldToQueryParams(queryParams, collectionView as DiscoveryView);
+  addHighlightsToQueryParams(queryParams, collectionView as DiscoveryView);
   return queryParams;
 };
 

@@ -1,3 +1,8 @@
 import { CollectionView } from './';
 
-export type DiscoveryView = CollectionView;
+export interface DiscoveryView extends CollectionView {
+  readonly defaultSearchField?: string;
+  readonly highlightFields: string[];
+  readonly highlightPre?: string;
+  readonly highlightPost?: string;
+}
