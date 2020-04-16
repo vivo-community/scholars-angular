@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router, ActivationStart, RouterOutlet } from '@angular/router';
 import { MetaDefinition } from '@angular/platform-browser';
 
 import { Store, select } from '@ngrx/store';
@@ -82,6 +82,8 @@ export const sectionsToShow = (sections: DisplayTabSectionView[], document: Solr
 })
 export class DisplayComponent implements OnDestroy, OnInit {
 
+  @ViewChild(RouterOutlet) outlet: RouterOutlet;
+
   public windowDimensions: Observable<WindowDimensions>;
 
   public displayView: Observable<DisplayView>;
@@ -115,6 +117,15 @@ export class DisplayComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
+
+    this.router.events.subscribe(e => {
+      if (e instanceof ActivationStart) {
+        if (this.outlet) {
+          this.outlet.deactivate();
+        }
+      }
+    });
+
     this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
 
     this.subscriptions.push(
