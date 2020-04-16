@@ -1,5 +1,4 @@
 import { OpKey } from '../view';
-import { NgbHighlight } from '@ng-bootstrap/ng-bootstrap';
 
 export enum Direction {
   ASC = 'asc',
@@ -15,6 +14,15 @@ export interface Pageable {
   readonly number: number;
   readonly size: number;
   readonly sort: Sort[];
+}
+
+export interface Queryable {
+  readonly expression: string;
+  readonly defaultField?: string;
+  readonly minimumShouldMeet?: string;
+  readonly queryField?: string;
+  readonly boostQuery?: string;
+  readonly fields?: string;
 }
 
 export interface Facetable {
@@ -44,11 +52,10 @@ export interface Highlightable {
 }
 
 export interface SdrRequest {
-  readonly page?: Pageable;
+  readonly query?: Queryable;
   readonly filters?: Filterable[];
   readonly facets?: Facetable[];
   readonly boosts?: Boostable[];
-  readonly query?: string;
-  readonly df?: string;
   readonly highlight?: Highlightable;
+  readonly page?: Pageable;
 }
