@@ -37,10 +37,10 @@ export interface Boostable {
   readonly value: number;
 }
 
-export interface Highlight {
+export interface Highlightable {
   readonly fields: string[];
-  readonly pre?: string;
-  readonly post?: string;
+  readonly prefix?: string;
+  readonly postfix?: string;
 }
 
 export interface SdrRequest {
@@ -50,5 +50,5 @@ export interface SdrRequest {
   readonly boosts?: Boostable[];
   readonly query?: string;
   readonly df?: string;
-  readonly highlight?: Highlight;
+  readonly highlight?: Highlightable;
 }

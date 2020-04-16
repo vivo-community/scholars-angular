@@ -57,7 +57,6 @@ export class TabComponent implements OnDestroy, OnInit {
                         break;
                       } else if (displayView.tabs[i].name === 'View All') {
                         tab = displayView.tabs[i];
-                        console.log(tab);
                       }
                     }
                   }

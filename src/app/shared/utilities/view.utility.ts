@@ -57,16 +57,13 @@ const addDefaultSearchFieldToQueryParams = (queryParams: Params, discoveryView: 
 
 const addHighlightsToQueryParams = (queryParams: Params, discoveryView: DiscoveryView): void => {
   if (discoveryView.highlightFields && discoveryView.highlightFields.length > 0) {
-    queryParams.hl = [];
-    discoveryView.highlightFields.forEach((field: string) => {
-      queryParams.hl.push(field);
-    });
+    queryParams.hl = discoveryView.highlightFields;
   }
-  if (discoveryView.highlightPre && discoveryView.highlightPre.length > 0) {
-    queryParams['hl.pre'] = discoveryView.highlightPre;
+  if (discoveryView.highlightPrefix && discoveryView.highlightPrefix.length > 0) {
+    queryParams['hl.prefix'] = discoveryView.highlightPrefix;
   }
-  if (discoveryView.highlightPost && discoveryView.highlightPost.length > 0) {
-    queryParams['hl.post'] = discoveryView.highlightPost;
+  if (discoveryView.highlightPostfix && discoveryView.highlightPostfix.length > 0) {
+    queryParams['hl.postfix'] = discoveryView.highlightPostfix;
   }
 };
 

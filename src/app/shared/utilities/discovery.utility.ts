@@ -1,9 +1,8 @@
 import { Params } from '@angular/router';
 
 import { CustomRouterState } from '../../core/store/router/router.reducer';
-import { SdrRequest, Pageable, Sort, Direction, Facetable, Filterable, Boostable } from '../../core/model/request';
+import { SdrRequest, Pageable, Sort, Direction, Facetable, Filterable, Boostable, Highlightable } from '../../core/model/request';
 import { OpKey } from '../../core/model/view';
-import { Highlight } from 'src/app/core/model/request/sdr.request';
 
 export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => {
   const queryParams = routerState.queryParams;
@@ -18,20 +17,20 @@ export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => 
   };
 };
 
-const buildHightlight = (queryParams: Params): Highlight => {
+const buildHightlight = (queryParams: Params): Highlightable => {
   const highlight: any = {
     fields: []
   };
   if (queryParams.hl && queryParams.hl.length > 0) {
-    highlight.fields = queryParams.hl;
+    highlight.fields = Array.isArray(queryParams.hl) ? queryParams.hl : queryParams.hl.split(',');
   }
-  if (queryParams['hl.pre'] && queryParams['hl.pre'].length > 0) {
-    highlight.pre = queryParams['hl.pre'];
+  if (queryParams['hl.prefix'] && queryParams['hl.prefix'].length > 0) {
+    highlight.pre = queryParams['hl.prefix'];
   }
-  if (queryParams['hl.post'] && queryParams['hl.post'].length > 0) {
-    highlight.post = queryParams['hl.post'];
+  if (queryParams['hl.postfix'] && queryParams['hl.postfix'].length > 0) {
+    highlight.post = queryParams['hl.postfix'];
   }
-  return highlight as Highlight;
+  return highlight as Highlightable;
 };
 
 const buildPage = (queryParams: Params): Pageable => {
