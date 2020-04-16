@@ -52,6 +52,14 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
       case 'displayViews':
         resources.forEach((view) => augmentDisplayViewTemplates(view, additionalContext));
         break;
+      case 'individual':
+        if (action.payload.collection.highlights) {
+          action.payload.collection.highlights.forEach(highlight => {
+            const individual = resources.filter(resource => resource.id === highlight.id)[0];
+            individual.highlights = highlight.snippets;
+          });
+        }
+        break;
     }
     return resources;
   };
