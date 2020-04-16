@@ -4,7 +4,7 @@ import { MetaDefinition } from '@angular/platform-browser';
 
 import { Store, select } from '@ngrx/store';
 
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { filter, take, switchMap, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
@@ -92,10 +92,20 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
   public loading: Observable<boolean>;
 
+  public ready: Observable<boolean>;
+
+  private readySubject: BehaviorSubject<boolean>;
+
   private subscriptions: Subscription[];
 
-  constructor(private store: Store<AppState>, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private store: Store<AppState>,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.subscriptions = [];
+    this.readySubject = new BehaviorSubject<boolean>(false);
+    this.ready = this.readySubject.asObservable();
   }
 
   ngOnDestroy() {
@@ -248,8 +258,10 @@ export class DisplayComponent implements OnDestroy, OnInit {
                     });
 
                   // lazily fetch references sequentially
-                  lazyReferences.reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve());
-
+                  lazyReferences.reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve()).then(() => {
+                    console.log('ready');
+                    this.readySubject.next(true);
+                  });
 
                 })
               );

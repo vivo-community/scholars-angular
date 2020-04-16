@@ -92,4 +92,5 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
     copyElement.setSelectionRange(0, 0);
     setTimeout(() => tooltip.close(), 2000);
   }
+
 }
