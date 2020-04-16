@@ -270,7 +270,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
                   // lazily fetch references sequentially
                   lazyReferences.reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve()).then(() => {
-                    console.log('ready');
                     this.readySubject.next(true);
                   });
 
