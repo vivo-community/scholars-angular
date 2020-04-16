@@ -7,8 +7,8 @@
     </div>
   </div>
 </div>
-<scholars-sidebar *ngIf="directoryView | async; let directoryView">
-  <div class="container mt-2">
+<scholars-sidebar>
+  <div class="container mt-2" *ngIf="directoryView | async; let directoryView">
     <div class="row flex-column-reverse flex-md-row">
       <div class="col-md-8">
         <span class="h3 text-primary">{{ directoryView.name }}</span>

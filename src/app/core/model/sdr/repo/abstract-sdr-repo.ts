@@ -16,10 +16,10 @@ import { SdrCollection } from '../sdr-collection';
   providedIn: 'root',
 })
 export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<R> {
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, protected restService: RestService) {}
+  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, protected restService: RestService) { }
 
   public search(request: SdrRequest): Observable<SdrCollection> {
-    return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/faceted${this.mapParameters(request)}`, {
+    return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/advanced${this.mapParameters(request)}`, {
       withCredentials: true,
     });
   }
@@ -139,8 +139,23 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
       }
     }
 
-    if (request.query && request.query.length > 0) {
-      parameters.push(`query=${encodeURIComponent(request.query)}`);
+    if (request.query) {
+      if (request.query.expression && request.query.expression.length > 0) {
+        parameters.push(`q=${encodeURIComponent(request.query.expression)}`);
+      }
+      if (request.query.defaultField && request.query.defaultField.length > 0) {
+        parameters.push(`df=${request.query.defaultField}`);
+      }
+    }
+
+    if (request.highlight && request.highlight.fields.length > 0) {
+      parameters.push(`hl=${request.highlight.fields.join(',')}`);
+      if (request.highlight.prefix && request.highlight.prefix.length > 0) {
+        parameters.push(`hl.prefix=${request.highlight.prefix}`);
+      }
+      if (request.highlight.postfix && request.highlight.postfix.length > 0) {
+        parameters.push(`hl.postfix=${request.highlight.postfix}`);
+      }
     }
 
     if (request.filters && request.filters.length > 0) {

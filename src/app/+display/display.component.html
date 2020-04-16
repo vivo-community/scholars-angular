@@ -13,7 +13,7 @@
       <div *ngIf="showAsideLeft(displayView)" class="d-none d-lg-block col-lg-3 p-0">
         <ng-container *ngTemplateOutlet="aside"></ng-container>
       </div>
-      <div [ngClass]="{ 'col-lg-9': showAside(displayView), 'col-lg-12': !showAside(displayView) }">
+      <div [ngClass]="{ 'col-lg-9': showAside(displayView), 'col-lg-12': !showAside(displayView) }" *ngIf="ready | async">
         <div class="row mt-2">
           <div *ngIf="showLeftScan(displayView)" class="col-md-{{ getLeftScanColSize(displayView) }}" [innerHtml]="displayView.leftScanTemplateFunction(document) | safeHtml"></div>
           <div *ngIf="showMainContent(displayView)" class="col-md-{{ getMainContentColSize(displayView) }}" [innerHtml]="displayView.mainContentTemplateFunction(document) | safeHtml"></div>

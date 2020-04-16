@@ -97,7 +97,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
   }
 
   public isActive(discoveryView: DiscoveryView, url: string): boolean {
-    return url.startsWith(`/discovery/${discoveryView.name}`);
+    return url.startsWith(`/discovery/${encodeURI(discoveryView.name)}`);
   }
 
   public showFilter(discoveryView: DiscoveryView, actualFilter: Filter): boolean {
@@ -128,7 +128,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
     const queryParams: Params = getQueryParams(discoveryView);
     applyFiltersToQueryParams(queryParams, discoveryView, filters, filterToRemove);
     if (query && query.length > 0) {
-      queryParams.query = query;
+      queryParams.q = query;
     }
     if (page && page.size) {
       queryParams.size = page.size;

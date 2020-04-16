@@ -147,9 +147,9 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   public getDiscoveryQueryParams(query?: string): Params {
     const queryParams: Params = getQueryParams(this.view);
     if (query && query.length > 0) {
-      queryParams.query = query;
+      queryParams.q = query;
     } else {
-      queryParams.query = undefined;
+      queryParams.q = undefined;
     }
     queryParams.page = this.live ? 1 : undefined;
     return queryParams;

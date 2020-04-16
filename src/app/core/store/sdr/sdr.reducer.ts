@@ -1,11 +1,12 @@
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
 
 import { SdrActionTypes, SdrActions, getSdrAction } from './sdr.actions';
-import { SdrResource, SdrPage, SdrCollectionLinks, SdrFacet } from '../../model/sdr';
+import { SdrResource, SdrPage, SdrCollectionLinks, SdrFacet, SdrHighlight } from '../../model/sdr';
 
 import { keys } from '../../model/repos';
 
 import { augmentCollectionViewTemplates, augmentDisplayViewTemplates } from '../../../shared/utilities/template.utility';
+import { CollectionView, DisplayView } from '../../model/view';
 
 export interface SdrState<R extends SdrResource> extends EntityState<R> {
   page: SdrPage;
@@ -47,10 +48,18 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
     switch (key) {
       case 'directoryViews':
       case 'discoveryViews':
-        resources.forEach((view) => augmentCollectionViewTemplates(view, additionalContext));
+        resources.forEach((view: CollectionView) => augmentCollectionViewTemplates(view, additionalContext));
         break;
       case 'displayViews':
-        resources.forEach((view) => augmentDisplayViewTemplates(view, additionalContext));
+        resources.forEach((view: DisplayView) => augmentDisplayViewTemplates(view, additionalContext));
+        break;
+      case 'individual':
+        if (action.payload.collection.highlights) {
+          action.payload.collection.highlights.forEach((highlight: SdrHighlight) => {
+            const individual = resources.filter(resource => resource.id === highlight.id)[0];
+            individual.highlights = highlight.snippets;
+          });
+        }
         break;
     }
     return resources;

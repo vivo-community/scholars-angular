@@ -16,6 +16,7 @@ import { getResourcesPage, getSubsectionResources, loadBadges } from '../../shar
   styleUrls: ['./subsection.component.scss'],
 })
 export class SubsectionComponent implements AfterViewInit, OnInit, OnDestroy {
+
   @Input()
   public subsection: Subsection;
 

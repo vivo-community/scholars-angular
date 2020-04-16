@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Params } from '@angular/router';
 
-import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType } from '../../core/model/view';
+import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType, DiscoveryView } from '../../core/model/view';
 import { SdrPage } from '../../core/model/sdr';
 import { Direction } from '../../core/model/request';
 
@@ -49,6 +49,24 @@ const addSortToQueryParams = (queryParams: Params, collectionView: CollectionVie
   }
 };
 
+const addDefaultSearchFieldToQueryParams = (queryParams: Params, discoveryView: DiscoveryView): void => {
+  if (discoveryView.defaultSearchField && discoveryView.defaultSearchField.length > 0) {
+    queryParams.df = discoveryView.defaultSearchField;
+  }
+};
+
+const addHighlightsToQueryParams = (queryParams: Params, discoveryView: DiscoveryView): void => {
+  if (discoveryView.highlightFields && discoveryView.highlightFields.length > 0) {
+    queryParams.hl = discoveryView.highlightFields;
+  }
+  if (discoveryView.highlightPrefix && discoveryView.highlightPrefix.length > 0) {
+    queryParams['hl.prefix'] = discoveryView.highlightPrefix;
+  }
+  if (discoveryView.highlightPostfix && discoveryView.highlightPostfix.length > 0) {
+    queryParams['hl.postfix'] = discoveryView.highlightPostfix;
+  }
+};
+
 const addExportToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.export && collectionView.export.length > 0) {
     queryParams.export = [];
@@ -65,6 +83,8 @@ const getQueryParams = (collectionView: CollectionView): Params => {
   addFiltersToQueryParams(queryParams, collectionView);
   addBoostToQueryParams(queryParams, collectionView);
   addSortToQueryParams(queryParams, collectionView);
+  addDefaultSearchFieldToQueryParams(queryParams, collectionView as DiscoveryView);
+  addHighlightsToQueryParams(queryParams, collectionView as DiscoveryView);
   return queryParams;
 };
 
@@ -172,4 +192,16 @@ const loadBadges = (platformId: string): void => {
   }
 };
 
-export { addExportToQueryParams, applyFiltersToQueryParams, getQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport, getResourcesPage, getSubsectionResources, loadBadges };
+export {
+  addExportToQueryParams,
+  applyFiltersToQueryParams,
+  getQueryParams,
+  showFilter,
+  showClearFilters,
+  getFilterField,
+  getFilterValue,
+  hasExport,
+  getResourcesPage,
+  getSubsectionResources,
+  loadBadges
+};
