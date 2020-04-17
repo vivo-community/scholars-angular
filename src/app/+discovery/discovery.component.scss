@@ -1,3 +1,25 @@
 :host {
   width: 100%;
+  .headers-row {
+    .column-export {
+      .btn {
+        color: var(--sidebar-button-color);
+        background-color: var(--sidebar-button-background-color);
+        border: 1px solid var(--sidebar-button-border-color);
+        font-size: 0.9em;
+        padding: 5px 10px 4px;
+        .fa {
+          padding-right: 0.3em;
+        }
+      }
+      .btn:active,
+      .btn:hover {
+        color: var(--sidebar-button-hover-color);
+        background-color: var(--sidebar-button-hover-background-color);
+      }
+      .btn:focus {
+        box-shadow: 0 0 0 0.2rem var(--sidebar-button-focus-shadow-color);
+      }
+    }
+  }
 }

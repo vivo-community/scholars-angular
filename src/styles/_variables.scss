@@ -17,8 +17,17 @@ $scholars-theme: map-merge(
 
     "navigation-background-color": #ededed,
     "navigation-color": #3c0000,
+    "navigation-gradient": linear-gradient(#fafafa, #e6e6e6, #dbdbdb),
     "navigation-hover-background-color": #4d4d4d,
     "navigation-hover-color": #ffffff,
+    "navigation-button-color": #e5e5e5,
+    "navigation-button-background-color": #0054b1,
+    "navigation-button-border-color": #0000002d,
+    "navigation-button-focus-shadow-color": #0054b1a0,
+    "navigation-button-hover-color": #e5e5e5,
+    "navigation-button-hover-background-color": #002854,
+    "navigation-toggler-border-color": #0000002d,
+    "navigation-toggler-background-color": #e9e9e9,
 
     "navbar-background-color": #3c0000,
     "navbar-hover-background-color": #ffc222,
@@ -43,7 +52,16 @@ $scholars-theme: map-merge(
 
     "hero-color": #f3f3f3,
     "hero-link-color": #65a6d1,
-    "hero-link-hover-color": #ffc222
+    "hero-link-hover-color": #ffc222,
+
+    "sidebar-button-color": #e5e5e5,
+    "sidebar-button-background-color": #500000,
+    "sidebar-button-border-color": #0000002d,
+    "sidebar-button-focus-shadow-color": #500000a0,
+    "sidebar-button-hover-color": #e5e5e5,
+    "sidebar-button-hover-background-color": #3c0000,
+
+    "search-gradient": linear-gradient(#dbdbdb, #ffffff)
   ),
   $scholars-theme
 );
