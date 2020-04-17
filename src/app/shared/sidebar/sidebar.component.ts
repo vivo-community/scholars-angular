@@ -90,7 +90,11 @@ export class SidebarComponent implements OnInit {
         expanded.splice(index, 1);
       }
     }
-    tree.queryParams.expanded = expanded.join(',');
+    if (expanded.length > 0) {
+      tree.queryParams.expanded = expanded.join(',');
+    } else {
+      delete tree.queryParams.expanded;
+    }
     return tree.queryParams;
   }
 
