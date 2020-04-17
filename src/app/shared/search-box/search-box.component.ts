@@ -30,6 +30,7 @@ export interface SearchBoxStyles {
   styleUrls: ['search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit, OnDestroy {
+
   @Input() view: DiscoveryView;
 
   @Input() styles: SearchBoxStyles = {
@@ -54,7 +55,13 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
 
   private setup = false;
 
-  constructor(@Inject(APP_BASE_HREF) private baseHref: string, @Inject(PLATFORM_ID) private platformId: string, private formBuilder: FormBuilder, private store: Store<AppState>, private router: Router) {
+  constructor(
+    @Inject(APP_BASE_HREF) private baseHref: string,
+    @Inject(PLATFORM_ID) private platformId: string,
+    private formBuilder: FormBuilder,
+    private store: Store<AppState>,
+    private router: Router
+  ) {
     this.subscriptions = [];
   }
 
@@ -144,6 +151,10 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     return `${filter.field}.filter`;
   }
 
+  public getDiscoveryRouterLink(): string[] {
+    return [`/discovery/${this.view.name}`];
+  }
+
   public getDiscoveryQueryParams(query?: string): Params {
     const queryParams: Params = getQueryParams(this.view);
     if (query && query.length > 0) {
@@ -153,10 +164,6 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     }
     queryParams.page = this.live ? 1 : undefined;
     return queryParams;
-  }
-
-  public getDiscoveryRouterLink(): string[] {
-    return [`/discovery/${this.view.name}`];
   }
 
   private buildUrlTree(params: Params): UrlTree {

@@ -39,7 +39,14 @@ import * as fromSidebar from '../sidebar/sidebar.actions';
 export class SdrEffects {
   private repos: Map<string, AbstractSdrRepo<SdrResource>>;
 
-  constructor(private actions: Actions, private injector: Injector, private store: Store<AppState>, private alert: AlertService, private dialog: DialogService, private translate: TranslateService) {
+  constructor(
+    private actions: Actions,
+    private injector: Injector,
+    private store: Store<AppState>,
+    private alert: AlertService,
+    private dialog: DialogService,
+    private translate: TranslateService
+  ) {
     this.repos = new Map<string, AbstractSdrRepo<SdrResource>>();
     this.injectRepos();
   }
@@ -601,6 +608,8 @@ export class SdrEffects {
         sections: [],
       };
 
+      const expanded = routerState.queryParams.expanded ? routerState.queryParams.expanded.split(',') : [];
+
       viewFacets
         .filter((viewFacet: Facet) => !viewFacet.hidden)
         .forEach((viewFacet: Facet) => {
@@ -609,10 +618,10 @@ export class SdrEffects {
 
           if (sdrFacet) {
             const sidebarSection: SidebarSection = {
-              title: scheduled([viewFacet.name], asap),
+              title: viewFacet.name,
               items: [],
               collapsible: true,
-              collapsed: viewFacet.collapsed,
+              collapsed: expanded.indexOf(encodeURIComponent(viewFacet.name)) >= 0 ? false : viewFacet.collapsed,
             };
 
             sidebarMenu.sections.push(sidebarSection);
@@ -640,7 +649,7 @@ export class SdrEffects {
 
               const sidebarItem: SidebarItem = {
                 type: SidebarItemType.RANGE_SLIDER,
-                label: scheduled([], asap),
+                label: '',
                 facet: viewFacet,
                 route: [],
                 queryParams: Object.assign({}, routerState.queryParams),
@@ -677,7 +686,7 @@ export class SdrEffects {
 
                 const sidebarItem: SidebarItem = {
                   type: SidebarItemType.FACET,
-                  label: scheduled([facetEntry.value], asap),
+                  label: facetEntry.value,
                   facet: viewFacet,
                   selected,
                   parenthetical: facetEntry.count,
@@ -728,7 +737,7 @@ export class SdrEffects {
               sidebarSection.items.push({
                 type: SidebarItemType.ACTION,
                 action: this.dialog.facetEntriesDialog(viewFacet.name, sdrFacet.field),
-                label: this.translate.get('SHARED.SIDEBAR.ACTION.MORE'),
+                label: this.translate.instant('SHARED.SIDEBAR.ACTION.MORE'),
                 classes: 'font-weight-bold',
               });
             }
@@ -737,13 +746,13 @@ export class SdrEffects {
 
       if (action.payload.collection.page.totalElements === 0) {
         sidebarMenu.sections.push({
-          title: this.translate.get('SHARED.SIDEBAR.INFO.NO_RESULTS_LABEL', {
+          title: this.translate.instant('SHARED.SIDEBAR.INFO.NO_RESULTS_LABEL', {
             view: routerState.params.view,
           }),
           items: [
             {
               type: SidebarItemType.INFO,
-              label: this.translate.get('SHARED.SIDEBAR.INFO.NO_RESULTS_TEXT', {
+              label: this.translate.instant('SHARED.SIDEBAR.INFO.NO_RESULTS_TEXT', {
                 view: routerState.params.view,
                 query: routerState.queryParams.query,
               }),

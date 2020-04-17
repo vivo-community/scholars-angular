@@ -2,10 +2,17 @@
   <nav class="sidebar {{menu.classes}}" *ngIf="menu | async; let menu" [ngClass]="{ 'd-none': (isSidebarCollapsed | async) }">
     <div [@fadeIn]>
       <div class="card" *ngFor="let section of menu.sections; let sectionIndex = index">
-        <div class="card-header font-weight-bold {{section.classes}}" *ngIf="section.title | async; let sectionTitle" (click)="toggleSectionCollapse(sectionIndex)">
-          <span>{{sectionTitle}}</span>
-          <span *ngIf="section.collapsible" class="section-collapse float-right fa" [ngClass]="{ 'fa-caret-right': section.collapsed, 'fa-caret-down': !section.collapsed }" aria-role="button" attr.aria-label="{{ (section.collapsed ? 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_EXPAND' : 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_COLLAPSE') | translate:{ label: sectionTitle } }}"></span>
+
+        <div *ngIf="isBrowserRendered()" class="card-header font-weight-bold {{section.classes}}" (click)="toggleSectionCollapse(sectionIndex)">
+          <span>{{section.title}}</span>
+          <span *ngIf="section.collapsible" class="section-collapse float-right fa" [ngClass]="{ 'fa-caret-right': section.collapsed, 'fa-caret-down': !section.collapsed }" aria-role="button" attr.aria-label="{{ (section.collapsed ? 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_EXPAND' : 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_COLLAPSE') | translate:{ label: section.title } }}"></span>
         </div>
+
+        <a *ngIf="isServerRendered()" class="card-header font-weight-bold {{section.classes}}" [routerLink]="getRouterLink()" [queryParams]="getQueryParams(section, url | async)">
+          <span>{{section.title}}</span>
+          <span *ngIf="section.collapsible" class="section-collapse float-right fa" [ngClass]="{ 'fa-caret-right': section.collapsed, 'fa-caret-down': !section.collapsed }" aria-role="button" attr.aria-label="{{ (section.collapsed ? 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_EXPAND' : 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_COLLAPSE') | translate:{ label: section.title } }}"></span>
+        </a>
+
         <div class="card-items" [ngbCollapse]="section.collapsed" [@expandCollapse]="section.collapsed ? 'collapsed' : 'expanded'">
 
           <ul class="list-group list-group-flush" *ngFor="let item of section.items">
@@ -16,7 +23,7 @@
                   <a [routerLink]="item.route" [queryParams]="item.queryParams">
                     <span>
                       <span *ngIf="item.selected" class="fa fa-close mr-2"></span>
-                      <span>{{item.label | async | formalize}}</span>
+                      <span>{{item.label | formalize}}</span>
                     </span>
                   </a>
                   <span class="badge badge-light" *ngIf="item.parenthetical">{{item.parenthetical}}</span>
@@ -26,7 +33,7 @@
                   <a [routerLink]="item.route" [queryParams]="item.queryParams">
                     <span>
                       <span *ngIf="item.selected" class="fa fa-close mr-2"></span>
-                      <span>{{item.label | async}}</span>
+                      <span>{{item.label}}</span>
                     </span>
                   </a>
                   <span class="badge badge-light" *ngIf="item.parenthetical">{{item.parenthetical}}</span>
@@ -36,7 +43,7 @@
                   <a [routerLink]="item.route" [queryParams]="item.queryParams">
                     <span>
                       <span *ngIf="item.selected" class="fa fa-close mr-2"></span>
-                      <span>{{item.label | async | date:'yyyy':'UTC'}}</span>
+                      <span>{{item.label | date:'yyyy':'UTC'}}</span>
                     </span>
                   </a>
                   <span class="badge badge-light" *ngIf="item.parenthetical">{{item.parenthetical}}</span>
@@ -50,11 +57,11 @@
               </span>
 
               <span *ngSwitchCase="'ACTION'">
-                <span class="link" (click)="dispatchAction(item.action)">{{item.label | async }}</span>
+                <span class="link" (click)="dispatchAction(item.action)">{{item.label }}</span>
               </span>
 
               <span *ngSwitchCase="'INFO'">
-                <span>{{item.label | async }}</span>
+                <span>{{item.label }}</span>
               </span>
 
             </li>
