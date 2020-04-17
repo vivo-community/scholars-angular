@@ -546,7 +546,10 @@ export class SdrEffects {
     })
   );
 
-  @Effect() initViews = defer(() => scheduled([new fromSdr.GetAllResourcesAction('directoryViews'), new fromSdr.GetAllResourcesAction('discoveryViews')], asap));
+  @Effect() initViews = defer(() => scheduled([
+    new fromSdr.GetAllResourcesAction('directoryViews'),
+    new fromSdr.GetAllResourcesAction('discoveryViews')
+  ], asap));
 
   private injectRepos(): void {
     const injector = Injector.create({

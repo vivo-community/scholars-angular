@@ -51,7 +51,7 @@
               </span>
 
               <span *ngSwitchCase="'RANGE_SLIDER'">
-                <div class="custom-slider">
+                <div class="custom-slider" *ngIf="isBrowserRendered()">
                   <ng5-slider [(value)]="item.rangeValues.from" [(highValue)]="item.rangeValues.to" [options]="item.rangeOptions" (userChangeEnd)="onSliderChange(item)"></ng5-slider>
                 </div>
               </span>

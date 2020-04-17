@@ -15,7 +15,14 @@ import * as fromRouter from './router.actions';
 
 @Injectable()
 export class RouterEffects {
-  constructor(private actions: Actions, private router: Router, private route: ActivatedRoute, private location: Location, private store: Store<AppState>) {
+
+  constructor(
+    private actions: Actions,
+    private router: Router,
+    private route: ActivatedRoute,
+    private location: Location,
+    private store: Store<AppState>
+  ) {
     this.listenForRouteChange();
   }
 
@@ -60,4 +67,5 @@ export class RouterEffects {
       this.store.dispatch(new fromRouter.Changed());
     });
   }
+
 }

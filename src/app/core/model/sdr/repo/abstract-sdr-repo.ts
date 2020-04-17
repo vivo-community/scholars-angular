@@ -16,6 +16,7 @@ import { SdrCollection } from '../sdr-collection';
   providedIn: 'root',
 })
 export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<R> {
+
   constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, protected restService: RestService) { }
 
   public search(request: SdrRequest): Observable<SdrCollection> {
@@ -209,4 +210,5 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     parameters.push(`facets=${encodeURIComponent(fields.join(','))}`);
     return parameters;
   }
+
 }
