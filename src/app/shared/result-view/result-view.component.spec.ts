@@ -29,6 +29,7 @@ describe('ResultViewComponent', () => {
         default: (resource: any) => component.view.templates.default,
       },
       styles: [],
+      fields: [],
       facets: [],
       filters: [],
       boosts: [],
