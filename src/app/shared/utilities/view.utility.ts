@@ -7,25 +7,23 @@ import { Direction } from '../../core/model/request';
 
 const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.facets && collectionView.facets.length > 0) {
-    let facets = '';
+    queryParams.facets = '';
     collectionView.facets.forEach((facet: Facet) => {
-      facets += facets.length > 0 ? `,${facet.field}` : facet.field;
+      queryParams.facets += queryParams.facets.length > 0 ? `,${facet.field}` : facet.field;
       ['type', 'pageSize', 'pageNumber'].forEach((key: string) => {
         queryParams[`${facet.field}.${key}`] = facet[key];
       });
       queryParams[`${facet.field}.sort`] = `${facet.sort},${facet.direction}`;
     });
-    queryParams.facets = facets;
   }
 };
 
 const addFieldsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.fields && collectionView.fields.length > 0) {
-    let fields = '';
+    queryParams.fl = '';
     collectionView.fields.forEach((field: string) => {
-      fields += fields.length > 0 ? `,${field}` : field;
+      queryParams.fl += queryParams.fl.length > 0 ? `,${field}` : field;
     });
-    queryParams.fl = fields;
   }
 };
 
@@ -80,8 +78,10 @@ const addHighlightsToQueryParams = (queryParams: Params, discoveryView: Discover
 const addExportToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.export && collectionView.export.length > 0) {
     queryParams.export = [];
+    queryParams.fl = '';
     collectionView.export.forEach((exp: Export) => {
       queryParams.export.push(`${exp.valuePath},${exp.columnHeader}`);
+      queryParams.fl += queryParams.fl.length > 0 ? `,${exp.valuePath}` : exp.valuePath;
     });
   }
 };
