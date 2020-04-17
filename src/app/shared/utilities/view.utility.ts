@@ -19,6 +19,16 @@ const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionV
   }
 };
 
+const addFieldsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
+  if (collectionView.fields && collectionView.fields.length > 0) {
+    let fields = '';
+    collectionView.fields.forEach((field: string) => {
+      fields += fields.length > 0 ? `,${field}` : field;
+    });
+    queryParams.fl = fields;
+  }
+};
+
 const addFiltersToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.filters && collectionView.filters.length > 0) {
     let filters = '';
@@ -79,6 +89,7 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
 const getQueryParams = (collectionView: CollectionView): Params => {
   const queryParams: Params = {};
   queryParams.collection = 'individual';
+  addFieldsToQueryParams(queryParams, collectionView);
   addFacetsToQueryParams(queryParams, collectionView);
   addFiltersToQueryParams(queryParams, collectionView);
   addBoostToQueryParams(queryParams, collectionView);

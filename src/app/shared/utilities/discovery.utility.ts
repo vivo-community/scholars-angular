@@ -25,6 +25,9 @@ const buildQuery = (queryParams: Params): Queryable => {
   if (queryParams.df && queryParams.df.length > 0) {
     query.defaultField = queryParams.df;
   }
+  if (queryParams.fl && queryParams.fl.length > 0) {
+    query.fields = queryParams.fl;
+  }
   return query as Queryable;
 };
 

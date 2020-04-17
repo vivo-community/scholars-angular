@@ -146,6 +146,9 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
       if (request.query.defaultField && request.query.defaultField.length > 0) {
         parameters.push(`df=${request.query.defaultField}`);
       }
+      if (request.query.fields && request.query.fields.length > 0) {
+        parameters.push(`fl=${request.query.fields}`);
+      }
     }
 
     if (request.highlight && request.highlight.fields.length > 0) {

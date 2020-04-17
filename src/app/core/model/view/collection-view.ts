@@ -69,6 +69,7 @@ export interface CollectionView extends View {
   readonly templates: any;
   templateFunctions?: any;
   readonly styles: string[];
+  readonly fields: string[];
   readonly facets: Facet[];
   readonly filters: Filter[];
   readonly boosts: Boost[];
