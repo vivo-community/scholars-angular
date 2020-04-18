@@ -9,7 +9,7 @@
 </div>
 <scholars-sidebar>
   <div class="container mt-2" *ngIf="discoveryView | async; let discoveryView">
-    <div class="row flex-column-reverse flex-md-row">
+    <div class="headers-row row flex-column-reverse flex-md-row">
       <div class="col-md-8">
         <span class="h4 text-primary">
           <span>{{discoveryView.name}}</span>
@@ -20,8 +20,9 @@
         </span>
       </div>
       <div class="col-md-4 text-right">
-        <span *ngIf="hasExport(discoveryView)">
-          <a [href]="getDiscoveryExportUrl(discoveryView, queryParams | async)" download>
+        <span *ngIf="hasExport(discoveryView)" class="column-export">
+          <a [href]="getDiscoveryExportUrl(discoveryView, queryParams | async)" download class="btn">
+            <span class="fa fa-share" aria-hidden="true"></span>
             <span>{{ 'DISCOVERY.EXPORT' | translate }}</span>
           </a>
         </span>
