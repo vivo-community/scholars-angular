@@ -6,14 +6,14 @@
 @import 'styles/overrides';
 
 html {
-  overflow-y: scroll; 
+  overflow-y: scroll;
 }
 
 body {
   font-family: 'Lato', Calibri, Arial, sans-serif;
   min-width: 320px;
   .search {
-    background-image: linear-gradient(#dbdbdb, #fff);
+    background: var(--search-gradient)
   }
   .link {
     color: var(--link-color);
