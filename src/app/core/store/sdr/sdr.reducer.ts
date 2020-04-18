@@ -79,8 +79,9 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
   };
   return (state = getSdrInitialState<R>(keys[name]), action: SdrActions): SdrState<R> => {
     switch (action.type) {
-      case getSdrAction(SdrActionTypes.GET_ALL, name):
       case getSdrAction(SdrActionTypes.GET_ONE, name):
+        return getSdrAdapter<R>(keys[name]).removeOne(action.payload.id, state);
+      case getSdrAction(SdrActionTypes.GET_ALL, name):
       case getSdrAction(SdrActionTypes.FIND_BY_TYPES_IN, name):
       case getSdrAction(SdrActionTypes.FIND_BY_ID_IN, name):
       case getSdrAction(SdrActionTypes.PAGE, name):

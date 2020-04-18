@@ -92,8 +92,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
   public document: Observable<SolrDocument>;
 
-  public loading: Observable<boolean>;
-
   public ready: Observable<boolean>;
 
   private readySubject: BehaviorSubject<boolean>;
@@ -132,7 +130,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
       this.route.params.subscribe((params: Params) => {
         if (params.id) {
           this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
-          this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
 
           // listen to document changes
           this.document = this.store.pipe(
