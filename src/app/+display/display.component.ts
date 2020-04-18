@@ -5,7 +5,7 @@ import { MetaDefinition } from '@angular/platform-browser';
 import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { filter, take, switchMap, tap } from 'rxjs/operators';
+import { filter, take, switchMap, tap, map } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
@@ -108,6 +108,10 @@ export class DisplayComponent implements OnDestroy, OnInit {
     this.ready = this.readySubject.asObservable();
   }
 
+  loading(): Observable<boolean> {
+    return this.ready.pipe(map((ready: boolean) => !ready));
+  }
+
   ngOnDestroy() {
     this.subscriptions.forEach((subscription: Subscription) => {
       subscription.unsubscribe();
@@ -115,15 +119,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-
-    this.router.events.subscribe(e => {
-      if (e instanceof ActivationStart) {
-        if (this.outlet) {
-          this.outlet.deactivate();
-        }
-      }
-    });
-
     this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
 
     this.subscriptions.push(
