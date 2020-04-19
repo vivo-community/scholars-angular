@@ -25,6 +25,7 @@ import * as fromSdr from '../../../core/store/sdr/sdr.actions';
   styleUrls: ['./facet-entries.component.scss'],
 })
 export class FacetEntriesComponent implements OnDestroy, OnInit {
+
   @Input() name: string;
 
   @Input() field: string;

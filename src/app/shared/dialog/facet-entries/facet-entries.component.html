@@ -12,6 +12,14 @@
               </a>
               <span> ({{entry.count}})</span>
             </span>
+            <span *ngSwitchCase="'RANGE_SLIDER'">
+              <a [routerLink]="routerLink" [queryParams]="getQueryParams(facet, entry)" queryParamsHandling="merge">
+                <span>
+                  <span>{{entry.value | formalize}}</span>
+                </span>
+              </a>
+              <span> ({{entry.count}})</span>
+            </span>
             <span *ngSwitchCase="'DATE_YEAR'">
               <a [routerLink]="routerLink" [queryParams]="getQueryParams(facet, entry)" queryParamsHandling="merge">
                 <span>
