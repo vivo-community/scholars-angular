@@ -20,7 +20,7 @@
 
               <span *ngSwitchCase="'FACET'" [ngSwitch]="item.facet.type">
                 <span *ngSwitchCase="'STRING'" class="d-flex flex-nowrap justify-content-between">
-                  <a [routerLink]="item.route" [queryParams]="item.queryParams">
+                  <a [routerLink]="item.route" [queryParams]="item.queryParams" queryParamsHandling="merge">
                     <span>
                       <span *ngIf="item.selected" class="fa fa-close mr-2"></span>
                       <span>{{item.label | formalize}}</span>
@@ -30,7 +30,7 @@
                 </span>
 
                 <span *ngSwitchCase="'RANGE_SLIDER'" class="d-flex flex-nowrap justify-content-between">
-                  <a [routerLink]="item.route" [queryParams]="item.queryParams">
+                  <a [routerLink]="item.route" [queryParams]="item.queryParams" queryParamsHandling="merge">
                     <span>
                       <span *ngIf="item.selected" class="fa fa-close mr-2"></span>
                       <span>{{item.label}}</span>
@@ -40,7 +40,7 @@
                 </span>
 
                 <span *ngSwitchCase="'DATE_YEAR'" class="d-flex flex-nowrap justify-content-between">
-                  <a [routerLink]="item.route" [queryParams]="item.queryParams">
+                  <a [routerLink]="item.route" [queryParams]="item.queryParams" queryParamsHandling="merge">
                     <span>
                       <span *ngIf="item.selected" class="fa fa-close mr-2"></span>
                       <span>{{item.label | date:'yyyy':'UTC'}}</span>
