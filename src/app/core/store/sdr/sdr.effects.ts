@@ -644,9 +644,11 @@ export class SdrEffects {
 
               if (requestFilter) {
                 const filterValue = routerState.queryParams[`${requestFilter}.filter`];
-                const range = filterValue.substring(1, filterValue.length - 1).split(' TO ');
-                rangeValues.from = range[0];
-                rangeValues.to = range[1];
+                if (filterValue.startsWith('[') && filterValue.indexOf('TO') >= 0 && filterValue.endsWith(']')) {
+                  const range = filterValue.substring(1, filterValue.length - 1).split(' TO ');
+                  rangeValues.from = range[0];
+                  rangeValues.to = range[1];
+                }
                 sidebarSection.collapsed = false;
               }
 
