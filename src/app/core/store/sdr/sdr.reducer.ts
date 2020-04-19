@@ -138,7 +138,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
         return {
           ...state,
           recentlyUpdated,
-          loading: true,
+          loading: false,
           error: undefined,
         };
       case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, name):
