@@ -19,7 +19,7 @@ import { selectRouterSearchQuery, selectRouterUrl, selectRouterQueryParamFilters
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectResourceIsLoading } from '../core/store/sdr';
 import { selectWindowDimensions } from '../core/store/layout';
 
-import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
+import { addExportToQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport, removeFilterFromQueryParams, resetFiltersInQueryParams, getQueryParams } from '../shared/utilities/view.utility';
 
 @Component({
   selector: 'scholars-discovery',
@@ -124,19 +124,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
     return ['/discovery', discoveryView.name];
   }
 
-  public getDiscoveryQueryParams(discoveryView: DiscoveryView, page: SdrPage, query: string, filters: Filter[] = [], filterToRemove?: Filter): Params {
-    const queryParams: Params = getQueryParams(discoveryView);
-    applyFiltersToQueryParams(queryParams, discoveryView, filters, filterToRemove);
-    if (query && query.length > 0) {
-      queryParams.q = query;
-    }
-    if (page && page.size) {
-      queryParams.size = page.size;
-    }
-    return queryParams;
-  }
-
-  public getDiscoveryExportUrl(discoveryView: DiscoveryView, params: Params): string {
+  public getDiscoveryExportUrl(params: Params, discoveryView: DiscoveryView): string {
     const queryParams: Params = Object.assign({}, params);
     queryParams.facets = null;
     queryParams.collection = null;
@@ -145,4 +133,23 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
     const query = tree.toString().substring(1);
     return `${this.appConfig.serviceUrl}/individual/search/export${query}`;
   }
+
+  public getDiscoveryQueryParamsRemovingFilter(params: Params, filterToRemove: Filter): Params {
+    const queryParams: Params = Object.assign({}, params);
+    removeFilterFromQueryParams(queryParams, filterToRemove);
+    return queryParams;
+  }
+
+  public getDiscoveryQueryParamsClearingFilters(params: Params, discoveryView: DiscoveryView): Params {
+    const queryParams: Params = Object.assign({}, params);
+    resetFiltersInQueryParams(queryParams, discoveryView);
+    return queryParams;
+  }
+
+  public getDiscoveryQueryParamsSwitchingDiscoveryView(params: Params, discoveryView: DiscoveryView): Params {
+    const queryParams: Params = getQueryParams(discoveryView);
+    queryParams.q = params.q;
+    return queryParams;
+  }
+
 }

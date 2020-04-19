@@ -24,6 +24,7 @@ import * as fromLayout from '../../core/store/layout/layout.actions';
   styleUrls: ['navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit {
+
   public vivoEditorUrl: string;
 
   public hasMenu: Observable<boolean>;

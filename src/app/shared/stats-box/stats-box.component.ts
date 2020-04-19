@@ -3,7 +3,7 @@ import { Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
-import { filter, distinctUntilChanged } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 
@@ -29,7 +29,7 @@ export class StatsBoxComponent implements OnInit {
 
   public directoryView: Observable<DirectoryView>;
 
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<AppState>) { }
 
   public ngOnInit() {
     this.directoryView = this.store.pipe(

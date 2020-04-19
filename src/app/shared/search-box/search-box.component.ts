@@ -5,14 +5,14 @@ import { Router, Params, UrlTree } from '@angular/router';
 
 import { Store, select } from '@ngrx/store';
 
-import { Observable, Subscription } from 'rxjs';
-import { skipWhile, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Observable, Subscription, combineLatest } from 'rxjs';
+import { skipWhile, debounceTime, distinctUntilChanged, take, takeLast, flatMap } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 import { DiscoveryView, Facet, Filter } from '../../core/model/view';
 
 import { selectActiveThemeOrganization } from '../../core/store/theme';
-import { selectRouterSearchQuery } from '../../core/store/router';
+import { selectRouterSearchQuery, selectRouterQueryParams } from '../../core/store/router';
 
 import { getQueryParams } from '../utilities/view.utility';
 
@@ -49,6 +49,8 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
 
   public form: FormGroup;
 
+  public queryParams: Observable<Params>;
+
   public organization: Observable<string>;
 
   private subscriptions: Subscription[];
@@ -66,6 +68,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.queryParams = this.store.pipe(select(selectRouterQueryParams));
     this.organization = this.store.pipe(select(selectActiveThemeOrganization));
   }
 
@@ -111,17 +114,18 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
 
       this.form.patchValue({ collection });
 
-      this.subscriptions.push(
-        this.store
-          .pipe(
-            select(selectRouterSearchQuery),
-            skipWhile((query: string) => query === undefined)
-          )
-          .subscribe((query: string) => this.form.patchValue({ query }))
-      );
+      this.subscriptions.push(this.store.pipe(
+        select(selectRouterSearchQuery),
+        skipWhile((query: string) => query === undefined)
+      ).subscribe((query: string) => this.form.patchValue({ query })));
 
       if (this.live) {
-        this.subscriptions.push(this.form.controls.query.valueChanges.pipe(debounceTime(this.debounce), distinctUntilChanged()).subscribe(() => this.onSearch()));
+        this.subscriptions.push(
+          this.form.controls.query.valueChanges.pipe(
+            debounceTime(this.debounce),
+            distinctUntilChanged(),
+            flatMap(() => this.queryParams.pipe(take(1)))
+          ).subscribe((params) => this.onSearch(params)));
       }
 
       this.setup = true;
@@ -137,10 +141,11 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     return isPlatformServer(this.platformId);
   }
 
-  public onSearch(): void {
-    const queryParams: Params = this.getDiscoveryQueryParams(this.form.value.query);
-    const urlTree = this.buildUrlTree(queryParams);
-    this.router.navigateByUrl(urlTree);
+  public onSearch(params: Params): void {
+    this.router.navigate(this.getDiscoveryRouterLink(), {
+      queryParams: this.getSearchDiscoveryQueryParams(params, this.form.value.query),
+      preserveFragment: true,
+    });
   }
 
   public getAction(): string {
@@ -155,7 +160,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     return [`/discovery/${this.view.name}`];
   }
 
-  public getDiscoveryQueryParams(query?: string): Params {
+  public getSearchDiscoveryQueryParams(params: Params, query: string): Params {
     const queryParams: Params = getQueryParams(this.view);
     if (query && query.length > 0) {
       queryParams.q = query;
@@ -163,16 +168,18 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
       queryParams.q = undefined;
     }
     queryParams.page = this.live ? 1 : undefined;
+    if (this.live && params.filters && params.filters.length > 0) {
+      params.filters.split(',').forEach((field: string) => {
+        queryParams[`${field}.filter`] = params[`${field}.filter`];
+        queryParams[`${field}.opKey`] = params[`${field}.opKey`];
+      });
+      queryParams.filters = params.filters;
+    }
     return queryParams;
   }
 
-  private buildUrlTree(params: Params): UrlTree {
-    return this.router.createUrlTree([`/discovery/${this.view.name}`], {
-      queryParams: params,
-      // TODO: fix merging of query params
-      // this is broken as filters is overwritten with discovery view filters and not including additional applied filters
-      // queryParamsHandling: this.live ? 'merge' : undefined,
-      preserveFragment: true,
-    });
+  public getDefaultDiscoveryQueryParams(): Params {
+    return getQueryParams(this.view);
   }
+
 }

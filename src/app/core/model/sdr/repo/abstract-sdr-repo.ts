@@ -152,7 +152,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
       }
     }
 
-    if (request.highlight && request.highlight.fields.length > 0) {
+    if (request.highlight && request.highlight.fields && request.highlight.fields.length > 0) {
       parameters.push(`hl=${request.highlight.fields.join(',')}`);
       if (request.highlight.prefix && request.highlight.prefix.length > 0) {
         parameters.push(`hl.prefix=${request.highlight.prefix}`);
