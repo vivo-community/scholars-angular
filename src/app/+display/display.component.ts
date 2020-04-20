@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MetaDefinition } from '@angular/platform-browser';
 
@@ -14,6 +14,7 @@ import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, Filt
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
 
 import { fadeIn } from '../shared/utilities/animation.utility';
+import { loadBadges } from '../shared/utilities/view.utility';
 
 import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
@@ -97,6 +98,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
   private subscriptions: Subscription[];
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: string,
     private store: Store<AppState>,
     private router: Router,
     private route: ActivatedRoute
@@ -263,7 +265,9 @@ export class DisplayComponent implements OnDestroy, OnInit {
                       this.router.navigate([displayView.name, tabName], {
                         relativeTo: this.route,
                         replaceUrl: true,
-                      });
+                      }).then(() => loadBadges(this.platformId));
+                    } else {
+                      loadBadges(this.platformId);
                     }
 
                   });
