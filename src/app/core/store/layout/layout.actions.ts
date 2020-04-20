@@ -2,12 +2,18 @@ import { Action } from '@ngrx/store';
 import { WindowDimensions } from './layout.reducer';
 
 export enum LayoutActionTypes {
+  CHECK_WINDOW = '[Layout] check window',
   RESIZE_WINDOW = '[Layout] resize window',
   TOGGLE_NAVBAR = '[Layout] toggle navbar',
   TOGGLE_NAVIGATION = '[Layout] toggle navigation',
   OPEN_SIDEBAR = '[Layout] open sidebar',
   CLOSE_SIDEBAR = '[Layout] close sidebar',
   TOGGLE_SIDEBAR = '[Layout] toggle sidebar',
+}
+
+export class CheckWindowAction implements Action {
+  readonly type = LayoutActionTypes.CHECK_WINDOW;
+  constructor(public payload: { windowDimensions: WindowDimensions }) { }
 }
 
 export class ResizeWindowAction implements Action {
@@ -36,6 +42,7 @@ export class ToggleSidebarAction implements Action {
 }
 
 export type LayoutActions =
+  CheckWindowAction |
   ResizeWindowAction |
   ToggleNavbarAction |
   ToggleNavigationAction |

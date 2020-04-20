@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 
 import { defer, scheduled, EMPTY } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { map, withLatestFrom, filter } from 'rxjs/operators';
 
 import { AppState } from '../';
 import { WindowDimensions } from '../layout/layout.reducer';
@@ -48,13 +48,16 @@ export class LayoutEffects {
   );
 
   @Effect() checkSidebarOnResize = this.actions.pipe(
-    ofType(fromLayout.LayoutActionTypes.RESIZE_WINDOW),
-    map((action: fromLayout.ResizeWindowAction) => action.payload.windowDimensions),
-    map((windowDimensions: WindowDimensions) => this.checkSidebar(windowDimensions))
+    ofType(fromLayout.LayoutActionTypes.CHECK_WINDOW),
+    map((action: fromLayout.CheckWindowAction) => action.payload.windowDimensions),
+    withLatestFrom(this.store.pipe(select(selectWindowDimensions))),
+    filter(([windowDimensions, lastWindowDimensions]) => lastWindowDimensions.width !== windowDimensions.width),
+    map(([windowDimensions, lastWindowDimensions]) => windowDimensions),
+    map((windowDimensions: WindowDimensions) => new fromLayout.ResizeWindowAction({ windowDimensions }))
   );
 
   @Effect() checkSidebarOnLoad = this.actions.pipe(
-    ofType(fromSidebar.SidebarActionTypes.LOAD_SIDEBAR),
+    ofType(fromSidebar.SidebarActionTypes.LOAD_SIDEBAR, fromLayout.LayoutActionTypes.RESIZE_WINDOW),
     withLatestFrom(this.store.pipe(select(selectWindowDimensions))),
     map(([action, windowDimensions]) => this.checkSidebar(windowDimensions))
   );
