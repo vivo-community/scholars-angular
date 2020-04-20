@@ -7,8 +7,8 @@
     </div>
   </div>
 </div>
-<scholars-sidebar>
-  <div class="container mt-2" *ngIf="discoveryView | async; let discoveryView">
+<scholars-sidebar *ngIf="discoveryView | async; let discoveryView">
+  <div class="container mt-2">
     <div class="headers-row row flex-column-reverse flex-md-row">
       <div class="col-md-8">
         <span class="h4 text-primary">
