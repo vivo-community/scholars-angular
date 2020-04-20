@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params, Router, ActivationStart, RouterOutlet } from '@angular/router';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MetaDefinition } from '@angular/platform-browser';
 
 import { Store, select } from '@ngrx/store';
@@ -82,8 +82,6 @@ export const sectionsToShow = (sections: DisplayTabSectionView[], document: Solr
 })
 export class DisplayComponent implements OnDestroy, OnInit {
 
-  @ViewChild(RouterOutlet) outlet: RouterOutlet;
-
   public windowDimensions: Observable<WindowDimensions>;
 
   public displayView: Observable<DisplayView>;
@@ -105,7 +103,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
   ) {
     this.subscriptions = [];
     this.readySubject = new BehaviorSubject<boolean>(false);
-    this.ready = this.readySubject.asObservable();
   }
 
   loading(): Observable<boolean> {
@@ -119,11 +116,15 @@ export class DisplayComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
+    this.ready = this.readySubject.asObservable();
+
     this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
 
     this.subscriptions.push(
       this.route.params.subscribe((params: Params) => {
         if (params.id) {
+          this.readySubject.next(false);
+
           this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
 
           // listen to document changes
@@ -155,25 +156,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
                 select(selectDisplayViewByTypes(document.type)),
                 filter((displayView: DisplayView) => displayView !== undefined),
                 tap((displayView: DisplayView) => {
-                  if (this.route.children.length === 0) {
-                    let tabName;
-
-                    if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
-                      for (const tab of this.getTabsToShow(displayView.tabs, document)) {
-                        if (tabName === undefined) {
-                          tabName = tab.name;
-                          break;
-                        }
-                      }
-                    } else {
-                      tabName = 'View All';
-                    }
-
-                    this.router.navigate([displayView.name, tabName], {
-                      relativeTo: this.route,
-                      replaceUrl: true,
-                    });
-                  }
 
                   this.store.dispatch(
                     new fromMetadata.AddMetadataTagsAction({
@@ -263,6 +245,27 @@ export class DisplayComponent implements OnDestroy, OnInit {
                   // lazily fetch references sequentially
                   lazyReferences.reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve()).then(() => {
                     this.readySubject.next(true);
+
+                    if (this.route.children.length === 0) {
+                      let tabName;
+
+                      if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
+                        for (const tab of this.getTabsToShow(displayView.tabs, document)) {
+                          if (tabName === undefined) {
+                            tabName = tab.name;
+                            break;
+                          }
+                        }
+                      } else {
+                        tabName = 'View All';
+                      }
+
+                      this.router.navigate([displayView.name, tabName], {
+                        relativeTo: this.route,
+                        replaceUrl: true,
+                      });
+                    }
+
                   });
 
                 })
