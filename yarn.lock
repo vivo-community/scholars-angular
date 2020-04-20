@@ -1029,10 +1029,10 @@
     merge-source-map "^1.1.0"
     schema-utils "^2.6.4"
 
-"@ng-bootstrap/ng-bootstrap@6.0.2":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-6.0.2.tgz#ed8d4e04f21885fb18dc2523c4f2111f50ee99b2"
-  integrity sha512-8+Dz8GN15zneIA4+mQ7b1j5O+oHsFdhTYQVDGk6eAazHeqrFD0+o8N+pLZL2PZlf98WcHFmXIOqKXrBD8iLl1g==
+"@ng-bootstrap/ng-bootstrap@6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-6.0.3.tgz#cac484944434b9171dd90e49bb5175a2d9939dcf"
+  integrity sha512-l3uD8Zxee5ezrlQUo5+OUibBXM/29WinQR/55Ec09neymjurnjzLdfjKKK3QHsZpgleUIRZ5eR6ENTOtPXn36g==
 
 "@ngrx/effects@9.1.0":
   version "9.1.0"
@@ -8059,10 +8059,10 @@ schema-utils@^2.5.0, schema-utils@^2.6.1, schema-utils@^2.6.4, schema-utils@^2.6
     ajv "^6.12.0"
     ajv-keywords "^3.4.1"
 
-scholars-embed-utilities@0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.2.3.tgz#248e7bf8316fe7ebe009e043c5fe1a6252630a9b"
-  integrity sha512-t13XMSPYRxetAcg6FACDuaB3gQ/UCnG2wVG3P0x2keduhcKDHFqA4Q8ldZLENgXcSvaLm3qLpL4uZybmoJrBMQ==
+scholars-embed-utilities@0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/scholars-embed-utilities/-/scholars-embed-utilities-0.2.7.tgz#9d5f6891c92f905c38fcd4c24d02c7d99608412b"
+  integrity sha512-50mSWU00F25LZOhIbg/4xoa5f6KhWAFRRR4pl+X+IwUb7NxOqtn45P65NzStnMy6aS7mcHzucod5WkEzuBbV8w==
   dependencies:
     handlebars "4.7.6"
     handlebars-loader "1.7.1"

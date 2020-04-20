@@ -1,6 +1,5 @@
 import { Params } from '@angular/router';
 import { Action } from '@ngrx/store';
-import { Observable } from 'rxjs';
 
 export enum SidebarItemType {
   FACET = 'FACET',
@@ -11,7 +10,7 @@ export enum SidebarItemType {
 
 export interface SidebarItem {
   type: SidebarItemType;
-  label: Observable<string>;
+  label: string;
   facet?: any;
   route?: string[];
   queryParams?: Params;

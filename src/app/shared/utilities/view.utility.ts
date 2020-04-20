@@ -86,6 +86,24 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
   }
 };
 
+const removeFilterFromQueryParams = (queryParams: Params, filterToRemove: Filter): void => {
+  queryParams.filters = queryParams.filters.replace(filterToRemove.field, '').replace(',,', ',');
+  delete queryParams[`${filterToRemove.field}.filter`];
+  delete queryParams[`${filterToRemove.field}.opKey`];
+};
+
+const resetFiltersInQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
+  if (queryParams.filters && queryParams.filters.length > 0) {
+    const defaultFilterFields = collectionView.filters.map((cf: Filter) => cf.field);
+    const appliedFilterFields = queryParams.filters.split(',').filter((aff: string) => defaultFilterFields.indexOf(aff) < 0);
+    appliedFilterFields.forEach(aff => {
+      delete queryParams[`${aff}.filter`];
+      delete queryParams[`${aff}.opKey`];
+    });
+    queryParams.filters = defaultFilterFields.join(',');
+  }
+};
+
 const getQueryParams = (collectionView: CollectionView): Params => {
   const queryParams: Params = {};
   queryParams.collection = 'individual';
@@ -99,21 +117,6 @@ const getQueryParams = (collectionView: CollectionView): Params => {
   return queryParams;
 };
 
-const applyFiltersToQueryParams = (queryParams: Params, collectionView: CollectionView, filters: Filter[], filterToRemove: Filter): void => {
-  filters
-    .filter((filter: Filter) => !equals(filter, filterToRemove))
-    .filter((filter: Filter) => showFilter(collectionView, filter))
-    .forEach((filter: Filter) => {
-      queryParams[`${filter.field}.filter`] = filter.value;
-      queryParams[`${filter.field}.opKey`] = filter.opKey;
-      if (!queryParams.filters) {
-        queryParams.filters = filter.field;
-      } else {
-        queryParams.filters += `,${filter.field}`;
-      }
-    });
-};
-
 const showFilter = (collectionView: CollectionView, actualFilter: Filter): boolean => {
   for (const filter of collectionView.filters) {
     if (equals(filter, actualFilter)) {
@@ -124,7 +127,8 @@ const showFilter = (collectionView: CollectionView, actualFilter: Filter): boole
 };
 
 const showClearFilters = (collectionView: CollectionView, filters: Filter[]): boolean => {
-  return filters.length > collectionView.filters.length;
+  const defaultFilterFields = collectionView.filters.map((cf: Filter) => cf.field);
+  return filters.filter((af: Filter) => defaultFilterFields.indexOf(af.field) < 0).length > 0;
 };
 
 const getFilterField = (collectionView: CollectionView, actualFilter: Filter): string => {
@@ -205,7 +209,8 @@ const loadBadges = (platformId: string): void => {
 
 export {
   addExportToQueryParams,
-  applyFiltersToQueryParams,
+  removeFilterFromQueryParams,
+  resetFiltersInQueryParams,
   getQueryParams,
   showFilter,
   showClearFilters,

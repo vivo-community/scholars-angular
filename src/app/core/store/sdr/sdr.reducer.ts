@@ -43,6 +43,14 @@ export const getSdrInitialState = <R extends SdrResource>(key: string) => {
 };
 
 export const getSdrReducer = <R extends SdrResource>(name: string, additionalContext: any) => {
+  const getResourceItem = (resource: any, references: any[]) => {
+    const refItems = resource[references[0].property].filter((item) => item.id === references[0].id);
+    if (references.length > 1) {
+      return getResourceItem(refItems[0], references.splice(1, 1));
+    } else {
+      return refItems[0];
+    }
+  };
   const getResources = (action: SdrActions, key: string): R[] => {
     const resources = action.payload.collection._embedded !== undefined ? action.payload.collection._embedded[key] : [];
     switch (key) {
@@ -56,7 +64,21 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
       case 'individual':
         if (action.payload.collection.highlights) {
           action.payload.collection.highlights.forEach((highlight: SdrHighlight) => {
-            const individual = resources.filter(resource => resource.id === highlight.id)[0];
+            const individual = resources.filter((resource) => resource.id === highlight.id).map((resource) => {
+              for (const property in highlight.snippets) {
+                if (highlight.snippets.hasOwnProperty(property)) {
+                  const path = property.split('.');
+                  const snippets = highlight.snippets[property];
+                  snippets.filter((match) => match instanceof Object).forEach(match => {
+                    const ids = match.id.split('::');
+                    getResourceItem(resource, path.map((prop, i) => {
+                      return { property: prop, id: ids[i] };
+                    })).snippet = match.snippet;
+                  });
+                }
+              }
+              return resource;
+            })[0];
             individual.highlights = highlight.snippets;
           });
         }
@@ -79,8 +101,9 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
   };
   return (state = getSdrInitialState<R>(keys[name]), action: SdrActions): SdrState<R> => {
     switch (action.type) {
-      case getSdrAction(SdrActionTypes.GET_ALL, name):
       case getSdrAction(SdrActionTypes.GET_ONE, name):
+        return getSdrAdapter<R>(keys[name]).removeOne(action.payload.id, state);
+      case getSdrAction(SdrActionTypes.GET_ALL, name):
       case getSdrAction(SdrActionTypes.FIND_BY_TYPES_IN, name):
       case getSdrAction(SdrActionTypes.FIND_BY_ID_IN, name):
       case getSdrAction(SdrActionTypes.PAGE, name):
@@ -115,7 +138,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
         return {
           ...state,
           recentlyUpdated,
-          loading: true,
+          loading: false,
           error: undefined,
         };
       case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, name):

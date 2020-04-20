@@ -16,6 +16,7 @@ import { SdrCollection } from '../sdr-collection';
   providedIn: 'root',
 })
 export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<R> {
+
   constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, protected restService: RestService) { }
 
   public search(request: SdrRequest): Observable<SdrCollection> {
@@ -151,7 +152,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
       }
     }
 
-    if (request.highlight && request.highlight.fields.length > 0) {
+    if (request.highlight && request.highlight.fields && request.highlight.fields.length > 0) {
       parameters.push(`hl=${request.highlight.fields.join(',')}`);
       if (request.highlight.prefix && request.highlight.prefix.length > 0) {
         parameters.push(`hl.prefix=${request.highlight.prefix}`);
@@ -209,4 +210,5 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     parameters.push(`facets=${encodeURIComponent(fields.join(','))}`);
     return parameters;
   }
+
 }

@@ -84,10 +84,10 @@ const buildHightlight = (queryParams: Params): Highlightable => {
     highlight.fields = Array.isArray(queryParams.hl) ? queryParams.hl : queryParams.hl.split(',');
   }
   if (queryParams['hl.prefix'] && queryParams['hl.prefix'].length > 0) {
-    highlight.pre = queryParams['hl.prefix'];
+    highlight.prefix = queryParams['hl.prefix'];
   }
   if (queryParams['hl.postfix'] && queryParams['hl.postfix'].length > 0) {
-    highlight.post = queryParams['hl.postfix'];
+    highlight.postfix = queryParams['hl.postfix'];
   }
   return highlight as Highlightable;
 };

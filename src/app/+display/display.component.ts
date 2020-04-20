@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params, Router, ActivationStart, RouterOutlet } from '@angular/router';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MetaDefinition } from '@angular/platform-browser';
 
 import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { filter, take, switchMap, tap } from 'rxjs/operators';
+import { filter, take, switchMap, tap, map } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
@@ -82,8 +82,6 @@ export const sectionsToShow = (sections: DisplayTabSectionView[], document: Solr
 })
 export class DisplayComponent implements OnDestroy, OnInit {
 
-  @ViewChild(RouterOutlet) outlet: RouterOutlet;
-
   public windowDimensions: Observable<WindowDimensions>;
 
   public displayView: Observable<DisplayView>;
@@ -91,8 +89,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
   public discoveryView: Observable<DiscoveryView>;
 
   public document: Observable<SolrDocument>;
-
-  public loading: Observable<boolean>;
 
   public ready: Observable<boolean>;
 
@@ -107,7 +103,10 @@ export class DisplayComponent implements OnDestroy, OnInit {
   ) {
     this.subscriptions = [];
     this.readySubject = new BehaviorSubject<boolean>(false);
-    this.ready = this.readySubject.asObservable();
+  }
+
+  loading(): Observable<boolean> {
+    return this.ready.pipe(map((ready: boolean) => !ready));
   }
 
   ngOnDestroy() {
@@ -117,22 +116,16 @@ export class DisplayComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-
-    this.router.events.subscribe(e => {
-      if (e instanceof ActivationStart) {
-        if (this.outlet) {
-          this.outlet.deactivate();
-        }
-      }
-    });
+    this.ready = this.readySubject.asObservable();
 
     this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
 
     this.subscriptions.push(
       this.route.params.subscribe((params: Params) => {
         if (params.id) {
+          this.readySubject.next(false);
+
           this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
-          this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
 
           // listen to document changes
           this.document = this.store.pipe(
@@ -163,25 +156,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
                 select(selectDisplayViewByTypes(document.type)),
                 filter((displayView: DisplayView) => displayView !== undefined),
                 tap((displayView: DisplayView) => {
-                  if (this.route.children.length === 0) {
-                    let tabName;
-
-                    if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
-                      for (const tab of this.getTabsToShow(displayView.tabs, document)) {
-                        if (tabName === undefined) {
-                          tabName = tab.name;
-                          break;
-                        }
-                      }
-                    } else {
-                      tabName = 'View All';
-                    }
-
-                    this.router.navigate([displayView.name, tabName], {
-                      relativeTo: this.route,
-                      replaceUrl: true,
-                    });
-                  }
 
                   this.store.dispatch(
                     new fromMetadata.AddMetadataTagsAction({
@@ -271,6 +245,27 @@ export class DisplayComponent implements OnDestroy, OnInit {
                   // lazily fetch references sequentially
                   lazyReferences.reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve()).then(() => {
                     this.readySubject.next(true);
+
+                    if (this.route.children.length === 0) {
+                      let tabName;
+
+                      if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
+                        for (const tab of this.getTabsToShow(displayView.tabs, document)) {
+                          if (tabName === undefined) {
+                            tabName = tab.name;
+                            break;
+                          }
+                        }
+                      } else {
+                        tabName = 'View All';
+                      }
+
+                      this.router.navigate([displayView.name, tabName], {
+                        relativeTo: this.route,
+                        replaceUrl: true,
+                      });
+                    }
+
                   });
 
                 })

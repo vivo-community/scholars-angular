@@ -15,7 +15,12 @@ import * as fromTheme from './theme.actions';
 
 @Injectable()
 export class ThemeEffects {
-  constructor(private actions: Actions, private themeService: ThemeService, private alert: AlertService) {}
+
+  constructor(
+    private actions: Actions,
+    private themeService: ThemeService,
+    private alert: AlertService
+  ) { }
 
   @Effect() loadActiveTheme = this.actions.pipe(
     ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE),
@@ -51,4 +56,5 @@ export class ThemeEffects {
   @Effect() init = defer(() => {
     return scheduled([new fromTheme.LoadActiveThemeAction()], asap);
   });
+
 }
