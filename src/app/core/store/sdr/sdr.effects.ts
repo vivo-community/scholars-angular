@@ -566,7 +566,7 @@ export class SdrEffects {
   private buildActions(actionType: fromSdr.SdrActionTypes, exclude: string[] = []): string[] {
     const loadActions = [];
     for (const name in repos) {
-      if (repos.hasOwnProperty(name) && !exclude.includes(name)) {
+      if (repos.hasOwnProperty(name) && exclude.indexOf(name) < 0) {
         loadActions.push(fromSdr.getSdrAction(actionType, name));
       }
     }
