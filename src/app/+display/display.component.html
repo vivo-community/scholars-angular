@@ -7,7 +7,6 @@
     </div>
   </div>
 </div>
-<div [scholarsLoader]="loading()" [ngClass]="{ 'loader': (loading() | async) }"></div>
 <div *ngIf="ready | async" [@fadeIn]>
   <div class="document container" *ngIf="document | async; let document">
     <div *ngIf="displayView | async; let displayView" class="row">
