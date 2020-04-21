@@ -1,6 +1,6 @@
 <div class="wrapper container">
   <nav class="sidebar {{menu.classes}}" *ngIf="menu | async; let menu" [ngClass]="{ 'd-none': (isSidebarCollapsed | async) }">
-    <div [@fadeIn]>
+    <div *ngIf="(loading | async) === false" [@fadeIn]>
       <div class="card" *ngFor="let section of menu.sections; let sectionIndex = index">
 
         <div *ngIf="isBrowserRendered()" class="card-header font-weight-bold {{section.classes}}" (click)="toggleSectionCollapse(sectionIndex)">

@@ -16,6 +16,7 @@ import * as fromRouter from '../../core/store/router/router.actions';
 import * as fromSidebar from '../../core/store/sidebar/sidebar.actions';
 import { Params, Router } from '@angular/router';
 import { selectRouterUrl } from 'src/app/core/store/router';
+import { selectResourceIsLoading } from 'src/app/core/store/sdr';
 
 @Component({
   selector: 'scholars-sidebar',
@@ -31,6 +32,8 @@ export class SidebarComponent implements OnInit {
 
   public url: Observable<string>;
 
+  public loading: Observable<boolean>;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: string,
     private store: Store<AppState>,
@@ -41,6 +44,7 @@ export class SidebarComponent implements OnInit {
     this.isSidebarCollapsed = this.store.pipe(select(selectIsSidebarCollapsed));
     this.menu = this.store.pipe(select(selectMenu));
     this.url = this.store.pipe(select(selectRouterUrl));
+    this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
   }
 
   public toggleSectionCollapse(sectionIndex: number): void {
