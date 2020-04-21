@@ -1,11 +1,12 @@
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
 
 import { SdrActionTypes, SdrActions, getSdrAction } from './sdr.actions';
-import { SdrResource, SdrPage, SdrCollectionLinks, SdrFacet } from '../../model/sdr';
+import { SdrResource, SdrPage, SdrCollectionLinks, SdrFacet, SdrHighlight } from '../../model/sdr';
 
 import { keys } from '../../model/repos';
 
 import { augmentCollectionViewTemplates, augmentDisplayViewTemplates } from '../../../shared/utilities/template.utility';
+import { CollectionView, DisplayView } from '../../model/view';
 
 export interface SdrState<R extends SdrResource> extends EntityState<R> {
   page: SdrPage;
@@ -42,15 +43,45 @@ export const getSdrInitialState = <R extends SdrResource>(key: string) => {
 };
 
 export const getSdrReducer = <R extends SdrResource>(name: string, additionalContext: any) => {
+  const getResourceItem = (resource: any, references: any[]) => {
+    const refItems = resource[references[0].property].filter((item) => item.id === references[0].id);
+    if (references.length > 1) {
+      return getResourceItem(refItems[0], references.splice(1, 1));
+    } else {
+      return refItems[0];
+    }
+  };
   const getResources = (action: SdrActions, key: string): R[] => {
     const resources = action.payload.collection._embedded !== undefined ? action.payload.collection._embedded[key] : [];
     switch (key) {
       case 'directoryViews':
       case 'discoveryViews':
-        resources.forEach((view) => augmentCollectionViewTemplates(view, additionalContext));
+        resources.forEach((view: CollectionView) => augmentCollectionViewTemplates(view, additionalContext));
         break;
       case 'displayViews':
-        resources.forEach((view) => augmentDisplayViewTemplates(view, additionalContext));
+        resources.forEach((view: DisplayView) => augmentDisplayViewTemplates(view, additionalContext));
+        break;
+      case 'individual':
+        if (action.payload.collection.highlights) {
+          action.payload.collection.highlights.forEach((highlight: SdrHighlight) => {
+            const individual = resources.filter((resource) => resource.id === highlight.id).map((resource) => {
+              for (const property in highlight.snippets) {
+                if (highlight.snippets.hasOwnProperty(property)) {
+                  const path = property.split('.');
+                  const snippets = highlight.snippets[property];
+                  snippets.filter((match) => match instanceof Object).forEach(match => {
+                    const ids = match.id.split('::');
+                    getResourceItem(resource, path.map((prop, i) => {
+                      return { property: prop, id: ids[i] };
+                    })).snippet = match.snippet;
+                  });
+                }
+              }
+              return resource;
+            })[0];
+            individual.highlights = highlight.snippets;
+          });
+        }
         break;
     }
     return resources;
@@ -70,8 +101,9 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
   };
   return (state = getSdrInitialState<R>(keys[name]), action: SdrActions): SdrState<R> => {
     switch (action.type) {
-      case getSdrAction(SdrActionTypes.GET_ALL, name):
       case getSdrAction(SdrActionTypes.GET_ONE, name):
+        return getSdrAdapter<R>(keys[name]).removeOne(action.payload.id, state);
+      case getSdrAction(SdrActionTypes.GET_ALL, name):
       case getSdrAction(SdrActionTypes.FIND_BY_TYPES_IN, name):
       case getSdrAction(SdrActionTypes.FIND_BY_ID_IN, name):
       case getSdrAction(SdrActionTypes.PAGE, name):
@@ -102,17 +134,20 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
           error: undefined,
         });
       case getSdrAction(SdrActionTypes.RECENTLY_UPDATED_SUCCESS, name):
+        const recentlyUpdated = action.payload.recentlyUpdated._embedded !== undefined ? action.payload.recentlyUpdated._embedded[name] : [];
         return {
           ...state,
-          recentlyUpdated: action.payload.recentlyUpdated._embedded[name],
-          loading: true,
+          recentlyUpdated,
+          loading: false,
           error: undefined,
         };
       case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_SUCCESS, name):
         const changes = {};
         const id = action.payload.document.id;
+        const isArray = Array.isArray(state.entities[id][action.payload.field]);
         // tslint:disable-next-line: no-string-literal
-        changes[action.payload.field] = action.payload.resources._embedded['individual'];
+        const embedded = action.payload.resources._embedded['individual'];
+        changes[action.payload.field] = isArray ? embedded : embedded[0];
         return getSdrAdapter<R>(keys[name]).updateOne(
           { id, changes },
           {

@@ -17,6 +17,7 @@ import { getResourcesPage, getSubsectionResources, loadBadges } from '../../shar
   styleUrls: ['./section.component.scss'],
 })
 export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
+
   @Input()
   public section: DisplayTabSectionView;
 
@@ -34,7 +35,12 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private subscriptions: Subscription[];
 
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, @Inject(PLATFORM_ID) private platformId: string, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    @Inject('APP_CONFIG') private appConfig: AppConfig,
+    @Inject(PLATFORM_ID) private platformId: string,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.resources = new BehaviorSubject<any[]>([]);
     this.subscriptions = [];
   }
@@ -48,9 +54,7 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
   ngOnInit() {
     if (this.section.paginated) {
       this.subscriptions.push(
-        this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe(() => {
-          loadBadges(this.platformId);
-        })
+        this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe(() => loadBadges(this.platformId))
       );
       const resources = getSubsectionResources(this.document[this.section.field], this.section.filters);
       this.page = this.route.queryParams.pipe(
@@ -88,4 +92,5 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
     copyElement.setSelectionRange(0, 0);
     setTimeout(() => tooltip.close(), 2000);
   }
+
 }

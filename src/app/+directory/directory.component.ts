@@ -17,7 +17,7 @@ import { fadeIn } from '../shared/utilities/animation.utility';
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByClass, selectResourceIsLoading } from '../core/store/sdr';
 import { selectRouterQueryParams, selectRouterQueryParamFilters } from '../core/store/router';
 
-import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
+import { addExportToQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport, removeFilterFromQueryParams, resetFiltersInQueryParams } from '../shared/utilities/view.utility';
 
 @Component({
   selector: 'scholars-directory',
@@ -27,6 +27,7 @@ import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, show
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DirectoryComponent implements OnDestroy, OnInit {
+
   public queryParams: Observable<Params>;
 
   public filters: Observable<any[]>;
@@ -117,34 +118,26 @@ export class DirectoryComponent implements OnDestroy, OnInit {
     return ['/directory', directoryView.name];
   }
 
-  public getDirectoryQueryParams(directoryView: DirectoryView, filters: Filter[], filterToRemove?: Filter): Params {
-    const queryParams: Params = getQueryParams(directoryView);
-    applyFiltersToQueryParams(queryParams, directoryView, filters, filterToRemove);
-    queryParams.page = 1;
+  public getDirectoryExportUrl(params: Params, directoryView: DirectoryView): string {
+    const queryParams: Params = Object.assign({}, params);
+    queryParams.facets = null;
+    queryParams.collection = null;
+    addExportToQueryParams(queryParams, directoryView);
+    const tree = this.router.createUrlTree([''], { queryParams });
+    const query = tree.toString().substring(1);
+    return `${this.appConfig.serviceUrl}/individual/search/export${query}`;
+  }
+
+  public getDirectoryQueryParamsRemovingFilter(params: Params, filterToRemove: Filter): Params {
+    const queryParams: Params = Object.assign({}, params);
+    removeFilterFromQueryParams(queryParams, filterToRemove);
     return queryParams;
   }
 
-  public getDirectoryOptionQueryParams(directoryView: DirectoryView, option: string, filters: Filter[], filterToRemove?: Filter): Params {
-    const queryParams: Params = getQueryParams(directoryView);
-    applyFiltersToQueryParams(queryParams, directoryView, filters, filterToRemove);
-    queryParams.page = 1;
-    if (option) {
-      queryParams[`${directoryView.index.field}.filter`] = option;
-      queryParams[`${directoryView.index.field}.opKey`] = directoryView.index.opKey;
-      if (!queryParams.filters) {
-        queryParams.filters = directoryView.index.field;
-      } else {
-        queryParams.filters += `,${directoryView.index.field}`;
-      }
-    }
-    return queryParams;
-  }
-
-  public getResetQueryParams(directoryView: DirectoryView, params: Params): Params {
+  public getDirectoryQueryParamsResetting(params: Params, directoryView: DirectoryView): Params {
     const queryParams: Params = Object.assign({}, params);
     if (queryParams.filters && queryParams.filters.indexOf(directoryView.index.field) >= 0) {
-      const filters = queryParams.filters
-        .split(',')
+      const filters = queryParams.filters.split(',')
         .map((field) => field.trim())
         .filter((field) => field !== directoryView.index.field);
       if (filters.length > 0) {
@@ -158,14 +151,25 @@ export class DirectoryComponent implements OnDestroy, OnInit {
     return queryParams;
   }
 
-  public getDirectoryExportUrl(directoryView: DirectoryView, params: Params): string {
+  public getDirectoryQueryParamsClearingFilters(params: Params, discoveryView: DiscoveryView): Params {
     const queryParams: Params = Object.assign({}, params);
-    queryParams.filters = queryParams.filters;
-    queryParams.facets = null;
-    queryParams.collection = null;
-    addExportToQueryParams(queryParams, directoryView);
-    const tree = this.router.createUrlTree([''], { queryParams });
-    const query = tree.toString().substring(1);
-    return `${this.appConfig.serviceUrl}/individual/search/export${query}`;
+    resetFiltersInQueryParams(queryParams, discoveryView);
+    return queryParams;
   }
+
+  public getDirectoryQueryParamsWithOption(params: Params, directoryView: DirectoryView, option: string): Params {
+    const queryParams: Params = Object.assign({}, params);
+    queryParams.page = 1;
+    if (option) {
+      queryParams[`${directoryView.index.field}.filter`] = option;
+      queryParams[`${directoryView.index.field}.opKey`] = directoryView.index.opKey;
+      if (!queryParams.filters) {
+        queryParams.filters = directoryView.index.field;
+      } else {
+        queryParams.filters += `,${directoryView.index.field}`;
+      }
+    }
+    return queryParams;
+  }
+
 }

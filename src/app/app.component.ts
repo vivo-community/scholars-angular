@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
   }
 
   private dispatchResizeWindowAction(windowDimensions: WindowDimensions): void {
-    this.store.dispatch(new fromLayout.ResizeWindowAction({ windowDimensions }));
+    this.store.dispatch(new fromLayout.CheckWindowAction({ windowDimensions }));
   }
 
   private findLinkTarget(target: any, depth: number): any {

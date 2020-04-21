@@ -14,6 +14,11 @@
         display: block;
       }
       .card {
+        a.card-header {
+          color: inherit;
+          text-decoration: inherit;
+          cursor: inherit;
+        }
         margin-bottom: 10px;
         .section-collapse {
           font-size: 1.3em;

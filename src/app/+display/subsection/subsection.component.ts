@@ -16,6 +16,7 @@ import { getResourcesPage, getSubsectionResources, loadBadges } from '../../shar
   styleUrls: ['./subsection.component.scss'],
 })
 export class SubsectionComponent implements AfterViewInit, OnInit, OnDestroy {
+
   @Input()
   public subsection: Subsection;
 
@@ -30,7 +31,11 @@ export class SubsectionComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private subscriptions: Subscription[];
 
-  constructor(@Inject(PLATFORM_ID) private platformId: string, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: string,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.resources = new BehaviorSubject<any[]>([]);
     this.subscriptions = [];
   }
@@ -41,9 +46,7 @@ export class SubsectionComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(
-      this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe(() => {
-        loadBadges(this.platformId);
-      })
+      this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe(() => loadBadges(this.platformId))
     );
     const resources = getSubsectionResources(this.document[this.subsection.field], this.subsection.filters);
     this.page = this.route.queryParams.pipe(

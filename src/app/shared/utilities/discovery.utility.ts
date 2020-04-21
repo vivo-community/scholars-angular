@@ -1,46 +1,34 @@
 import { Params } from '@angular/router';
 
 import { CustomRouterState } from '../../core/store/router/router.reducer';
-import { SdrRequest, Pageable, Sort, Direction, Facetable, Filterable, Boostable } from '../../core/model/request';
+import { SdrRequest, Pageable, Sort, Direction, Facetable, Filterable, Boostable, Highlightable } from '../../core/model/request';
 import { OpKey } from '../../core/model/view';
+import { Queryable } from 'src/app/core/model/request/sdr.request';
 
 export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => {
   const queryParams = routerState.queryParams;
   return {
-    page: buildPage(queryParams),
+    query: buildQuery(queryParams),
     filters: buildFilters(queryParams),
     facets: buildFacets(queryParams),
     boosts: buildBoosts(queryParams),
-    query: queryParams.query,
+    highlight: buildHightlight(queryParams),
+    page: buildPage(queryParams),
   };
 };
 
-const buildPage = (queryParams: Params): Pageable => {
-  return {
-    number: queryParams.page,
-    size: queryParams.size,
-    sort: buildSort(queryParams.sort),
-  };
-};
-
-const buildSort = (sortParams: string): Sort[] => {
-  const sort: Sort[] = [];
-  if (sortParams !== undefined) {
-    if (Array.isArray(sortParams)) {
-      sortParams.forEach((currentSortParam) => sort.push(splitSort(currentSortParam)));
-    } else {
-      sort.push(splitSort(sortParams));
-    }
+const buildQuery = (queryParams: Params): Queryable => {
+  const query: any = {};
+  if (queryParams.q && queryParams.q.length > 0) {
+    query.expression = queryParams.q;
   }
-  return sort;
-};
-
-const splitSort = (sortParam: string): Sort => {
-  const sortSplit = sortParam.split(',');
-  return {
-    name: sortSplit[0],
-    direction: Direction[sortSplit[1] !== undefined ? sortSplit[1].toUpperCase() : 'ASC'],
-  };
+  if (queryParams.df && queryParams.df.length > 0) {
+    query.defaultField = queryParams.df;
+  }
+  if (queryParams.fl && queryParams.fl.length > 0) {
+    query.fields = queryParams.fl;
+  }
+  return query as Queryable;
 };
 
 const buildFilters = (queryParams: Params): Filterable[] => {
@@ -86,4 +74,48 @@ const buildBoosts = (queryParams: Params): Boostable[] => {
       return [{ field: parts[0], value: Number(parts[1]) }];
     }
   }
+};
+
+const buildHightlight = (queryParams: Params): Highlightable => {
+  const highlight: any = {
+    fields: []
+  };
+  if (queryParams.hl && queryParams.hl.length > 0) {
+    highlight.fields = Array.isArray(queryParams.hl) ? queryParams.hl : queryParams.hl.split(',');
+  }
+  if (queryParams['hl.prefix'] && queryParams['hl.prefix'].length > 0) {
+    highlight.prefix = queryParams['hl.prefix'];
+  }
+  if (queryParams['hl.postfix'] && queryParams['hl.postfix'].length > 0) {
+    highlight.postfix = queryParams['hl.postfix'];
+  }
+  return highlight as Highlightable;
+};
+
+const buildPage = (queryParams: Params): Pageable => {
+  return {
+    number: queryParams.page,
+    size: queryParams.size,
+    sort: buildSort(queryParams.sort),
+  };
+};
+
+const buildSort = (sortParams: string): Sort[] => {
+  const sort: Sort[] = [];
+  if (sortParams !== undefined) {
+    if (Array.isArray(sortParams)) {
+      sortParams.forEach((currentSortParam) => sort.push(splitSort(currentSortParam)));
+    } else {
+      sort.push(splitSort(sortParams));
+    }
+  }
+  return sort;
+};
+
+const splitSort = (sortParam: string): Sort => {
+  const sortSplit = sortParam.split(',');
+  return {
+    name: sortSplit[0],
+    direction: Direction[sortSplit[1] !== undefined ? sortSplit[1].toUpperCase() : 'ASC'],
+  };
 };

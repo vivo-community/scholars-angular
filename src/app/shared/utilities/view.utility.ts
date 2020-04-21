@@ -1,21 +1,29 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Params } from '@angular/router';
 
-import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType } from '../../core/model/view';
+import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType, DiscoveryView } from '../../core/model/view';
 import { SdrPage } from '../../core/model/sdr';
 import { Direction } from '../../core/model/request';
 
 const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.facets && collectionView.facets.length > 0) {
-    let facets = '';
+    queryParams.facets = '';
     collectionView.facets.forEach((facet: Facet) => {
-      facets += facets.length > 0 ? `,${facet.field}` : facet.field;
+      queryParams.facets += queryParams.facets.length > 0 ? `,${facet.field}` : facet.field;
       ['type', 'pageSize', 'pageNumber'].forEach((key: string) => {
         queryParams[`${facet.field}.${key}`] = facet[key];
       });
       queryParams[`${facet.field}.sort`] = `${facet.sort},${facet.direction}`;
     });
-    queryParams.facets = facets;
+  }
+};
+
+const addFieldsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
+  if (collectionView.fields && collectionView.fields.length > 0) {
+    queryParams.fl = '';
+    collectionView.fields.forEach((field: string) => {
+      queryParams.fl += queryParams.fl.length > 0 ? `,${field}` : field;
+    });
   }
 };
 
@@ -49,38 +57,64 @@ const addSortToQueryParams = (queryParams: Params, collectionView: CollectionVie
   }
 };
 
+const addDefaultSearchFieldToQueryParams = (queryParams: Params, discoveryView: DiscoveryView): void => {
+  if (discoveryView.defaultSearchField && discoveryView.defaultSearchField.length > 0) {
+    queryParams.df = discoveryView.defaultSearchField;
+  }
+};
+
+const addHighlightsToQueryParams = (queryParams: Params, discoveryView: DiscoveryView): void => {
+  if (discoveryView.highlightFields && discoveryView.highlightFields.length > 0) {
+    queryParams.hl = discoveryView.highlightFields;
+  }
+  if (discoveryView.highlightPrefix && discoveryView.highlightPrefix.length > 0) {
+    queryParams['hl.prefix'] = discoveryView.highlightPrefix;
+  }
+  if (discoveryView.highlightPostfix && discoveryView.highlightPostfix.length > 0) {
+    queryParams['hl.postfix'] = discoveryView.highlightPostfix;
+  }
+};
+
 const addExportToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.export && collectionView.export.length > 0) {
     queryParams.export = [];
+    queryParams.fl = '';
     collectionView.export.forEach((exp: Export) => {
       queryParams.export.push(`${exp.valuePath},${exp.columnHeader}`);
+      queryParams.fl += queryParams.fl.length > 0 ? `,${exp.valuePath}` : exp.valuePath;
     });
+  }
+};
+
+const removeFilterFromQueryParams = (queryParams: Params, filterToRemove: Filter): void => {
+  queryParams.filters = queryParams.filters.replace(filterToRemove.field, '').replace(',,', ',');
+  delete queryParams[`${filterToRemove.field}.filter`];
+  delete queryParams[`${filterToRemove.field}.opKey`];
+};
+
+const resetFiltersInQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
+  if (queryParams.filters && queryParams.filters.length > 0) {
+    const defaultFilterFields = collectionView.filters.map((cf: Filter) => cf.field);
+    const appliedFilterFields = queryParams.filters.split(',').filter((aff: string) => defaultFilterFields.indexOf(aff) < 0);
+    appliedFilterFields.forEach(aff => {
+      delete queryParams[`${aff}.filter`];
+      delete queryParams[`${aff}.opKey`];
+    });
+    queryParams.filters = defaultFilterFields.join(',');
   }
 };
 
 const getQueryParams = (collectionView: CollectionView): Params => {
   const queryParams: Params = {};
   queryParams.collection = 'individual';
+  addFieldsToQueryParams(queryParams, collectionView);
   addFacetsToQueryParams(queryParams, collectionView);
   addFiltersToQueryParams(queryParams, collectionView);
   addBoostToQueryParams(queryParams, collectionView);
   addSortToQueryParams(queryParams, collectionView);
+  addDefaultSearchFieldToQueryParams(queryParams, collectionView as DiscoveryView);
+  addHighlightsToQueryParams(queryParams, collectionView as DiscoveryView);
   return queryParams;
-};
-
-const applyFiltersToQueryParams = (queryParams: Params, collectionView: CollectionView, filters: Filter[], filterToRemove: Filter): void => {
-  filters
-    .filter((filter: Filter) => !equals(filter, filterToRemove))
-    .filter((filter: Filter) => showFilter(collectionView, filter))
-    .forEach((filter: Filter) => {
-      queryParams[`${filter.field}.filter`] = filter.value;
-      queryParams[`${filter.field}.opKey`] = filter.opKey;
-      if (!queryParams.filters) {
-        queryParams.filters = filter.field;
-      } else {
-        queryParams.filters += `,${filter.field}`;
-      }
-    });
 };
 
 const showFilter = (collectionView: CollectionView, actualFilter: Filter): boolean => {
@@ -93,7 +127,8 @@ const showFilter = (collectionView: CollectionView, actualFilter: Filter): boole
 };
 
 const showClearFilters = (collectionView: CollectionView, filters: Filter[]): boolean => {
-  return filters.length > collectionView.filters.length;
+  const defaultFilterFields = collectionView.filters.map((cf: Filter) => cf.field);
+  return filters.filter((af: Filter) => defaultFilterFields.indexOf(af.field) < 0).length > 0;
 };
 
 const getFilterField = (collectionView: CollectionView, actualFilter: Filter): string => {
@@ -172,4 +207,17 @@ const loadBadges = (platformId: string): void => {
   }
 };
 
-export { addExportToQueryParams, applyFiltersToQueryParams, getQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport, getResourcesPage, getSubsectionResources, loadBadges };
+export {
+  addExportToQueryParams,
+  removeFilterFromQueryParams,
+  resetFiltersInQueryParams,
+  getQueryParams,
+  showFilter,
+  showClearFilters,
+  getFilterField,
+  getFilterValue,
+  hasExport,
+  getResourcesPage,
+  getSubsectionResources,
+  loadBadges
+};

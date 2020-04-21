@@ -9,7 +9,9 @@ import { DialogControl } from '../../core/model/dialog';
   styleUrls: ['./dialog.component.scss'],
 })
 export class DialogComponent {
+
   public location = AlertLocation.DIALOG;
 
   @Input() dialog: DialogControl;
+
 }

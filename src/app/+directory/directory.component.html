@@ -15,31 +15,31 @@
       </div>
       <div class="col-md-4 text-right">
         <span *ngIf="hasExport(directoryView)" class="column-export">
-          <a [href]="getDirectoryExportUrl(directoryView, queryParams | async)" download class="btn">
+          <a [href]="getDirectoryExportUrl(queryParams | async, directoryView)" download class="btn">
             <span class="fa fa-share" aria-hidden="true"></span>
             <span>{{ 'DIRECTORY.EXPORT' | translate }}</span>
           </a>
         </span>
       </div>
     </div>
-    <div class="applied-filters mt-2" *ngIf="filters | async; let filters">
-      <span class="badge badge-light p-2 mr-2 mb-2" *ngFor="let filter of filters">
+    <div class="applied-filters mt-2">
+      <span class="badge badge-light p-2 mr-2 mb-2" *ngFor="let filter of filters | async">
         <span *ngIf="showFilter(directoryView, filter)">
           <span class="mr-1">{{getFilterField(directoryView, filter) | formalize}}:</span>
           <span class="mr-2">{{getFilterValue(directoryView, filter) | formalize}}</span>
-          <a class="fa fa-close" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, filters, filter)"></a>
+          <a class="fa fa-close" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParamsRemovingFilter(queryParams | async, filter)"></a>
         </span>
       </span>
-      <span *ngIf="showClearFilters(directoryView, filters)" class="badge badge-light p-2 mr-2 mb-2">
-        <a [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParams(directoryView, filters)">Clear</a>
+      <span *ngIf="showClearFilters(directoryView, filters | async)" class="badge badge-light p-2 mr-2 mb-2">
+        <a [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParamsClearingFilters(queryParams | async, directoryView)">Clear</a>
       </span>
     </div>
     <div class="index">
-      <a class="option" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getResetQueryParams(directoryView, queryParams | async)">
+      <a class="option" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParamsResetting(queryParams | async, directoryView)">
         <span *ngIf="isActive(directoryView, queryParams | async, 'All')" class="fa fa-caret-right mr-1"></span>
         <span>{{ 'DIRECTORY.ALL' | translate }}</span>
       </a>
-      <a class="option" *ngFor="let option of directoryView.index.options" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryOptionQueryParams(directoryView, option, filters | async)">
+      <a class="option" *ngFor="let option of directoryView.index.options" [routerLink]="getDirectoryRouterLink(directoryView)" [queryParams]="getDirectoryQueryParamsWithOption(queryParams | async, directoryView, option)">
         <span *ngIf="isActive(directoryView, queryParams | async, option)" class="fa fa-caret-right mr-1"></span>
         <span>{{option}}</span>
       </a>

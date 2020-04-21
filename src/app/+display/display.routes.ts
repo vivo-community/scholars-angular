@@ -7,6 +7,8 @@ export const routes: Routes = [
   {
     path: ':id',
     component: DisplayComponent,
-    children: [{ path: ':view/:tab', component: TabComponent }],
+    children: [
+      { path: ':view/:tab', component: TabComponent }
+    ],
   },
 ];

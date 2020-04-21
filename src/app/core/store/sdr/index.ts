@@ -53,20 +53,3 @@ export const selectDisplayViewByTypes = (types: string[]) =>
     }
     return defaultDisplayView;
   });
-
-export const selectDisplayViewTab = (view: string, tab: string) =>
-  createSelector(selectResourceEntities<DisplayView>('displayViews'), (displayViews) => {
-    for (const i in displayViews) {
-      if (displayViews.hasOwnProperty(i)) {
-        if (displayViews[i].name === view) {
-          for (const j in displayViews[i].tabs) {
-            if (displayViews[i].tabs.hasOwnProperty(j)) {
-              if (displayViews[i].tabs[j].name === tab) {
-                return displayViews[i].tabs[j];
-              }
-            }
-          }
-        }
-      }
-    }
-  });

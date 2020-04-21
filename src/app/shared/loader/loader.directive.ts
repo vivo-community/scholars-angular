@@ -21,6 +21,7 @@ interface StyledElement extends BlurStyles {
   selector: '[scholarsLoader]',
 })
 export class LoaderDirective implements OnInit, OnDestroy {
+
   @HostBinding('style.transition') readonly transition: string;
 
   @HostBinding('style.background-repeat') readonly backgroundRepeat: string;
@@ -53,7 +54,12 @@ export class LoaderDirective implements OnInit, OnDestroy {
     pointerEvents: 'none',
   };
 
-  constructor(@Inject(PLATFORM_ID) private platformId: string, private sanitizer: DomSanitizer, private elementRef: ElementRef, private renderer: Renderer2) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: string,
+    private sanitizer: DomSanitizer,
+    private elementRef: ElementRef,
+    private renderer: Renderer2
+  ) {
     this.transition = 'all .25s ease-in-out';
     this.backgroundRepeat = 'no-repeat';
 
