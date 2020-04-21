@@ -5,7 +5,7 @@ import { MetaDefinition } from '@angular/platform-browser';
 import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { filter, take, switchMap, tap, map } from 'rxjs/operators';
+import { filter, take, switchMap, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
@@ -20,7 +20,7 @@ import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
 import { Side, Subsection } from '../core/model/view/display-view';
 
-import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing, selectResourceIsLoading } from '../core/store/sdr';
+import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing } from '../core/store/sdr';
 
 import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
@@ -105,10 +105,6 @@ export class DisplayComponent implements OnDestroy, OnInit {
   ) {
     this.subscriptions = [];
     this.readySubject = new BehaviorSubject<boolean>(false);
-  }
-
-  loading(): Observable<boolean> {
-    return this.ready.pipe(map((ready: boolean) => !ready));
   }
 
   ngOnDestroy() {
