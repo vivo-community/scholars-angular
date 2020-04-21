@@ -152,10 +152,12 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
       queryParams[`${this.field}.opKey`] = OpKey.EQUALS;
     }
     queryParams[`${this.field}.pageNumber`] = 1;
-    if (!queryParams.filters) {
-      queryParams.filters = facet.field;
+    if (queryParams.filters && queryParams.filters.length > 0) {
+      if (queryParams.filters.indexOf(this.field) < 0) {
+        queryParams.filters += `,${facet.field}`;
+      }
     } else {
-      queryParams.filters += `,${facet.field}`;
+      queryParams.filters = facet.field;
     }
     return queryParams;
   }
