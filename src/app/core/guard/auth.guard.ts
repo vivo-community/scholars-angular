@@ -3,7 +3,7 @@ import { PLATFORM_ID, Inject, Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
-import { Observable, of, scheduled } from 'rxjs';
+import { Observable, scheduled } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
 import { filter, map, switchMap } from 'rxjs/operators';
 
