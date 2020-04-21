@@ -320,12 +320,7 @@ export class SdrEffects {
         this.store.pipe(
           select(selectAllResources('discoveryViews')),
           filter((views: DiscoveryView[]) => views.length !== 0)
-        ),
-        this.store.pipe(
-          select(selectIsStompConnected),
-          skipWhile((connected: boolean) => !connected),
-          take(1)
-        ),
+        )
       ])
     ),
     withLatestFrom(this.store),
@@ -772,7 +767,6 @@ export class SdrEffects {
 
       this.store.dispatch(new fromSidebar.LoadSidebarAction({ menu: sidebarMenu }));
     }
-    this.subscribeToResourceQueue(action.name, store.stomp);
   }
 
 }
