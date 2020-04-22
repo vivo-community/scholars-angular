@@ -26,30 +26,43 @@ export const selectResourcesRecentlyUpdated = <R extends SdrResource>(name: stri
 
 export const selectResourceById = <R extends SdrResource>(name: string, id: string) => createSelector(selectResourceEntities<R>(name), (resources) => resources[id]);
 
-// tslint:disable-next-line: max-line-length
-export const selectDirectoryViewByClass = (clazz: string) => createSelector(selectAllResources<DirectoryView>('directoryViews'), (resources) => resources.find((dv: DirectoryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz));
+export const selectCollectionViewByName = (collectionViewType: string, name: string) => createSelector(selectResourceEntities<CollectionView>(collectionViewType), (collectionViews) => collectionViews[name]);
 
-// tslint:disable-next-line: max-line-length
-export const selectDiscoveryViewByClass = (clazz: string) => createSelector(selectAllResources<DiscoveryView>('discoveryViews'), (resources) => resources.find((dv: DiscoveryView) => dv.filters.find((filter: Filter) => filter.field === 'class').value === clazz));
+const findCollectionView = (collectionViews, clazz: string, defaultName: string): CollectionView => {
+  let defaultCollectionView;
+  for (const collectionView of collectionViews) {
+    if (collectionView.filters.find((filter: Filter) => filter.field === 'class').value === clazz) {
+      return collectionView;
+    }
+    if (collectionView.name === defaultName) {
+      defaultCollectionView = collectionView;
+    }
+  }
+  return defaultCollectionView;
+};
 
-export const selectCollectionViewByName = (collection: string, name: string) => createSelector(selectResourceEntities<CollectionView>(collection), (collectionViews) => collectionViews[name]);
+export const selectDirectoryViewByClass = (clazz: string) => createSelector(selectAllResources<DirectoryView>('directoryViews'), (resources) => findCollectionView(resources, clazz, 'People'));
 
-export const selectDisplayViewByTypes = (types: string[]) =>
-  createSelector(selectResourceEntities<DisplayView>('displayViews'), (displayViews) => {
-    let defaultDisplayView;
-    for (const key in displayViews) {
-      if (displayViews.hasOwnProperty(key)) {
-        for (const i in types) {
-          if (displayViews.hasOwnProperty(key)) {
-            if (displayViews[key].types.indexOf(types[i]) >= 0) {
-              return displayViews[key];
-            }
+export const selectDiscoveryViewByClass = (clazz: string) => createSelector(selectAllResources<DiscoveryView>('discoveryViews'), (resources) => findCollectionView(resources, clazz, 'People'));
+
+const findDisplayView = (displayViews, types: string[], defaultName: string): DisplayView => {
+  let defaultDisplayView;
+  for (const key in displayViews) {
+    if (displayViews.hasOwnProperty(key)) {
+      for (const i in types) {
+        if (displayViews.hasOwnProperty(key)) {
+          if (displayViews[key].types.indexOf(types[i]) >= 0) {
+            return displayViews[key];
           }
         }
-        if (displayViews[key].name === 'Default') {
-          defaultDisplayView = displayViews[key];
-        }
+      }
+      if (displayViews[key].name === defaultName) {
+        defaultDisplayView = displayViews[key];
       }
     }
-    return defaultDisplayView;
-  });
+  }
+  return defaultDisplayView;
+};
+
+export const selectDisplayViewByTypes = (types: string[]) => createSelector(selectResourceEntities<DisplayView>('displayViews'), (resources) => findDisplayView(resources, types, 'Default'));
+

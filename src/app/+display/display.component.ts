@@ -131,7 +131,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
             filter((document: SolrDocument) => document !== undefined)
           );
 
-          // one first defined document, get discovery view
+          // on first defined document, get discovery view
           this.discoveryView = this.store.pipe(
             select(selectResourceById('individual', params.id)),
             filter((document: SolrDocument) => document !== undefined),
