@@ -95,12 +95,12 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
           },
         };
 
-        const viewCollection = routerState.url.startsWith('/directory') ? 'directoryViews' : 'discoveryViews';
+        const collectionViewType = routerState.url.startsWith('/directory') ? 'directoryViews' : 'discoveryViews';
 
-        this.collectionView = this.store.pipe(select(selectCollectionViewByName(viewCollection, routerState.params.view)));
+        this.collectionView = this.store.pipe(select(selectCollectionViewByName(collectionViewType, routerState.params.view)));
 
         this.facet = this.store.pipe(
-          select(selectCollectionViewByName(viewCollection, routerState.params.view)),
+          select(selectCollectionViewByName(collectionViewType, routerState.params.view)),
           map((view: CollectionView) => view.facets.find((facet: Facet) => facet.name === this.name)),
           tap((facet: Facet) => {
 
