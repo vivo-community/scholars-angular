@@ -44,11 +44,15 @@ export const getSdrInitialState = <R extends SdrResource>(key: string) => {
 
 export const getSdrReducer = <R extends SdrResource>(name: string, additionalContext: any) => {
   const getResourceItem = (resource: any, references: any[]) => {
-    const refItems = resource[references[0].property].filter((item) => item.id === references[0].id);
-    if (references.length > 1) {
-      return getResourceItem(refItems[0], references.splice(1, 1));
+    if (Array.isArray(resource[references[0].property])) {
+      const refItems = resource[references[0].property].filter((item) => item.id === references[0].id);
+      if (references.length > 1) {
+        return getResourceItem(refItems[0], references.splice(1, 1));
+      } else {
+        return refItems[0];
+      }
     } else {
-      return refItems[0];
+      return resource[references[0].property];
     }
   };
   const getResources = (action: SdrActions, key: string): R[] => {
