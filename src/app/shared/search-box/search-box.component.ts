@@ -1,12 +1,12 @@
 import { Component, Input, Inject, PLATFORM_ID, OnInit, OnDestroy } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer, APP_BASE_HREF } from '@angular/common';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { Router, Params, UrlTree } from '@angular/router';
+import { Router, Params } from '@angular/router';
 
 import { Store, select } from '@ngrx/store';
 
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { skipWhile, debounceTime, distinctUntilChanged, take, takeLast, flatMap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { skipWhile, debounceTime, distinctUntilChanged, take, flatMap } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 import { DiscoveryView, Facet, Filter } from '../../core/model/view';
