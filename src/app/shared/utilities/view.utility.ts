@@ -87,7 +87,7 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
 };
 
 const removeFilterFromQueryParams = (queryParams: Params, filterToRemove: Filter): void => {
-  queryParams.filters = queryParams.filters.replace(filterToRemove.field, '').replace(',,', ',');
+  queryParams.filters = queryParams.filters.split(',').filter((filter: string) => filter !== filterToRemove.field).join(',');
   delete queryParams[`${filterToRemove.field}.filter`];
   delete queryParams[`${filterToRemove.field}.opKey`];
 };
