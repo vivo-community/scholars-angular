@@ -19,130 +19,137 @@ import { selectRouterSearchQuery, selectRouterUrl, selectRouterQueryParamFilters
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectResourceIsLoading } from '../core/store/sdr';
 import { selectWindowDimensions } from '../core/store/layout';
 
-import { addExportToQueryParams, getQueryParams, applyFiltersToQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport } from '../shared/utilities/view.utility';
+import { addExportToQueryParams, showFilter, showClearFilters, getFilterField, getFilterValue, hasExport, removeFilterFromQueryParams, resetFiltersInQueryParams, getQueryParams } from '../shared/utilities/view.utility';
 
 @Component({
-    selector: 'scholars-discovery',
-    templateUrl: 'discovery.component.html',
-    styleUrls: ['discovery.component.scss'],
-    animations: [fadeIn],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'scholars-discovery',
+  templateUrl: 'discovery.component.html',
+  styleUrls: ['discovery.component.scss'],
+  animations: [fadeIn],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiscoveryComponent implements OnDestroy, OnInit {
 
-    public windowDimensions: Observable<WindowDimensions>;
+  public windowDimensions: Observable<WindowDimensions>;
 
-    public url: Observable<string>;
+  public url: Observable<string>;
 
-    public query: Observable<string>;
+  public query: Observable<string>;
 
-    public queryParams: Observable<Params>;
+  public queryParams: Observable<Params>;
 
-    public filters: Observable<any[]>;
+  public filters: Observable<any[]>;
 
-    public discoveryViews: Observable<DiscoveryView[]>;
+  public discoveryViews: Observable<DiscoveryView[]>;
 
-    public discoveryView: Observable<DiscoveryView>;
+  public discoveryView: Observable<DiscoveryView>;
 
-    public documents: Observable<SolrDocument[]>;
+  public documents: Observable<SolrDocument[]>;
 
-    public loading: Observable<boolean>;
+  public loading: Observable<boolean>;
 
-    public page: Observable<SdrPage>;
+  public page: Observable<SdrPage>;
 
-    public facets: Observable<SdrFacet[]>;
+  public facets: Observable<SdrFacet[]>;
 
-    private subscriptions: Subscription[];
+  private subscriptions: Subscription[];
 
-    constructor(
-        @Inject('APP_CONFIG') private appConfig: AppConfig,
-        private store: Store<AppState>,
-        private router: Router,
-        private route: ActivatedRoute
-    ) {
-        this.subscriptions = [];
-    }
+  constructor(
+    @Inject('APP_CONFIG') private appConfig: AppConfig,
+    private store: Store<AppState>,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.subscriptions = [];
+  }
 
-    ngOnDestroy() {
-        this.subscriptions.forEach((subscription: Subscription) => {
-            subscription.unsubscribe();
-        });
-    }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
-    ngOnInit() {
-        this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
-        this.url = this.store.pipe(select(selectRouterUrl));
-        this.query = this.store.pipe(select(selectRouterSearchQuery));
-        this.queryParams = this.store.pipe(select(selectRouterQueryParams));
-        this.filters = this.store.pipe(select(selectRouterQueryParamFilters));
-        this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
-        this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individual')));
-        this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individual')));
-        this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individual')));
-        this.discoveryViews = this.store.pipe(select(selectAllResources<DiscoveryView>('discoveryViews')));
-        this.subscriptions.push(this.route.params.subscribe((params) => {
-            if (params.view) {
-                this.discoveryView = this.store.pipe(
-                    select(selectResourceById('discoveryViews', params.view)),
-                    filter((view: DiscoveryView) => view !== undefined)
-                );
-            }
-        }));
-    }
-
-    public showTabs(windowDimensions: WindowDimensions): boolean {
-        return windowDimensions.width > 767;
-    }
-
-    public isActive(discoveryView: DiscoveryView, url: string): boolean {
-        return url.startsWith(`/discovery/${discoveryView.name}`);
-    }
-
-    public showFilter(discoveryView: DiscoveryView, actualFilter: Filter): boolean {
-        return showFilter(discoveryView, actualFilter);
-    }
-
-    public showClearFilters(discoveryView: DiscoveryView, filters: Filter[]): boolean {
-        return showClearFilters(discoveryView, filters);
-    }
-
-    public getFilterField(discoveryView: DiscoveryView, actualFilter: Filter): string {
-        return getFilterField(discoveryView, actualFilter);
-    }
-
-    public getFilterValue(discoveryView: DiscoveryView, actualFilter: Filter): string {
-        return getFilterValue(discoveryView, actualFilter);
-    }
-
-    public hasExport(discoveryView: DiscoveryView): boolean {
-        return hasExport(discoveryView);
-    }
-
-    public getDiscoveryRouterLink(discoveryView: DiscoveryView): string[] {
-        return ['/discovery', discoveryView.name];
-    }
-
-    public getDiscoveryQueryParams(discoveryView: DiscoveryView, page: SdrPage, query: string, filters: Filter[] = [], filterToRemove: Filter): Params {
-        const queryParams: Params = getQueryParams(discoveryView);
-        applyFiltersToQueryParams(queryParams, discoveryView, filters, filterToRemove);
-        if (query && query.length > 0) {
-            queryParams.query = query;
+  ngOnInit() {
+    this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
+    this.url = this.store.pipe(select(selectRouterUrl));
+    this.query = this.store.pipe(select(selectRouterSearchQuery));
+    this.queryParams = this.store.pipe(select(selectRouterQueryParams));
+    this.filters = this.store.pipe(select(selectRouterQueryParamFilters));
+    this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
+    this.documents = this.store.pipe(select(selectAllResources<SolrDocument>('individual')));
+    this.page = this.store.pipe(select(selectResourcesPage<SolrDocument>('individual')));
+    this.facets = this.store.pipe(select(selectResourcesFacets<SolrDocument>('individual')));
+    this.discoveryViews = this.store.pipe(select(selectAllResources<DiscoveryView>('discoveryViews')));
+    this.subscriptions.push(
+      this.route.params.subscribe((params) => {
+        if (params.view) {
+          this.discoveryView = this.store.pipe(
+            select(selectResourceById('discoveryViews', params.view)),
+            filter((view: DiscoveryView) => view !== undefined)
+          );
         }
-        if (page && page.size) {
-            queryParams.size = page.size;
-        }
-        return queryParams;
-    }
+      })
+    );
+  }
 
-    public getDiscoveryExportUrl(discoveryView: DiscoveryView, params: Params): string {
-        const queryParams: Params = Object.assign({}, params);
-        queryParams.filters = queryParams.filters;
-        queryParams.facets = null;
-        queryParams.collection = null;
-        addExportToQueryParams(queryParams, discoveryView);
-        const tree = this.router.createUrlTree([''], { queryParams });
-        const query = tree.toString().substring(1);
-        return `${this.appConfig.serviceUrl}/individual/search/export${query}`;
-    }
+  public showTabs(windowDimensions: WindowDimensions): boolean {
+    return windowDimensions.width > 767;
+  }
+
+  public isActive(discoveryView: DiscoveryView, url: string): boolean {
+    return url.startsWith(`/discovery/${encodeURI(discoveryView.name)}`);
+  }
+
+  public showFilter(discoveryView: DiscoveryView, actualFilter: Filter): boolean {
+    return showFilter(discoveryView, actualFilter);
+  }
+
+  public showClearFilters(discoveryView: DiscoveryView, filters: Filter[]): boolean {
+    return showClearFilters(discoveryView, filters);
+  }
+
+  public getFilterField(discoveryView: DiscoveryView, actualFilter: Filter): string {
+    return getFilterField(discoveryView, actualFilter);
+  }
+
+  public getFilterValue(discoveryView: DiscoveryView, actualFilter: Filter): string {
+    return getFilterValue(discoveryView, actualFilter);
+  }
+
+  public hasExport(discoveryView: DiscoveryView): boolean {
+    return hasExport(discoveryView);
+  }
+
+  public getDiscoveryRouterLink(discoveryView: DiscoveryView): string[] {
+    return ['/discovery', discoveryView.name];
+  }
+
+  public getDiscoveryExportUrl(params: Params, discoveryView: DiscoveryView): string {
+    const queryParams: Params = Object.assign({}, params);
+    queryParams.facets = null;
+    queryParams.collection = null;
+    addExportToQueryParams(queryParams, discoveryView);
+    const tree = this.router.createUrlTree([''], { queryParams });
+    const query = tree.toString().substring(1);
+    return `${this.appConfig.serviceUrl}/individual/search/export${query}`;
+  }
+
+  public getDiscoveryQueryParamsRemovingFilter(params: Params, filterToRemove: Filter): Params {
+    const queryParams: Params = Object.assign({}, params);
+    removeFilterFromQueryParams(queryParams, filterToRemove);
+    return queryParams;
+  }
+
+  public getDiscoveryQueryParamsClearingFilters(params: Params, discoveryView: DiscoveryView): Params {
+    const queryParams: Params = Object.assign({}, params);
+    resetFiltersInQueryParams(queryParams, discoveryView);
+    return queryParams;
+  }
+
+  public getDiscoveryQueryParamsSwitchingDiscoveryView(params: Params, discoveryView: DiscoveryView): Params {
+    const queryParams: Params = getQueryParams(discoveryView);
+    queryParams.q = params.q;
+    return queryParams;
+  }
 
 }

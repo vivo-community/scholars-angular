@@ -13,45 +13,44 @@ import { metaReducers, reducers } from '../../../core/store';
 import { testAppConfig } from '../../../../test.config';
 
 describe('UserEditComponent', () => {
-    let component: UserEditComponent;
-    let fixture: ComponentFixture<UserEditComponent>;
+  let component: UserEditComponent;
+  let fixture: ComponentFixture<UserEditComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                NoopAnimationsModule,
-                SharedModule,
-                StoreModule.forRoot(reducers(testAppConfig), {
-                    metaReducers,
-                    runtimeChecks: {
-                        strictStateImmutability: false,
-                        strictActionImmutability: false,
-                        strictStateSerializability: false,
-                        strictActionSerializability: false
-                    }
-                }),
-                TranslateModule.forRoot()
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        NoopAnimationsModule,
+        SharedModule,
+        StoreModule.forRoot(reducers(testAppConfig), {
+          metaReducers,
+          runtimeChecks: {
+            strictStateImmutability: false,
+            strictActionImmutability: false,
+            strictStateSerializability: false,
+            strictActionSerializability: false,
+          },
+        }),
+        TranslateModule.forRoot(),
+      ],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(UserEditComponent);
-        component = fixture.componentInstance;
-        component.user = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            role: Role.ROLE_USER,
-            active: false,
-            enabled: false,
-            _links: undefined
-        };
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(UserEditComponent);
+    component = fixture.componentInstance;
+    component.user = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      role: Role.ROLE_USER,
+      active: false,
+      enabled: false,
+      _links: undefined,
+    };
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

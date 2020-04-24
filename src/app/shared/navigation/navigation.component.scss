@@ -14,6 +14,8 @@
       margin: 2px;
     }
     .navbar-toggler {
+      border-color: var(--navigation-toggler-border-color);
+      background-color: var(--navigation-toggler-background-color);
       padding: 3px 10px;
       margin: 2px;
     }
@@ -29,10 +31,29 @@
         padding: 16.5px 24px;
         font-size: 20px;
       }
+      .edit-profile-action {
+        color: var(--navigation-button-color);
+        background-color: var(--navigation-button-background-color);
+        border-color: var(--navigation-button-border-color);
+        font-size: 0.9em;
+        padding: 5px 10px 4px 10px;
+      }
+      .edit-profile-action:active,
+      .edit-profile-action:hover {
+        color: var(--navigation-button-hover-color);
+        background-color: var(--navigation-button-hover-background-color);
+      }
+      .edit-profile-action:focus {
+        box-shadow: 0 0 0 0.2rem var(--navigation-button-focus-shadow-color);
+      }
     }
     @media (max-width: 575.98px) {
+      background: var(--navigation-gradient);
       .nav-link {
         margin: 0px 5px;
+      }
+      .edit-profile-action {
+        text-transform: capitalize;
       }
     }
     @media (max-width: 767.98px) {
@@ -46,12 +67,22 @@
         font-size: 16px;
       }
     }
+    @media (min-width: 576px) and (max-width: 767.98px) {
+      .edit-profile-action {
+        padding: 3px 6px 2px 6px;
+      }
+    }
     @media (min-width: 768px) and (max-width: 991.95px) {
       .nav-link {
         margin: 0px 7.5px;
         padding: 16.5px 7.5px;
         font-size: 17.5px;
       }
+    }
+  }
+  .edit-profile-action {
+    .fa {
+      padding-right: 0.3em;
     }
   }
   .edit-profile-action,

@@ -26,41 +26,26 @@ import { reducerProvider, metaReducers, reducerToken } from './';
 import { environment } from '../../../environments/environment';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        StoreModule.forRoot(reducerToken, {
-            metaReducers,
-            runtimeChecks: {
-                strictStateImmutability: false,
-                strictActionImmutability: false,
-                strictStateSerializability: false,
-                strictActionSerializability: false
-            }
-        }),
-        StoreRouterConnectingModule.forRoot({
-            serializer: CustomRouterStateSerializer
-        }),
-        EffectsModule.forRoot([
-            RootStoreEffects,
-            RouterEffects,
-            ThemeEffects,
-            StompEffects,
-            SdrEffects,
-            SidebarEffects,
-            MetadataEffects,
-            LayoutEffects,
-            LanguageEffects,
-            DialogEffects,
-            AuthEffects,
-            AlertEffects
-        ]),
-        StoreDevtoolsModule.instrument({
-            maxAge: 25,
-            logOnly: environment.production
-        })
-    ],
-    providers: [
-        reducerProvider
-    ]
+  imports: [
+    CommonModule,
+    StoreModule.forRoot(reducerToken, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+        strictStateSerializability: false,
+        strictActionSerializability: false,
+      },
+    }),
+    StoreRouterConnectingModule.forRoot({
+      serializer: CustomRouterStateSerializer,
+    }),
+    EffectsModule.forRoot([RootStoreEffects, RouterEffects, ThemeEffects, StompEffects, SdrEffects, SidebarEffects, MetadataEffects, LayoutEffects, LanguageEffects, DialogEffects, AuthEffects, AlertEffects]),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
+  ],
+  providers: [reducerProvider],
 })
-export class RootStoreModule { }
+export class RootStoreModule {}

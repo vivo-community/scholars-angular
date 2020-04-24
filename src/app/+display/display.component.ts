@@ -1,12 +1,11 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MetaDefinition } from '@angular/platform-browser';
 
 import { Store, select } from '@ngrx/store';
 
-import { Observable, Subscription, combineLatest, scheduled, Observer } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
-import { filter, map, take, switchMap, tap } from 'rxjs/operators';
+import { Observable, Subscription, BehaviorSubject } from 'rxjs';
+import { filter, take, switchMap, tap } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
 
@@ -15,265 +14,340 @@ import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, Filt
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
 
 import { fadeIn } from '../shared/utilities/animation.utility';
+import { loadBadges } from '../shared/utilities/view.utility';
 
 import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
 import { Side, Subsection } from '../core/model/view/display-view';
 
-import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing, selectResourceIsLoading } from '../core/store/sdr';
+import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing } from '../core/store/sdr';
 
 import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
 
-const hasDataAfterFilter = (filteredSubsections: Subsection[], document: SolrDocument): boolean => {
-    for (const filteredSubsection of filteredSubsections) {
-        // tslint:disable-next-line: no-shadowed-variable
-        if (filteredSubsection.filters.filter((filter: Filter) => {
-            return document[filteredSubsection.field].filter((resource: any) => {
-                const value = resource[filter.field];
-                return Array.isArray(value) ? value.indexOf(filter.value) >= 0 : value === filter.value;
-            }).length > 0;
-        }).length > 0) {
-            return true;
+const hasDataAfterFilter = (fltr: Filter, obj: any): boolean => {
+  return Array.isArray(obj[fltr.field]) ? obj[fltr.field].indexOf(fltr.value) >= 0 : obj[fltr.field] === fltr.value;
+};
+
+const hasDataAfterFilters = (filters: Filter[], prop: any): boolean => {
+  if (Array.isArray(prop)) {
+    return prop.filter((obj) => {
+      for (const fltr of filters) {
+        if (hasDataAfterFilter(fltr, obj)) {
+          return true;
         }
+      }
+      return false;
+    }).length > 0;
+  } else {
+    for (const fltr of filters) {
+      if (hasDataAfterFilter(fltr, prop)) {
+        return true;
+      }
     }
     return false;
+  }
+};
+
+const hasDataAfterSubsectionFilters = (subsection: Subsection, prop: any): boolean => {
+  return subsection.filters.length === 0 || hasDataAfterFilters(subsection.filters, prop);
+};
+
+const hasDataAfterSectionFilters = (section: DisplayTabSectionView, document: SolrDocument): boolean => {
+  return (section.filters.length === 0 || hasDataAfterFilters(section.filters, document[section.field])) && (section.subsections.length === 0 || section.subsections.filter((subsection: Subsection) => {
+    return hasDataAfterSubsectionFilters(subsection, document[subsection.field]);
+  }).length > 0);
 };
 
 const hasRequiredFields = (requiredFields: string[], document: SolrDocument): boolean => {
-    for (const requiredField of requiredFields) {
-        if (document[requiredField] === undefined) {
-            return false;
-        }
+  for (const requiredField of requiredFields) {
+    if (document[requiredField] === undefined) {
+      return false;
     }
-    return true;
+  }
+  return true;
 };
 
 export const sectionsToShow = (sections: DisplayTabSectionView[], document: SolrDocument): DisplayTabSectionView[] => {
-    return sections.filter((section: DisplayTabSectionView) => {
-        const filteredSubsections = section.subsections.filter((subsection: Subsection) => subsection.filters.length);
-        return !section.hidden &&
-            hasRequiredFields(section.requiredFields.concat([section.field]), document) &&
-            (filteredSubsections.length === 0 || hasDataAfterFilter(filteredSubsections, document));
-    });
+  return sections.filter((section: DisplayTabSectionView) => {
+    return !section.hidden && hasRequiredFields(section.requiredFields.concat([section.field]), document) && hasDataAfterSectionFilters(section, document);
+  });
 };
 
 @Component({
-    selector: 'scholars-display',
-    templateUrl: 'display.component.html',
-    styleUrls: ['display.component.scss'],
-    animations: [fadeIn],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'scholars-display',
+  templateUrl: 'display.component.html',
+  styleUrls: ['display.component.scss'],
+  animations: [fadeIn],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DisplayComponent implements OnDestroy, OnInit {
 
-    public windowDimensions: Observable<WindowDimensions>;
+  public windowDimensions: Observable<WindowDimensions>;
 
-    public displayView: Observable<DisplayView>;
+  public displayView: Observable<DisplayView>;
 
-    public discoveryView: Observable<DiscoveryView>;
+  public discoveryView: Observable<DiscoveryView>;
 
-    public document: Observable<SolrDocument>;
+  public document: Observable<SolrDocument>;
 
-    public loading: Observable<boolean>;
+  public ready: Observable<boolean>;
 
-    private subscriptions: Subscription[];
+  private readySubject: BehaviorSubject<boolean>;
 
-    constructor(
-        private store: Store<AppState>,
-        private router: Router,
-        private route: ActivatedRoute
-    ) {
-        this.subscriptions = [];
-    }
+  private subscriptions: Subscription[];
 
-    ngOnDestroy() {
-        this.subscriptions.forEach((subscription: Subscription) => {
-            subscription.unsubscribe();
-        });
-    }
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: string,
+    private store: Store<AppState>,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.subscriptions = [];
+    this.readySubject = new BehaviorSubject<boolean>(false);
+  }
 
-    ngOnInit() {
-        this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
-        this.subscriptions.push(this.route.params.subscribe((params: Params) => {
-            if (params.id) {
-                this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
-                this.loading = this.store.pipe(select(selectResourceIsLoading('individual')));
-                this.document = this.store.pipe(
-                    select(selectResourceById('individual', params.id)),
-                    filter((document: SolrDocument) => document !== undefined),
-                    take(1),
-                    tap((document: SolrDocument) => {
-                        this.store.dispatch(new fromSdr.FindByTypesInResourceAction('displayViews', {
-                            types: document.type
-                        }));
+  ngOnInit() {
+    this.ready = this.readySubject.asObservable();
 
-                        this.discoveryView = this.store.pipe(
-                            select(selectDiscoveryViewByClass(document.class)),
-                            filter((view: DiscoveryView) => view !== undefined)
-                        );
+    this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
 
-                        this.displayView = this.store.pipe(
-                            select(selectDisplayViewByTypes(document.type)),
-                            filter((displayView: DisplayView) => displayView !== undefined),
-                            take(1),
-                            switchMap((displayView: DisplayView) => {
+    this.subscriptions.push(
+      this.route.params.subscribe((params: Params) => {
+        if (params.id) {
+          this.readySubject.next(false);
 
-                                if (this.route.children.length === 0) {
-                                    let tabName = 'View All';
-                                    if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
-                                        for (const tab of this.getTabsToShow(displayView.tabs, document)) {
-                                            if (!tab.hidden) {
-                                                tabName = tab.name;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    this.router.navigate([displayView.name, tabName], {
-                                        relativeTo: this.route,
-                                        replaceUrl: true
-                                    });
-                                }
+          this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
 
-                                this.store.dispatch(new fromMetadata.AddMetadataTagsAction({
-                                    tags: this.buildDisplayMetaTags(displayView, document)
-                                }));
+          // listen to document changes
+          this.document = this.store.pipe(
+            select(selectResourceById('individual', params.id)),
+            filter((document: SolrDocument) => document !== undefined)
+          );
 
-                                const tabCount = displayView.tabs.length - 1;
+          // on first defined document, get discovery view
+          this.discoveryView = this.store.pipe(
+            select(selectResourceById('individual', params.id)),
+            filter((document: SolrDocument) => document !== undefined),
+            take(1),
+            switchMap((document: SolrDocument) => {
+              return this.store.pipe(
+                select(selectDiscoveryViewByClass(document.class)),
+                filter((view: DiscoveryView) => view !== undefined)
+              );
+            })
+          );
 
-                                if (displayView.tabs[tabCount].name === 'View All') {
-                                    displayView.tabs.splice(tabCount, 1);
-                                }
+          // listen to document changes, updating display view tabs
+          this.displayView = this.store.pipe(
+            select(selectResourceById('individual', params.id)),
+            filter((document: SolrDocument) => document !== undefined),
+            switchMap((document: SolrDocument) => {
 
-                                const viewAllTabSections = [];
+              return this.store.pipe(
+                select(selectDisplayViewByTypes(document.type)),
+                filter((displayView: DisplayView) => displayView !== undefined),
+                tap((displayView: DisplayView) => {
 
-                                const viewAllTab: DisplayTabView = {
-                                    name: 'View All',
-                                    hidden: false,
-                                    sections: viewAllTabSections
-                                };
-
-                                this.getTabsToShow(displayView.tabs, document).forEach((tab: DisplayTabView) => {
-                                    this.getSectionsToShow(tab.sections, document).forEach((section: DisplayTabSectionView) => {
-                                        viewAllTabSections.push(section);
-                                    });
-                                });
-
-                                displayView.tabs.push(viewAllTab);
-
-                                return combineLatest([scheduled([displayView], asap), new Observable((observer: Observer<boolean>) => {
-
-                                    const dereference = (lazyReference: string): Promise<void> => {
-                                        return new Promise((resolve, reject) => {
-                                            this.store.dispatch(new fromSdr.FetchLazyReferenceAction('individual', {
-                                                document,
-                                                field: lazyReference
-                                            }));
-                                            this.subscriptions.push(this.store.pipe(
-                                                select(selectResourceIsDereferencing('individual')),
-                                                filter((dereferencing: boolean) => !dereferencing)
-                                            ).subscribe(() => {
-                                                resolve();
-                                            }));
-                                        });
-                                    };
-
-                                    const lazyReferences: string[] = [];
-
-                                    displayView.tabs.filter((tab: DisplayTabView) => !tab.hidden).forEach((tab: DisplayTabView) => {
-                                        tab.sections.filter((section: DisplayTabSectionView) => !section.hidden).forEach((section: DisplayTabSectionView) => {
-                                            section.lazyReferences.filter((lr: string) => document[lr] !== undefined && !lazyReferences.find((r) => r === lr)).forEach((lazyReference: string) => {
-                                                lazyReferences.push(lazyReference);
-                                            });
-                                        });
-                                    });
-
-                                    lazyReferences.reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve()).then(() => {
-                                        observer.next(true);
-                                        observer.complete();
-                                    });
-                                })]);
-                            }),
-                            filter(([displayView, isReady]) => isReady),
-                            map(([displayView, isReady]) => displayView)
-                        );
+                  this.store.dispatch(
+                    new fromMetadata.AddMetadataTagsAction({
+                      tags: this.buildDisplayMetaTags(displayView, document),
                     })
-                );
-            }
-        }));
-    }
+                  );
 
-    public getDisplayViewTabRoute(displayView: DisplayView, tab: DisplayTabView): string[] {
-        return [displayView.name, tab.name];
-    }
+                  const tabCount = displayView.tabs.length - 1;
 
-    public showMainContent(displayView: DisplayView): boolean {
-        return displayView.mainContentTemplate && displayView.mainContentTemplate.length > 0;
-    }
+                  if (displayView.tabs[tabCount].name === 'View All') {
+                    displayView.tabs.splice(tabCount, 1);
+                  }
 
-    public showLeftScan(displayView: DisplayView): boolean {
-        return displayView.leftScanTemplate && displayView.leftScanTemplate.length > 0;
-    }
+                  const viewAllTabSections = [];
 
-    public showRightScan(displayView: DisplayView): boolean {
-        return displayView.rightScanTemplate && displayView.rightScanTemplate.length > 0;
-    }
+                  const viewAllTab: DisplayTabView = {
+                    name: 'View All',
+                    hidden: false,
+                    sections: viewAllTabSections,
+                  };
 
-    public showAsideLeft(displayView: DisplayView): boolean {
-        return this.showAside(displayView) && displayView.asideLocation === Side.LEFT;
-    }
+                  this.getTabsToShow(displayView.tabs, document).forEach((tab: DisplayTabView) => {
+                    this.getSectionsToShow(tab.sections, document).forEach((section: DisplayTabSectionView) => {
+                      viewAllTabSections.push(section);
+                    });
+                  });
 
-    public showAsideRight(displayView: DisplayView): boolean {
-        return this.showAside(displayView) && displayView.asideLocation === Side.RIGHT;
-    }
+                  displayView.tabs.push(viewAllTab);
+                })
+              );
+            })
+          );
 
-    public showAside(displayView: DisplayView): boolean {
-        return displayView.asideTemplate && displayView.asideTemplate.length > 0;
-    }
+          // subscribe to first defined document to find display view
+          this.subscriptions.push(this.store.pipe(
+            select(selectResourceById('individual', params.id)),
+            filter((document: SolrDocument) => document !== undefined),
+            take(1),
+            switchMap((document: SolrDocument) => {
 
-    public getMainContentColSize(displayView: DisplayView): number {
-        let colSize = 12;
-        if (this.showLeftScan(displayView)) {
-            colSize -= 3;
+              this.store.dispatch(
+                new fromSdr.FindByTypesInResourceAction('displayViews', {
+                  types: document.type,
+                })
+              );
+
+              // subscribe to first defined display view to lazily fetch references
+              return this.store.pipe(
+                select(selectDisplayViewByTypes(document.type)),
+                filter((displayView: DisplayView) => displayView !== undefined),
+                take(1),
+                tap((displayView: DisplayView) => {
+
+                  const dereference = (lazyReference: string): Promise<void> => {
+                    return new Promise((resolve, reject) => {
+                      this.store.dispatch(
+                        new fromSdr.FetchLazyReferenceAction('individual', {
+                          document,
+                          field: lazyReference,
+                        })
+                      );
+                      this.subscriptions.push(
+                        this.store.pipe(
+                          select(selectResourceIsDereferencing('individual')),
+                          filter((dereferencing: boolean) => !dereferencing)
+                        ).subscribe(() => resolve())
+                      );
+                    });
+                  };
+
+                  const lazyReferences: string[] = [];
+
+                  displayView.tabs
+                    .filter((tab: DisplayTabView) => !tab.hidden)
+                    .forEach((tab: DisplayTabView) => {
+                      tab.sections
+                        .filter((section: DisplayTabSectionView) => !section.hidden)
+                        .forEach((section: DisplayTabSectionView) => {
+                          section.lazyReferences
+                            .filter((lr: string) => document[lr] !== undefined && !lazyReferences.find((r) => r === lr))
+                            .forEach((lazyReference: string) => {
+                              lazyReferences.push(lazyReference);
+                            });
+                        });
+                    });
+
+                  // lazily fetch references sequentially
+                  lazyReferences.reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve()).then(() => {
+                    this.readySubject.next(true);
+
+                    if (this.route.children.length === 0) {
+                      let tabName;
+
+                      if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
+                        for (const tab of this.getTabsToShow(displayView.tabs, document)) {
+                          if (tabName === undefined) {
+                            tabName = tab.name;
+                            break;
+                          }
+                        }
+                      } else {
+                        tabName = 'View All';
+                      }
+
+                      this.router.navigate([displayView.name, tabName], {
+                        relativeTo: this.route,
+                        replaceUrl: true,
+                      }).then(() => loadBadges(this.platformId));
+                    } else {
+                      loadBadges(this.platformId);
+                    }
+
+                  });
+
+                })
+              );
+            })
+          ).subscribe());
         }
-        if (this.showRightScan(displayView)) {
-            colSize -= 3;
-        }
-        return colSize;
-    }
+      })
+    );
+  }
 
-    public getLeftScanColSize(displayView: DisplayView): number {
-        return 3;
-    }
+  public getDisplayViewTabRoute(displayView: DisplayView, tab: DisplayTabView): string[] {
+    return [displayView.name, tab.name];
+  }
 
-    public getRightScanColSize(displayView: DisplayView): number {
-        return 3;
-    }
+  public showMainContent(displayView: DisplayView): boolean {
+    return displayView.mainContentTemplate && displayView.mainContentTemplate.length > 0;
+  }
 
-    public getTabsToShow(tabs: DisplayTabView[], document: SolrDocument): DisplayTabView[] {
-        return tabs.filter((tab: DisplayTabView) => !tab.hidden && this.getSectionsToShow(tab.sections, document).length > 0);
-    }
+  public showLeftScan(displayView: DisplayView): boolean {
+    return displayView.leftScanTemplate && displayView.leftScanTemplate.length > 0;
+  }
 
-    public getSectionsToShow(sections: DisplayTabSectionView[], document: SolrDocument): DisplayTabSectionView[] {
-        return sectionsToShow(sections, document);
-    }
+  public showRightScan(displayView: DisplayView): boolean {
+    return displayView.rightScanTemplate && displayView.rightScanTemplate.length > 0;
+  }
 
-    public isMobile(windowDimensions: WindowDimensions): boolean {
-        return windowDimensions.width < 768;
-    }
+  public showAsideLeft(displayView: DisplayView): boolean {
+    return this.showAside(displayView) && displayView.asideLocation === Side.LEFT;
+  }
 
-    private buildDisplayMetaTags(displayView: DisplayView, document: SolrDocument): MetaDefinition[] {
-        const metaTags: MetaDefinition[] = [];
-        for (const name in displayView.metaTemplateFunctions) {
-            if (displayView.metaTemplateFunctions.hasOwnProperty(name)) {
-                const metaTemplateFunction = displayView.metaTemplateFunctions[name];
-                metaTags.push({
-                    name: name, content: metaTemplateFunction(document)
-                });
-            }
-        }
-        return metaTags;
+  public showAsideRight(displayView: DisplayView): boolean {
+    return this.showAside(displayView) && displayView.asideLocation === Side.RIGHT;
+  }
+
+  public showAside(displayView: DisplayView): boolean {
+    return displayView.asideTemplate && displayView.asideTemplate.length > 0;
+  }
+
+  public getMainContentColSize(displayView: DisplayView): number {
+    let colSize = 12;
+    if (this.showLeftScan(displayView)) {
+      colSize -= 3;
     }
+    if (this.showRightScan(displayView)) {
+      colSize -= 3;
+    }
+    return colSize;
+  }
+
+  public getLeftScanColSize(displayView: DisplayView): number {
+    return 3;
+  }
+
+  public getRightScanColSize(displayView: DisplayView): number {
+    return 3;
+  }
+
+  public getTabsToShow(tabs: DisplayTabView[], document: SolrDocument): DisplayTabView[] {
+    return tabs.filter((tab: DisplayTabView) => !tab.hidden && this.getSectionsToShow(tab.sections, document).length > 0);
+  }
+
+  public getSectionsToShow(sections: DisplayTabSectionView[], document: SolrDocument): DisplayTabSectionView[] {
+    return sectionsToShow(sections, document);
+  }
+
+  public isMobile(windowDimensions: WindowDimensions): boolean {
+    return windowDimensions.width < 768;
+  }
+
+  private buildDisplayMetaTags(displayView: DisplayView, document: SolrDocument): MetaDefinition[] {
+    const metaTags: MetaDefinition[] = [];
+    for (const name in displayView.metaTemplateFunctions) {
+      if (displayView.metaTemplateFunctions.hasOwnProperty(name)) {
+        const metaTemplateFunction = displayView.metaTemplateFunctions[name];
+        metaTags.push({
+          name,
+          content: metaTemplateFunction(document),
+        });
+      }
+    }
+    return metaTags;
+  }
 
 }

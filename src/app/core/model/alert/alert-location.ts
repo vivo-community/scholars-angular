@@ -1,4 +1,4 @@
 export enum AlertLocation {
-    MAIN = 'main',
-    DIALOG = 'dialog',
+  MAIN = 'main',
+  DIALOG = 'dialog',
 }

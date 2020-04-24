@@ -10,23 +10,19 @@ import { DiscoveryView } from '../../core/model/view';
 import { selectDiscoveryViewByClass } from '../../core/store/sdr';
 
 @Component({
-    selector: 'scholars-about',
-    templateUrl: 'about.component.html',
-    styleUrls: ['about.component.scss']
+  selector: 'scholars-about',
+  templateUrl: 'about.component.html',
+  styleUrls: ['about.component.scss'],
 })
 export class AboutComponent implements OnInit {
+  public discoveryView: Observable<DiscoveryView>;
 
-    public discoveryView: Observable<DiscoveryView>;
+  constructor(private store: Store<AppState>) {}
 
-    constructor(private store: Store<AppState>) {
-
-    }
-
-    ngOnInit() {
-        this.discoveryView = this.store.pipe(
-            select(selectDiscoveryViewByClass('Person')),
-            filter((view: DiscoveryView) => view !== undefined)
-        );
-    }
-
+  ngOnInit() {
+    this.discoveryView = this.store.pipe(
+      select(selectDiscoveryViewByClass('Person')),
+      filter((view: DiscoveryView) => view !== undefined)
+    );
+  }
 }

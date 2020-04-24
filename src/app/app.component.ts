@@ -17,65 +17,60 @@ import { initializeTemplateHelpers } from './shared/utilities/template.utility';
 import * as fromLayout from './core/store/layout/layout.actions';
 import * as fromRouter from './core/store/router/router.actions';
 
-import { environment } from '../environments/environment.hmr';
+import { environment } from '../environments/environment';
 
 @Component({
-    selector: 'scholars-root',
-    templateUrl: 'app.component.html',
-    styleUrls: ['./app.component.scss']
+  selector: 'scholars-root',
+  templateUrl: 'app.component.html',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  public style: Observable<SafeStyle>;
 
-    public style: Observable<SafeStyle>;
+  public location = AlertLocation.MAIN;
 
-    public location = AlertLocation.MAIN;
+  private isPlatformBrowser: boolean;
 
-    private isPlatformBrowser: boolean;
+  constructor(@Inject(PLATFORM_ID) platformId: string, private store: Store<AppState>) {
+    initializeTemplateHelpers(environment.formalize);
+    this.isPlatformBrowser = isPlatformBrowser(platformId);
+  }
 
-    constructor(
-        @Inject(PLATFORM_ID) platformId: string,
-        private store: Store<AppState>
-    ) {
-        initializeTemplateHelpers(environment.formalize);
-        this.isPlatformBrowser = isPlatformBrowser(platformId);
-    }
+  ngOnInit(): void {
+    this.style = this.store.pipe(
+      select(selectStyle),
+      skipWhile((style: SafeStyle) => style === undefined)
+    );
+  }
 
-    ngOnInit(): void {
-        this.style = this.store.pipe(
-            select(selectStyle),
-            skipWhile((style: SafeStyle) => style === undefined)
-        );
-    }
-
-    @HostListener('click', ['$event'])
-    public clickEvent(event): void {
-        if (this.isPlatformBrowser) {
-            const target = this.findLinkTarget(event.target, 1);
-            if (target.href && target.href.indexOf(target.baseURI) >= 0) {
-                const path = target.href.replace(target.baseURI, '');
-                if (path.length > 0 && !path.startsWith('mailto:') && !path.startsWith('tel:')) {
-                    this.store.dispatch(new fromRouter.Link({ url: path }));
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-            }
+  @HostListener('click', ['$event'])
+  public clickEvent(event): void {
+    if (this.isPlatformBrowser) {
+      const target = this.findLinkTarget(event.target, 1);
+      if (target.href && target.href.indexOf(target.baseURI) >= 0) {
+        const path = target.href.replace(target.baseURI, '');
+        if (path.length > 0 && !path.startsWith('mailto:') && !path.startsWith('tel:')) {
+          this.store.dispatch(new fromRouter.Link({ url: path }));
+          event.preventDefault();
+          event.stopPropagation();
         }
+      }
     }
+  }
 
-    @HostListener('window:resize', ['$event'])
-    public onResize(event): void {
-        this.dispatchResizeWindowAction({
-            width: event.target.innerWidth,
-            height: event.target.innerHeight
-        } as WindowDimensions);
-    }
+  @HostListener('window:resize', ['$event'])
+  public onResize(event): void {
+    this.dispatchResizeWindowAction({
+      width: event.target.innerWidth,
+      height: event.target.innerHeight,
+    } as WindowDimensions);
+  }
 
-    private dispatchResizeWindowAction(windowDimensions: WindowDimensions): void {
-        this.store.dispatch(new fromLayout.ResizeWindowAction({ windowDimensions }));
-    }
+  private dispatchResizeWindowAction(windowDimensions: WindowDimensions): void {
+    this.store.dispatch(new fromLayout.CheckWindowAction({ windowDimensions }));
+  }
 
-    private findLinkTarget(target: any, depth: number): any {
-        return target.href ? target : depth < 3 ? this.findLinkTarget(target.parentElement, ++depth) : target;
-    }
-
+  private findLinkTarget(target: any, depth: number): any {
+    return target.href ? target : depth < 3 ? this.findLinkTarget(target.parentElement, ++depth) : target;
+  }
 }

@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { DialogButton } from './dialog-button';
 
 export type DialogControl = Readonly<{
-    title: Observable<string>;
-    form?: FormGroup;
-    close: DialogButton;
-    submit?: DialogButton;
+  title: Observable<string>;
+  form?: FormGroup;
+  close: DialogButton;
+  submit?: DialogButton;
 }>;

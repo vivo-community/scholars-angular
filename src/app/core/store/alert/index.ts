@@ -8,7 +8,7 @@ export const selectAlertState = createFeatureSelector<fromAlert.AlertState>('ale
 
 export const selectAlerts = createSelector(selectAlertState, fromAlert.getAlerts);
 
-export const selectAlertsByLocation = (location: AlertLocation) => createSelector(selectAlerts, (alerts: Map<AlertLocation, Alert[]>) => {
+export const selectAlertsByLocation = (location: AlertLocation) =>
+  createSelector(selectAlerts, (alerts: Map<AlertLocation, Alert[]>) => {
     return alerts.get(location);
-});
-
+  });

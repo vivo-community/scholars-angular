@@ -47,7 +47,7 @@ export interface AppState {
 export const reducers = (appConfig: AppConfig): ActionReducerMap<AppState> => {
   const additionalContext = {
     vivoUrl: appConfig.vivoUrl,
-    serviceUrl: appConfig.serviceUrl
+    serviceUrl: appConfig.serviceUrl,
   };
   return {
     alert: fromAlert.reducer,
@@ -65,7 +65,7 @@ export const reducers = (appConfig: AppConfig): ActionReducerMap<AppState> => {
     directoryViews: fromSdr.getSdrReducer<DirectoryView>('directoryViews', additionalContext),
     discoveryViews: fromSdr.getSdrReducer<DiscoveryView>('discoveryViews', additionalContext),
     displayViews: fromSdr.getSdrReducer<DisplayView>('displayViews', additionalContext),
-    router: fromRouter.routerReducer
+    router: fromRouter.routerReducer,
   };
 };
 
@@ -74,9 +74,7 @@ export const reducerToken = new InjectionToken<ActionReducerMap<AppState>>('Regi
 export const reducerProvider = {
   provide: reducerToken,
   useFactory: reducers,
-  deps: ['APP_CONFIG']
+  deps: ['APP_CONFIG'],
 };
 
-export const metaReducers: MetaReducer<AppState>[] = [
-  fromRootStore.universalMetaReducer
-];
+export const metaReducers: MetaReducer<AppState>[] = [fromRootStore.universalMetaReducer];

@@ -5,31 +5,24 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CopyrightComponent } from './copyright.component';
 
 describe('CopyrightComponent', () => {
-    let component: CopyrightComponent;
-    let fixture: ComponentFixture<CopyrightComponent>;
+  let component: CopyrightComponent;
+  let fixture: ComponentFixture<CopyrightComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                CopyrightComponent
-            ],
-            imports: [
-                TranslateModule.forRoot()
-            ],
-            schemas: [
-                CUSTOM_ELEMENTS_SCHEMA
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [CopyrightComponent],
+      imports: [TranslateModule.forRoot()],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(CopyrightComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CopyrightComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

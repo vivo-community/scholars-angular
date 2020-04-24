@@ -17,29 +17,27 @@ import { UsersComponent } from './users/users.component';
 import { routes } from './admin.routes';
 
 @NgModule({
-    declarations: [
-        AdminComponent,
-        DirectoryViewsComponent,
-        DiscoveryViewsComponent,
-        DisplayViewsComponent,
-        ThemesComponent,
-        UsersComponent
-    ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        TranslateModule.forChild({
-            missingTranslationHandler: {
-                provide: MissingTranslationHandler,
-                useClass: CustomMissingTranslationHandler
-            },
-            isolate: false
-        }),
-        RouterModule.forChild(routes)
-    ]
+  declarations: [
+    AdminComponent,
+    DirectoryViewsComponent,
+    DiscoveryViewsComponent,
+    DisplayViewsComponent,
+    ThemesComponent,
+    UsersComponent
+  ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    TranslateModule.forChild({
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler,
+      },
+      isolate: false,
+    }),
+    RouterModule.forChild(routes),
+  ],
 })
 export class AdminModule {
-
-    public static routes = routes;
-
+  public static routes = routes;
 }

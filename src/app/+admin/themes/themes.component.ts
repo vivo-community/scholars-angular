@@ -10,24 +10,20 @@ import { Theme } from '../../core/model/theme';
 import { selectAllResources, selectResourcesPage } from '../../core/store/sdr';
 
 @Component({
-    selector: 'scholars-themes',
-    templateUrl: './themes.component.html',
-    styleUrls: ['./themes.component.scss'],
-    encapsulation: ViewEncapsulation.None
+  selector: 'scholars-themes',
+  templateUrl: './themes.component.html',
+  styleUrls: ['./themes.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ThemesComponent implements OnInit {
+  public themes: Observable<Theme[]>;
 
-    public themes: Observable<Theme[]>;
+  public page: Observable<SdrPage>;
 
-    public page: Observable<SdrPage>;
+  constructor(private store: Store<AppState>) {}
 
-    constructor(private store: Store<AppState>) {
-
-    }
-
-    ngOnInit() {
-        this.themes = this.store.pipe(select(selectAllResources<Theme>('themes')));
-        this.page = this.store.pipe(select(selectResourcesPage<Theme>('themes')));
-    }
-
+  ngOnInit() {
+    this.themes = this.store.pipe(select(selectAllResources<Theme>('themes')));
+    this.page = this.store.pipe(select(selectResourcesPage<Theme>('themes')));
+  }
 }

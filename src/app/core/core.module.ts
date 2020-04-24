@@ -14,55 +14,51 @@ import { AlertService } from './service/alert.service';
 import { DialogService } from './service/dialog.service';
 
 const MODULES = [
-    CommonModule
+  CommonModule
 ];
 
-const COMPONENTS = [
-
-];
+const COMPONENTS = [];
 
 const PROVIDERS = [
-    AuthGuard,
-    AlertService,
-    AuthService,
-    DialogService,
-    MetadataService,
-    RestService,
-    StompService,
-    ThemeService,
-    ThemeRepo,
-    UserRepo
+  AuthGuard,
+  AlertService,
+  AuthService,
+  DialogService,
+  MetadataService,
+  RestService,
+  StompService,
+  ThemeService,
+  ThemeRepo,
+  UserRepo
 ];
 
 @NgModule({
-    imports: [
-        ...MODULES
-    ],
-    exports: [
-        ...COMPONENTS
-    ],
-    declarations: [
-        ...COMPONENTS
-    ],
-    providers: [
-        ...PROVIDERS
-    ]
+  imports: [
+    ...MODULES
+  ],
+  exports: [
+    ...COMPONENTS
+  ],
+  declarations: [
+    ...COMPONENTS
+  ],
+  providers: [
+    ...PROVIDERS
+  ],
 })
 export class CoreModule {
+  public static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: CoreModule,
+      providers: [
+        ...PROVIDERS
+      ],
+    };
+  }
 
-    public static forRoot(): ModuleWithProviders {
-        return {
-            ngModule: CoreModule,
-            providers: [
-                ...PROVIDERS
-            ]
-        };
+  constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
+    if (parentModule) {
+      throw new Error('CoreModule is already loaded. Import it in the AppModule only');
     }
-
-    constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
-        if (parentModule) {
-            throw new Error('CoreModule is already loaded. Import it in the AppModule only');
-        }
-    }
-
+  }
 }

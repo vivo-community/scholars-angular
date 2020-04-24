@@ -14,6 +14,11 @@
         display: block;
       }
       .card {
+        a.card-header {
+          color: inherit;
+          text-decoration: inherit;
+          cursor: inherit;
+        }
         margin-bottom: 10px;
         .section-collapse {
           font-size: 1.3em;
@@ -41,4 +46,50 @@
     }
   }
   
+}
+
+::ng-deep {
+  .custom-slider .ng5-slider .ng5-slider-bar {
+    background: var(--navigation-background-color);
+    height: 2px;
+  }
+  .custom-slider .ng5-slider .ng5-slider-selection {
+    background: var(--navigation-color);
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-pointer {
+    width: 10px;
+    height: 20px;
+    top: auto; /* to remove the default positioning */
+    bottom: 0;
+    background-color: var(--primary);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-pointer:after {
+    display: none;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-bubble {
+    bottom: 14px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-limit {
+    font-weight: bold;
+    color: var(--navigation-color);
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-tick {
+    width: 1px;
+    height: 10px;
+    margin-left: 4px;
+    border-radius: 0;
+    background: var(--navigation-background-color);
+    top: -1px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-tick.ng5-slider-selected {
+    background: var(--navigation-color);
+  }
 }

@@ -15,27 +15,25 @@ import { SubsectionComponent } from './subsection/subsection.component';
 import { routes } from './display.routes';
 
 @NgModule({
-    declarations: [
-        DisplayComponent,
-        TabComponent,
-        SectionComponent,
-        SubsectionComponent
-    ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        TranslateModule.forChild({
-            missingTranslationHandler: {
-                provide: MissingTranslationHandler,
-                useClass: CustomMissingTranslationHandler
-            },
-            isolate: false
-        }),
-        RouterModule.forChild(routes)
-    ]
+  declarations: [
+    DisplayComponent,
+    TabComponent,
+    SectionComponent,
+    SubsectionComponent
+  ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    TranslateModule.forChild({
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler,
+      },
+      isolate: false,
+    }),
+    RouterModule.forChild(routes),
+  ],
 })
 export class DisplayModule {
-
-    public static routes = routes;
-
+  public static routes = routes;
 }

@@ -1,5 +1,6 @@
 {
   "ADMIN": {
+    "TITLE": "Administration",
     "DIRECTORY_VIEWS": {
       "TITLE": "Directory Views",
       "NAME": "Name",
@@ -73,6 +74,7 @@
     "COPYRIGHT": {
       "TERMS": "Terms of Use",
       "POWERED_BY": "Powered by VIVO",
+      "SCHOLARS_DISCOVERY": "Scholars Discovery",
       "DATE_UPDATED": "Data update last {{date}}"
     }
   },
@@ -162,14 +164,6 @@
       "SEARCH_TIPS": "Search Tips"
     },
     "SIDEBAR": {
-      "ADMINISTRATION": {
-        "TITLE": "Administration",
-        "DIRECTORY_VIEWS": "Directory Views",
-        "DISCOVERY_VIEWS": "Discovery Views",
-        "DISPLAY_VIEWS": "Display Views",
-        "THEMES": "Themes",
-        "USERS": "Users"
-      },
       "MENU": "Menu",
       "BACK": "Back",
       "LINK": {

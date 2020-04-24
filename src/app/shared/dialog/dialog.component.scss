@@ -1,0 +1,9 @@
+:host {
+  .modal-header {
+    color: var(--dialog-header-color);
+    background-color: var(--dialog-header-background-color);
+    .close {
+      color: var(--dialog-header-color);
+    }
+  }
+}

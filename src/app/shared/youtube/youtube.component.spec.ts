@@ -5,25 +5,22 @@ import { SharedModule } from '../shared.module';
 import { YouTubeComponent } from './youtube.component';
 
 describe('YouTubeComponent', () => {
-    let component: YouTubeComponent;
-    let fixture: ComponentFixture<YouTubeComponent>;
+  let component: YouTubeComponent;
+  let fixture: ComponentFixture<YouTubeComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [SharedModule],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(YouTubeComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(YouTubeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

@@ -2,6 +2,7 @@ export { SdrCollection } from './sdr-collection';
 export { SdrCollectionLinks } from './sdr-collection-links';
 export { SdrFacet } from './sdr-facet';
 export { SdrFacetEntry } from './sdr-facet-entry';
+export { SdrHighlight } from './sdr-highlight';
 export { SdrLink } from './sdr-link';
 export { SdrPage } from './sdr-page';
 export { SdrResourceLinks } from './sdr-resource-links';

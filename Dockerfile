@@ -1,19 +1,25 @@
-FROM node:current-alpine
+FROM node:current-alpine as node
 
-# copy project to build excluding node_modules and dist
-COPY . /var/app/scholars-angular
+# copy project to build excluding node_modules and dist via .dockerignore
+COPY . /scholars-angular
 
 # set working directory
-WORKDIR /var/app/scholars-angular
+WORKDIR /scholars-angular
 
 # install dependencies
 RUN yarn install
 
-# build app with server side rendering in production 
-RUN yarn build:ssr:prod
+# build scholars-angular with server side rendering in production 
+RUN yarn build:ssr
 
-# install pm2 globally
-RUN npm install pm2 -g
+# final base image
+FROM keymetrics/pm2:latest-slim
 
-# deploy app using pm2 when running container
-CMD ["pm2-docker", "/var/app/scholars-angular/dist/server.js", "--name='scholars-angular'"]
+# set deployment directory
+WORKDIR /
+
+# copy over the built artifact from the maven image
+COPY --from=node /scholars-angular/dist /dist
+
+# deploy scholars-angular using pm2 when running container
+CMD ["pm2-runtime", "/dist/scholars-angular/server/main.js", "--name='scholars-angular'"]

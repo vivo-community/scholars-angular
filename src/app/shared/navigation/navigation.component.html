@@ -27,12 +27,18 @@
           <a class="nav-link" href="https://scholars.library.tamu.edu/about_scholars">{{ 'SHARED.NAVIGATION.ABOUT' | translate }}</a>
         </li>
         <li *ngIf="vivoEditorUrl" class="nav-item d-sm-none">
-          <a class="nav-link edit-profile-action" [href]="vivoEditorUrl">{{ 'SHARED.NAVIGATION.EDIT_PROFILE' | translate }}</a>
+          <a class="nav-link edit-profile-action" [href]="vivoEditorUrl" target="_blank">
+            <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+            <span>{{ 'SHARED.NAVIGATION.EDIT_PROFILE' | translate }}</span>
+          </a>
         </li>
       </ul>
     </div>
     <div *ngIf="vivoEditorUrl" class="nav navbar-nav d-none d-sm-block">
-      <a class="btn btn-outline-primary edit-profile-action" [href]="vivoEditorUrl">{{ 'SHARED.NAVIGATION.EDIT_PROFILE' | translate }}</a>
+      <a class="btn btn-outline-primary edit-profile-action" [href]="vivoEditorUrl" target="_blank">
+        <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+        <span>{{ 'SHARED.NAVIGATION.EDIT_PROFILE' | translate }}</span>
+      </a>
     </div>
   </div>
 </nav>

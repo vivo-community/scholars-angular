@@ -8,28 +8,26 @@ import { SdrCollection, Count } from '../../sdr';
 import { SdrRequest } from '../../request';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class ThemeRepo extends AbstractSdrRepo<Theme> {
+  protected path(): string {
+    return 'themes';
+  }
 
-    protected path(): string {
-        return 'themes';
-    }
+  public search(request: SdrRequest): Observable<SdrCollection> {
+    throw new Error('Themes does not support faceted search!');
+  }
 
-    public search(request: SdrRequest): Observable<SdrCollection> {
-        throw new Error('Themes does not support faceted search!');
-    }
+  public count(request: SdrRequest): Observable<Count> {
+    throw new Error('Themes does not support count!');
+  }
 
-    public count(request: SdrRequest): Observable<Count> {
-        throw new Error('Themes does not support count!');
-    }
+  public findByTypesIn(types: string[]): Observable<Theme> {
+    throw new Error('Themes does not support find by types in!');
+  }
 
-    public findByTypesIn(types: string[]): Observable<Theme> {
-        throw new Error('Themes does not support find by types in!');
-    }
-
-    public findByIdIn(ids: string[]): Observable<SdrCollection> {
-        throw new Error('Themes does not support find by id in!');
-    }
-
+  public findByIdIn(ids: string[]): Observable<SdrCollection> {
+    throw new Error('Themes does not support find by id in!');
+  }
 }

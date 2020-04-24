@@ -9,25 +9,20 @@ import { Banner } from '../../core/model/theme/banner';
 
 import { selectActiveThemeHeaderBanner } from '../../core/store/theme';
 
-
 @Component({
-    selector: 'scholars-banner',
-    templateUrl: 'banner.component.html',
-    styleUrls: ['banner.component.scss']
+  selector: 'scholars-banner',
+  templateUrl: 'banner.component.html',
+  styleUrls: ['banner.component.scss'],
 })
 export class BannerComponent implements OnInit {
+  public banner: Observable<Banner>;
 
-    public banner: Observable<Banner>;
+  constructor(private store: Store<AppState>) {}
 
-    constructor(private store: Store<AppState>) {
-
-    }
-
-    ngOnInit() {
-        this.banner = this.store.pipe(
-            select(selectActiveThemeHeaderBanner),
-            skipWhile((banner: Banner) => banner === undefined)
-        );
-    }
-
+  ngOnInit() {
+    this.banner = this.store.pipe(
+      select(selectActiveThemeHeaderBanner),
+      skipWhile((banner: Banner) => banner === undefined)
+    );
+  }
 }
