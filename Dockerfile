@@ -1,4 +1,4 @@
-FROM node:current-alpine as node
+FROM node:12-alpine as node
 
 # copy project to build excluding node_modules and dist via .dockerignore
 COPY . /scholars-angular
@@ -13,7 +13,7 @@ RUN yarn install
 RUN yarn build:ssr
 
 # final base image
-FROM keymetrics/pm2:latest-slim
+FROM keymetrics/pm2:12-alpine
 
 # set deployment directory
 WORKDIR /
