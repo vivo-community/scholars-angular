@@ -34,7 +34,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
   public recentlyUpdated(limit: number, filters: Filterable[] = []): Observable<R[]> {
     const parameters = this.mapFilters(filters);
     parameters.push(`limit=${limit}`);
-    return this.restService.get<R[]>(`${this.appConfig.serviceUrl}/${this.path()}/search/recently-updated?${parameters.join('&')}`, {
+    return this.restService.get<R[]>(`${this.appConfig.serviceUrl}/${this.path()}/search/recentlyUpdated?${parameters.join('&')}`, {
       withCredentials: true,
     });
   }
