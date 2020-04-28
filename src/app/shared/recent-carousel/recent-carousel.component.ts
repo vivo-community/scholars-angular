@@ -59,7 +59,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
           individuals.map((individual: Individual) => {
             return {
               // tslint:disable: no-string-literal
-              src: individual['thumbnail'] ? `${this.appConfig.vivoUrl}${individual['thumbnail']}` : 'assets/images/default-avatar.png',
+              src: individual['thumbnail'] ? individual['thumbnail'] : 'assets/images/default-avatar.png',
               link: [`display/${individual['id']}`],
               alt: individual['firstName'] ? individual['firstName'] + (individual['lastName'] ? ' ' + individual['lastName'] : '') : this.translate.instant('SHARED.RECENT_PUBLICATIONS.PERSON_IMAGE_ALT_FALLBACK'),
               modTime: individual['modTime'] ? individual['modTime'] : '',
