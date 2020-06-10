@@ -83,6 +83,8 @@ function run() {
   const VIVO_URL = process.env.VIVO_URL || 'http://localhost:8080/vivo';
   const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'http://localhost:8080/vivo_editor';
 
+  const COLLECT_SEARCH_STATS = Boolean(process.env.COLLECT_SEARCH_STATS) || false;
+
   const appConfig: AppConfig = {
     host: HOST,
     port: PORT,
@@ -91,6 +93,7 @@ function run() {
     embedUrl: EMBED_URL,
     vivoUrl: VIVO_URL,
     vivoEditorUrl: VIVO_EDITOR_URL,
+    collectSearchStats: COLLECT_SEARCH_STATS
   };
 
   // Start up the Node server
