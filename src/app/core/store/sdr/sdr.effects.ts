@@ -5,10 +5,11 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { combineLatest, defer, Observable, scheduled } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { map, switchMap, catchError, withLatestFrom, skipWhile, take, filter, mergeMap } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, skipWhile, switchMap, take, withLatestFrom } from 'rxjs/operators';
 
 import { AlertService } from '../../service/alert.service';
 import { DialogService } from '../../service/dialog.service';
+import { StatsService } from '../../service/stats.service';
 
 import { AppState } from '../';
 import { StompState } from '../stomp/stomp.reducer';
@@ -25,7 +26,8 @@ import { injectable, repos } from '../../model/repos';
 
 import { createSdrRequest } from '../../../shared/utilities/discovery.utility';
 
-import { selectAllResources } from './';
+import { selectSdrState } from './';
+import { SdrState } from './sdr.reducer';
 import { selectRouterState } from '../router';
 import { selectIsStompConnected, selectStompState } from '../stomp';
 
@@ -37,6 +39,7 @@ import * as fromSidebar from '../sidebar/sidebar.actions';
 
 @Injectable()
 export class SdrEffects {
+
   private repos: Map<string, AbstractSdrRepo<SdrResource>>;
 
   constructor(
@@ -45,6 +48,7 @@ export class SdrEffects {
     private store: Store<AppState>,
     private alert: AlertService,
     private dialog: DialogService,
+    private stats: StatsService,
     private translate: TranslateService
   ) {
     this.repos = new Map<string, AbstractSdrRepo<SdrResource>>();
@@ -312,19 +316,28 @@ export class SdrEffects {
     switchMap((action: fromSdr.SearchResourcesSuccessAction) =>
       combineLatest([
         scheduled([action], asap),
-        this.store.pipe(select(selectRouterState)),
         this.store.pipe(
-          select(selectAllResources('directoryViews')),
-          filter((views: DirectoryView[]) => views.length !== 0)
+          select(selectRouterState),
+          take(1)
         ),
         this.store.pipe(
-          select(selectAllResources('discoveryViews')),
-          filter((views: DiscoveryView[]) => views.length !== 0)
+          select(selectSdrState('directoryViews')),
+          filter((directory: SdrState<DirectoryView>) => directory !== undefined)
+        ),
+        this.store.pipe(
+          select(selectSdrState('discoveryViews')),
+          filter((discovery: SdrState<DiscoveryView>) => discovery !== undefined)
         )
       ])
     ),
-    withLatestFrom(this.store),
-    map(([combination, store]) => this.searchSuccessHandler(combination[0], combination[1].state, store))
+    map((latest) => {
+      return this.searchSuccessHandler({
+        action: latest[0],
+        route: latest[1].state,
+        directory: latest[2] as SdrState<DirectoryView>,
+        discovery: latest[3] as SdrState<DiscoveryView>
+      });
+    })
   );
 
   @Effect() searchFailure = this.actions.pipe(
@@ -595,10 +608,25 @@ export class SdrEffects {
     }
   }
 
-  private searchSuccessHandler(action: fromSdr.SearchResourcesSuccessAction, routerState: CustomRouterState, store: AppState): void {
-    if (routerState.queryParams.collection) {
+  private searchSuccessHandler(results: {
+    action: fromSdr.SearchResourcesSuccessAction,
+    route: CustomRouterState,
+    directory: SdrState<DirectoryView>,
+    discovery: SdrState<DiscoveryView>
+  }): void {
+    const  { action, route, directory, discovery } = results;
+    if (route.queryParams.collection) {
+      this.stats.collect(route.queryParams).toPromise().then((data: any) => {
+        if (data) {
+          // tslint:disable-next-line: no-console
+          console.info('collected stats', data);
+        }
+      }).catch((error: any) => {
+        console.error(error);
+      });
+
       // tslint:disable-next-line: no-string-literal
-      const viewFacets: Facet[] = routerState.url.startsWith('/directory') ? store['directoryViews'].entities[routerState.params.view].facets : store['discoveryViews'].entities[routerState.params.view].facets;
+      const viewFacets: Facet[] = route.url.startsWith('/directory') ? directory.entities[route.params.view].facets : discovery.entities[route.params.view].facets;
 
       const sdrFacets: SdrFacet[] = action.payload.collection.facets;
 
@@ -606,7 +634,7 @@ export class SdrEffects {
         sections: [],
       };
 
-      const expanded = routerState.queryParams.expanded ? routerState.queryParams.expanded.split(',') : [];
+      const expanded = route.queryParams.expanded ? route.queryParams.expanded.split(',') : [];
 
       viewFacets
         .filter((viewFacet: Facet) => !viewFacet.hidden)
@@ -626,7 +654,7 @@ export class SdrEffects {
 
             if (viewFacet.type === FacetType.RANGE_SLIDER) {
 
-              const requestFilter = routerState.queryParams.filters.split(',').find((rf: string) => rf === sdrFacet.field);
+              const requestFilter = route.queryParams.filters.split(',').find((rf: string) => rf === sdrFacet.field);
 
               const rangeOptions = {
                 floor: viewFacet.rangeMin,
@@ -638,7 +666,7 @@ export class SdrEffects {
               };
 
               if (requestFilter) {
-                const filterValue = routerState.queryParams[`${requestFilter}.filter`];
+                const filterValue = route.queryParams[`${requestFilter}.filter`];
                 if (filterValue.startsWith('[') && filterValue.indexOf('TO') >= 0 && filterValue.endsWith(']')) {
                   const range = filterValue.substring(1, filterValue.length - 1).split(' TO ');
                   rangeValues.from = range[0];
@@ -652,7 +680,7 @@ export class SdrEffects {
                 label: '',
                 facet: viewFacet,
                 route: [],
-                queryParams: Object.assign({}, routerState.queryParams),
+                queryParams: Object.assign({}, route.queryParams),
                 rangeOptions,
                 rangeValues
               };
@@ -666,19 +694,19 @@ export class SdrEffects {
               .forEach((facetEntry: SdrFacetEntry) => {
                 let selected = false;
 
-                const requestFacet = routerState.queryParams.facets.split(',').find((rf: string) => rf === sdrFacet.field);
+                const requestFacet = route.queryParams.facets.split(',').find((rf: string) => rf === sdrFacet.field);
 
-                if (requestFacet && routerState.queryParams[`${requestFacet}.filter`] !== undefined) {
+                if (requestFacet && route.queryParams[`${requestFacet}.filter`] !== undefined) {
                   if (viewFacet.type === FacetType.DATE_YEAR) {
                     const date = new Date(facetEntry.value);
                     const year = date.getUTCFullYear();
                     const from = new Date(year, 0, 1, -6).toISOString();
                     const to = new Date(year + 1, 0, 1, -6).toISOString();
-                    if (routerState.queryParams[`${requestFacet}.filter`] === `[${from} TO ${to}]`) {
+                    if (route.queryParams[`${requestFacet}.filter`] === `[${from} TO ${to}]`) {
                       selected = true;
                     }
                   } else {
-                    if (routerState.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
+                    if (route.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
                       selected = true;
                     }
                   }
@@ -691,7 +719,7 @@ export class SdrEffects {
                   selected,
                   parenthetical: facetEntry.count,
                   route: [],
-                  queryParams: Object.assign({}, routerState.queryParams)
+                  queryParams: Object.assign({}, route.queryParams)
                 };
 
                 if (viewFacet.type === FacetType.DATE_YEAR) {
@@ -747,14 +775,14 @@ export class SdrEffects {
       if (action.payload.collection.page.totalElements === 0) {
         sidebarMenu.sections.push({
           title: this.translate.instant('SHARED.SIDEBAR.INFO.NO_RESULTS_LABEL', {
-            view: routerState.params.view,
+            view: route.params.view,
           }),
           items: [
             {
               type: SidebarItemType.INFO,
               label: this.translate.instant('SHARED.SIDEBAR.INFO.NO_RESULTS_TEXT', {
-                view: routerState.params.view,
-                query: routerState.queryParams.query,
+                view: route.params.view,
+                query: route.queryParams.query,
               }),
               route: [],
               queryParams: {},

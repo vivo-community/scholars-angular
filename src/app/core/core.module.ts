@@ -2,11 +2,11 @@ import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core
 import { CommonModule } from '@angular/common';
 
 import { AuthGuard } from './guard/auth.guard';
-import { StatsGuard } from './guard/stats.guard';
 
 import { AuthService } from './service/auth.service';
 import { RestService } from './service/rest.service';
 import { ThemeService } from './service/theme.service';
+import { StatsService } from './service/stats.service';
 import { StompService } from './service/stomp.service';
 import { MetadataService } from './service/metadata.service';
 
@@ -23,12 +23,12 @@ const COMPONENTS = [];
 
 const PROVIDERS = [
   AuthGuard,
-  StatsGuard,
   AlertService,
   AuthService,
   DialogService,
   MetadataService,
   RestService,
+  StatsService,
   StompService,
   ThemeService,
   ThemeRepo,

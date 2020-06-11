@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from './core/guard/auth.guard';
-import { StatsGuard } from './core/guard/stats.guard';
-
 import { Role } from './core/model/user';
 
 const routes: Routes = [
@@ -27,7 +25,7 @@ const routes: Routes = [
   {
     path: 'discovery',
     loadChildren: () => import('./+discovery').then((m) => m.DiscoveryModule),
-    canActivate: [StatsGuard],
+    canActivate: [],
     data: {
       tags: [{ name: 'view', content: 'Scholars Discovery' }],
     },
