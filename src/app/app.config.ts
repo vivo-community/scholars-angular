@@ -6,4 +6,5 @@ export interface AppConfig {
   embedUrl: string;
   vivoUrl: string;
   vivoEditorUrl: string;
+  collectSearchStats: boolean;
 }

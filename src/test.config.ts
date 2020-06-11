@@ -8,4 +8,5 @@ export const testAppConfig: AppConfig = {
   embedUrl: 'http://localhost:4201',
   vivoUrl: 'http://localhost:8080/vivo',
   vivoEditorUrl: 'http://localhost:8080/vivo_editor',
+  collectSearchStats: false
 };

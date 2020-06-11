@@ -32,7 +32,7 @@ describe('AuthGuard', () => {
     });
   });
 
-  it('should be created', inject([AuthGuard], (service: AuthGuard) => {
-    expect(service).toBeTruthy();
+  it('should be created', inject([AuthGuard], (guard: AuthGuard) => {
+    expect(guard).toBeTruthy();
   }));
 });
