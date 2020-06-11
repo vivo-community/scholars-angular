@@ -14,7 +14,6 @@ export class StatsService {
 
   public collect(queryParams: Params): Observable<any> {
     return new Observable((observer) => {
-      console.log(this.appConfig.collectSearchStats);
       if (this.appConfig.collectSearchStats) {
         this.rest.get('https://php.library.tamu.edu/utilities/vivo_page_info.php').toPromise().then((data: any) => {
           data.queryParams = queryParams;
