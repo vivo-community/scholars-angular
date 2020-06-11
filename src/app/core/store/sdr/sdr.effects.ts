@@ -4,8 +4,8 @@ import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 
 import { combineLatest, defer, Observable, scheduled } from 'rxjs';
-import { asap  } from 'rxjs/internal/scheduler/asap';
-import { map, switchMap, catchError, withLatestFrom, skipWhile, take, mergeMap, filter } from 'rxjs/operators';
+import { asap } from 'rxjs/internal/scheduler/asap';
+import { catchError, filter, map, mergeMap, skipWhile, switchMap, take, withLatestFrom } from 'rxjs/operators';
 
 import { AlertService } from '../../service/alert.service';
 import { DialogService } from '../../service/dialog.service';
@@ -39,6 +39,7 @@ import * as fromSidebar from '../sidebar/sidebar.actions';
 
 @Injectable()
 export class SdrEffects {
+
   private repos: Map<string, AbstractSdrRepo<SdrResource>>;
 
   constructor(
@@ -618,7 +619,7 @@ export class SdrEffects {
       this.stats.collect(route.queryParams).toPromise().then((data: any) => {
         if (data) {
           // tslint:disable-next-line: no-console
-          console.info('collect stats', data);
+          console.info('collected stats', data);
         }
       }).catch((error: any) => {
         console.error(error);
