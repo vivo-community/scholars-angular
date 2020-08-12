@@ -5,11 +5,11 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
+    "importHelpers": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "es2020",
     "moduleResolution": "node",
-    "importHelpers": true,
     "target": "es5",
     "lib": [
       "es2018",
