@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { scheduled } from 'rxjs';
-import { queue } from 'rxjs/internal/scheduler/queue';
+import { queueScheduler } from 'rxjs';
 
 import { SharedModule } from '../../shared/shared.module';
 
@@ -45,9 +45,9 @@ describe('TabComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: scheduled([{ view: 'People', tab: 'View All' }], queue),
+            params: scheduled([{ view: 'People', tab: 'View All' }], queueScheduler),
             parent: {
-              params: scheduled([{ collection: 'individual', id: 'test' }], queue),
+              params: scheduled([{ collection: 'individual', id: 'test' }], queueScheduler),
             },
           },
         },

@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Store, select } from '@ngrx/store';
 
 import { combineLatest, scheduled, Observable, Subscription } from 'rxjs';
-import { queue } from 'rxjs/internal/scheduler/queue';
+import { queueScheduler } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { AppState } from '../../../core/store';
@@ -119,7 +119,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           case 'confirmPassword':
             return this.translate.get('SHARED.DIALOG.VALIDATION.CONFIRM_PASSWORD', { field });
           default:
-            return scheduled(['unknown error'], queue);
+            return scheduled(['unknown error'], queueScheduler);
         }
       }
     }
@@ -154,9 +154,17 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   private isSubmitDisabled(): Observable<boolean> {
     if (this.isSubmit()) {
-      return combineLatest([scheduled([this.dialog.form.invalid], queue), scheduled([this.dialog.form.pristine], queue), this.store.pipe(select(selectIsSubmittingRegistration))]).pipe(map((results) => results[0] || results[1] || results[2]));
+      return combineLatest([
+        scheduled([this.dialog.form.invalid], queueScheduler),
+        scheduled([this.dialog.form.pristine], queueScheduler),
+        this.store.pipe(select(selectIsSubmittingRegistration))
+      ]).pipe(map((results) => results[0] || results[1] || results[2]));
     } else if (this.isComplete()) {
-      return combineLatest([scheduled([this.dialog.form.invalid], queue), scheduled([this.dialog.form.pristine], queue), this.store.pipe(select(selectIsCompletingRegistration))]).pipe(map((results) => results[0] || results[1] || results[2]));
+      return combineLatest([
+        scheduled([this.dialog.form.invalid], queueScheduler),
+        scheduled([this.dialog.form.pristine], queueScheduler),
+        this.store.pipe(select(selectIsCompletingRegistration))
+      ]).pipe(map((results) => results[0] || results[1] || results[2]));
     } else {
       throw new Error('Unknown registration step!');
     }

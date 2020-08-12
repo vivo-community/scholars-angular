@@ -5,7 +5,7 @@ import { Store, select } from '@ngrx/store';
 
 import { scheduled, Subscription, Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
-import { queue } from 'rxjs/internal/scheduler/queue';
+import { queueScheduler } from 'rxjs';
 
 import { AppState } from '../../../core/store';
 import { DialogButtonType, DialogControl } from '../../../core/model/dialog';
@@ -84,14 +84,14 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
       this.routerState.subscribe((routerState: CustomRouterState) => {
 
         this.dialog = {
-          title: scheduled([this.name], queue),
+          title: scheduled([this.name], queueScheduler),
           close: {
             type: DialogButtonType.OUTLINE_WARNING,
             label: this.translate.get('SHARED.DIALOG.FACET_ENTRIES.CANCEL'),
             action: () => {
               this.store.dispatch(new fromDialog.CloseDialogAction());
             },
-            disabled: () => scheduled([false], queue),
+            disabled: () => scheduled([false], queueScheduler),
           },
         };
 

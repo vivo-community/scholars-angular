@@ -5,7 +5,7 @@ import { Effect, ofType, Actions } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 
 import { defer, scheduled, EMPTY } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
+import { asapScheduler } from 'rxjs';
 import { map, withLatestFrom, filter } from 'rxjs/operators';
 
 import { AppState } from '../';
@@ -73,7 +73,7 @@ export class LayoutEffects {
             },
           }),
         ],
-        asap
+        asapScheduler
       );
     }
     return EMPTY;

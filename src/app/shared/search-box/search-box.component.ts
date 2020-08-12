@@ -6,7 +6,7 @@ import { Router, Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
 import { Observable, Subscription } from 'rxjs';
-import { skipWhile, debounceTime, distinctUntilChanged, take, flatMap } from 'rxjs/operators';
+import { skipWhile, debounceTime, distinctUntilChanged, take, mergeMap } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
 import { DiscoveryView, Facet, Filter } from '../../core/model/view';
@@ -124,7 +124,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
           this.form.controls.query.valueChanges.pipe(
             debounceTime(this.debounce),
             distinctUntilChanged(),
-            flatMap(() => this.queryParams.pipe(take(1)))
+            mergeMap(() => this.queryParams.pipe(take(1)))
           ).subscribe((params) => this.onSearch(params)));
       }
 

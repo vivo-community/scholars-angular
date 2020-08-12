@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { scheduled } from 'rxjs';
-import { queue } from 'rxjs/internal/scheduler/queue';
+import { queueScheduler } from 'rxjs';
 
 import { DisplayModule } from '../display.module';
 
@@ -43,7 +43,7 @@ describe('SubsectionComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            queryParams: scheduled([params], queue),
+            queryParams: scheduled([params], queueScheduler),
           },
         },
       ],
