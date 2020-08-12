@@ -413,7 +413,7 @@ export class SdrEffects {
 
   @Effect() clearResourceSubscription = this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.CLEAR)),
-    map((action: fromSdr.PageResourcesSuccessAction) => new fromStomp.UnsubscribeAction({ channel: `/queueScheduler/${action.name}` }))
+    map((action: fromSdr.PageResourcesSuccessAction) => new fromStomp.UnsubscribeAction({ channel: `/queue/${action.name}` }))
   );
 
   @Effect() post = this.actions.pipe(
@@ -593,10 +593,10 @@ export class SdrEffects {
   }
 
   private subscribeToResourceQueue(name: string, stomp: StompState): void {
-    if (!stomp.subscriptions.has(`/queueScheduler/${name}`)) {
+    if (!stomp.subscriptions.has(`/queue/${name}`)) {
       this.store.dispatch(
         new fromStomp.SubscribeAction({
-          channel: `/queueScheduler/${name}`,
+          channel: `/queue/${name}`,
           handle: (frame: any) => {
             // TODO: conditionally reload all
             if (frame.command === 'MESSAGE') {

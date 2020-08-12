@@ -176,7 +176,7 @@ export class AuthEffects {
     map(
       ([user]) =>
         new fromStomp.SubscribeAction({
-          channel: '/user/queueScheduler/users',
+          channel: '/user/queue/users',
           handle: (frame: any) => {
             if (frame.command === 'MESSAGE') {
               const body = JSON.parse(frame.body);
