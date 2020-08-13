@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 import { Observable, scheduled } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
+import { asapScheduler } from 'rxjs';
 
 import { ComputedStyleLoader } from '../computed-style-loader';
 import { RestService } from './rest.service';
@@ -27,7 +27,7 @@ export class ThemeService {
     styles += this.processThemeColors(theme.colors);
     styles += this.processThemeVariants(theme.variants);
     styles += this.processThemeVariables(theme);
-    return scheduled([this.sanitizer.bypassSecurityTrustStyle(styles)], asap);
+    return scheduled([this.sanitizer.bypassSecurityTrustStyle(styles)], asapScheduler);
   }
 
   private processThemeColors(colors: Style[]): string {

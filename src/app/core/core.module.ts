@@ -50,7 +50,7 @@ const PROVIDERS = [
   ],
 })
 export class CoreModule {
-  public static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders<CoreModule> {
     return {
       ngModule: CoreModule,
       providers: [

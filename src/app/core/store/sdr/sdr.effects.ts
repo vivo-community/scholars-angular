@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 
 import { combineLatest, defer, Observable, scheduled } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
+import { asapScheduler } from 'rxjs';
 import { catchError, filter, map, mergeMap, skipWhile, switchMap, take, withLatestFrom } from 'rxjs/operators';
 
 import { AlertService } from '../../service/alert.service';
@@ -77,7 +77,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -111,7 +111,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -150,7 +150,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -189,7 +189,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -233,7 +233,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         );
@@ -265,7 +265,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -304,7 +304,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -315,7 +315,7 @@ export class SdrEffects {
     ofType(...this.buildActions(fromSdr.SdrActionTypes.SEARCH_SUCCESS)),
     switchMap((action: fromSdr.SearchResourcesSuccessAction) =>
       combineLatest([
-        scheduled([action], asap),
+        scheduled([action], asapScheduler),
         this.store.pipe(
           select(selectRouterState),
           take(1)
@@ -367,7 +367,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -399,7 +399,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -431,7 +431,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -456,7 +456,7 @@ export class SdrEffects {
         .put(action.payload.resource)
         .pipe(
           map((resource: SdrResource) => new fromSdr.PutResourceSuccessAction(action.name, { resource })),
-          catchError((response) => scheduled([new fromSdr.PutResourceFailureAction(action.name, { response })], asap))
+          catchError((response) => scheduled([new fromSdr.PutResourceFailureAction(action.name, { response })], asapScheduler))
         )
     )
   );
@@ -486,7 +486,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -518,7 +518,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -557,7 +557,7 @@ export class SdrEffects {
   @Effect() initViews = defer(() => scheduled([
     new fromSdr.GetAllResourcesAction('directoryViews'),
     new fromSdr.GetAllResourcesAction('discoveryViews')
-  ], asap));
+  ], asapScheduler));
 
   private injectRepos(): void {
     const injector = Injector.create({
@@ -583,7 +583,7 @@ export class SdrEffects {
 
   private waitForStompConnection(name: string): Observable<[string, boolean]> {
     return combineLatest([
-      scheduled([name], asap),
+      scheduled([name], asapScheduler),
       this.store.pipe(
         select(selectIsStompConnected),
         skipWhile((connected: boolean) => !connected),

@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Store, select } from '@ngrx/store';
 
 import { combineLatest, scheduled, Observable } from 'rxjs';
-import { queue } from 'rxjs/internal/scheduler/queue';
+import { queueScheduler } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { AppState } from '../../../core/store';
@@ -59,8 +59,8 @@ export class UserEditComponent implements OnInit {
             })
           ),
         disabled: () => combineLatest([
-          scheduled([this.dialog.form.invalid], queue),
-          scheduled([this.dialog.form.pristine], queue),
+          scheduled([this.dialog.form.invalid], queueScheduler),
+          scheduled([this.dialog.form.pristine], queueScheduler),
           this.store.pipe(select(selectResourceIsUpdating<User>('users')))
         ]).pipe(map((results) => results[0] || results[1] || results[2])),
       },
@@ -95,7 +95,7 @@ export class UserEditComponent implements OnInit {
               field,
             });
           default:
-            return scheduled(['unknown error'], queue);
+            return scheduled(['unknown error'], queueScheduler);
         }
       }
     }
