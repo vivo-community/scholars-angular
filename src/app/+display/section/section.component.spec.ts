@@ -55,6 +55,7 @@ describe('SectionComponent', () => {
     component.section = {
       name: 'Test',
       field: 'publications',
+      order: 1,
       filters: [],
       sort: [],
       pageSize: 5,

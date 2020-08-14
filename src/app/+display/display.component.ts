@@ -18,7 +18,7 @@ import { loadBadges } from '../shared/utilities/view.utility';
 
 import { selectWindowDimensions } from '../core/store/layout';
 import { SolrDocument } from '../core/model/discovery';
-import { Side, Subsection } from '../core/model/view/display-view';
+import { Side, DisplaySubsectionView } from '../core/model/view/display-view';
 
 import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing } from '../core/store/sdr';
 
@@ -49,12 +49,12 @@ const hasDataAfterFilters = (filters: Filter[], prop: any): boolean => {
   }
 };
 
-const hasDataAfterSubsectionFilters = (subsection: Subsection, prop: any): boolean => {
+const hasDataAfterSubsectionFilters = (subsection: DisplaySubsectionView, prop: any): boolean => {
   return subsection.filters.length === 0 || hasDataAfterFilters(subsection.filters, prop);
 };
 
 const hasDataAfterSectionFilters = (section: DisplayTabSectionView, document: SolrDocument): boolean => {
-  return (section.filters.length === 0 || hasDataAfterFilters(section.filters, document[section.field])) && (section.subsections.length === 0 || section.subsections.filter((subsection: Subsection) => {
+  return (section.filters.length === 0 || hasDataAfterFilters(section.filters, document[section.field])) && (section.subsections.length === 0 || section.subsections.filter((subsection: DisplaySubsectionView) => {
     return hasDataAfterSubsectionFilters(subsection, document[subsection.field]);
   }).length > 0);
 };
