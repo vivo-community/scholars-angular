@@ -13,7 +13,10 @@
           </div>
           <ng-container *ngTemplateOutlet="homeStats"></ng-container>
           <div class="row justify-content-center align-bottom home-info" [attr.style]="getStyleVariables(hero)">
-            <div class="col-lg-7 col-md-9 col-sm-11 col-xs-12">
+            <div class="col-lg-7 col-md-9 col-sm-11 col-xs-12 help-text">
+              <p class="d-inline-block" [innerHTML]="hero.helpText"></p>
+            </div>
+            <div class="col-lg-7 col-md-9 col-sm-11 col-xs-12 base-text">
               <p class="d-inline-block" [innerHTML]="hero.baseText"></p>
             </div>
           </div>
