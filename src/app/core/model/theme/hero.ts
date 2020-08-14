@@ -3,6 +3,7 @@ export interface Hero {
   readonly imageAlt: string;
   readonly watermarkImageUri: string;
   readonly watermarkText: string;
+  readonly helpText: string;
   readonly baseText: string;
   readonly fontColor: string;
   readonly linkColor: string;
