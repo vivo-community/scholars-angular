@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Params, Router, NavigationStart } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
 import { scheduled, Subscription, Observable } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map, tap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { queueScheduler } from 'rxjs';
 
 import { AppState } from '../../../core/store';
@@ -50,12 +51,15 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
 
   public routerLink = [];
 
+  public form: FormGroup;
+
   public dialog: DialogControl;
 
   private subscriptions: Subscription[];
 
   constructor(
     private router: Router,
+    private formBuilder: FormBuilder,
     private store: Store<AppState>,
     private translate: TranslateService,
     private individualRepo: IndividualRepo
@@ -77,6 +81,12 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
       filter((router: any) => router !== undefined),
       map((router: any) => router.state)
     );
+
+    const formGroup = {
+      filter: new FormControl()
+    };
+
+    this.form = this.formBuilder.group(formGroup);
 
     this.queryParams = this.store.pipe(select(selectRouterQueryParams));
 
@@ -125,7 +135,33 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
 
             // NOTE: isolating request for facets without going through the stores, leaving facets in store intact
             this.sdrFacet = this.individualRepo.search(sdrRequest).pipe(
-              map((collection: SdrCollection) => collection.facets[0])
+              map((collection: SdrCollection) => collection.facets[0]),
+              tap((sdrFacet) => {
+                const content = Object.assign([], sdrFacet.entries.content);
+                let lastTerm = '';
+                this.subscriptions.push(
+                  this.form.controls.filter.valueChanges.pipe(
+                    debounceTime(500),
+                    distinctUntilChanged()
+                  ).subscribe((term: string) => {
+                    const currentContent = lastTerm.length > term.length ? content : sdrFacet.entries.content;
+                    lastTerm = term = term.toLowerCase();
+                    sdrFacet.entries.content = currentContent.filter((entry) => {
+                      const index = entry.valueKey.toLowerCase().indexOf(term);
+                      const hit = index >= 0;
+                      if (hit) {
+                        const before = entry.valueKey.substring(0, index);
+                        const match = entry.valueKey.substring(index, index + term.length);
+                        const after = entry.valueKey.substring(index + term.length);
+                        entry.value = `${before}<span style="background: #E3D67F">${match}</span>${after}`;
+                        console.log(entry.value);
+                      } else {
+                        entry.value = entry.valueKey;
+                      }
+                      return hit;
+                    });
+                  }));
+              })
             );
 
           })
