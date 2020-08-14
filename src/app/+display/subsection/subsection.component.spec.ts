@@ -56,6 +56,7 @@ describe('SubsectionComponent', () => {
     component.subsection = {
       name: 'Test',
       field: 'publications',
+      order: 1,
       filters: [],
       sort: [],
       pageSize: 5,
