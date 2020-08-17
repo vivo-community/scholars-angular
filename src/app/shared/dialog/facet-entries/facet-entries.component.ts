@@ -154,7 +154,6 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
                         const match = entry.valueKey.substring(index, index + term.length);
                         const after = entry.valueKey.substring(index + term.length);
                         entry.value = `${before}<span style="background: #E3D67F">${match}</span>${after}`;
-                        console.log(entry.value);
                       } else {
                         entry.value = entry.valueKey;
                       }
