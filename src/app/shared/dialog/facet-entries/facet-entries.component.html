@@ -1,4 +1,12 @@
 <scholars-dialog [dialog]="dialog" *ngIf="routerState | async; let routerState">
+  <form novalidate>
+    <div  [formGroup]="form" class="form-group input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text fa fa-search"></span>
+      </div>
+      <input id="filter" name="filter" formControlName="filter" type="text" class="form-control" placeholder="Filter" aria-label="Filter" aria-describedby="filter-entries">
+    </div>
+  </form>
   <div *ngIf="facet | async; let facet">
     <div *ngIf="sdrFacet | async; let sdrFacet">
       <table class="table table-sm table-striped table-hover">
@@ -7,17 +15,13 @@
             <td scope="row" [ngSwitch]="facet.type">
               <span *ngSwitchCase="'STRING'">
                 <a [routerLink]="routerLink" [queryParams]="getQueryParams(queryParams | async, facet, entry)" queryParamsHandling="merge">
-                  <span>
-                    <span>{{entry.value | formalize}}</span>
-                  </span>
+                  <span [innerHTML]="entry.value | formalize | safeHtml"></span>
                 </a>
                 <span> ({{entry.count}})</span>
               </span>
               <span *ngSwitchCase="'RANGE_SLIDER'">
                 <a [routerLink]="routerLink" [queryParams]="getQueryParams(queryParams | async, facet, entry)" queryParamsHandling="merge">
-                  <span>
-                    <span>{{entry.value | formalize}}</span>
-                  </span>
+                  <span [innerHTML]="entry.value | formalize | safeHtml"></span>
                 </a>
                 <span> ({{entry.count}})</span>
               </span>

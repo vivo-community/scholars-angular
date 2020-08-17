@@ -1,4 +1,5 @@
 export interface SdrFacetEntry {
-  readonly value: any;
+  value: string;
   readonly count: number;
+  readonly valueKey: string;
 }
