@@ -26,8 +26,6 @@ import { TwitterComponent } from './twitter/twitter.component';
 import { YouTubeComponent } from './youtube/youtube.component';
 import { UserEditComponent } from './dialog/user-edit/user-edit.component';
 
-import { LoaderDirective } from './loader/loader.directive';
-
 import { FilterPipe } from './utilities/filter.pipe';
 import { FormalizePipe } from './utilities/formalize.pipe';
 import { SafeHtmlPipe } from './utilities/safe-html.pipe';
@@ -70,7 +68,7 @@ const COMPONENTS = [
 ];
 
 const DIRECTIVES = [
-  LoaderDirective
+
 ];
 
 const ENTRY_COMPONENTS = [

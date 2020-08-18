@@ -12,8 +12,6 @@ import { DirectoryView, DiscoveryView, Filter } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 
-import { fadeIn } from '../shared/utilities/animation.utility';
-
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectDiscoveryViewByClass, selectResourceIsLoading } from '../core/store/sdr';
 import { selectRouterQueryParams, selectRouterQueryParamFilters } from '../core/store/router';
 
@@ -23,7 +21,6 @@ import { addExportToQueryParams, showFilter, showClearFilters, getFilterField, g
   selector: 'scholars-directory',
   templateUrl: 'directory.component.html',
   styleUrls: ['directory.component.scss'],
-  animations: [fadeIn],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DirectoryComponent implements OnDestroy, OnInit {
