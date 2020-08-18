@@ -45,11 +45,9 @@
         <a class="nav-link font-weight-bold" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParamsSwitchingDiscoveryView(queryParams | async, discoveryView)" [class.active]="isActive(discoveryView, url | async)">{{ discoveryView.name }}</a>
       </li>
     </ul>
-    <div *ngIf="(loading | async) === false" [@fadeIn]>
-      <scholars-pagination *ngIf="documents | async; let documents" [page]="page" [ngSwitch]="discoveryView.layout" [pageSizeOptionsType]="'list'">
-        <scholars-grid-view *ngSwitchCase="'GRID'" [view]="discoveryView" [resources]="documents"></scholars-grid-view>
-        <scholars-list-view *ngSwitchCase="'LIST'" [view]="discoveryView" [resources]="documents"></scholars-list-view>
-      </scholars-pagination>
-    </div>
+    <scholars-pagination [page]="page" [ngSwitch]="discoveryView.layout" [pageSizeOptionsType]="'list'">
+      <scholars-grid-view *ngSwitchCase="'GRID'" [view]="discoveryView" [resources]="documents | async" [loading]="loading | async"></scholars-grid-view>
+      <scholars-list-view *ngSwitchCase="'LIST'" [view]="discoveryView" [resources]="documents | async" [loading]="loading | async"></scholars-list-view>
+    </scholars-pagination>
   </div>
 </scholars-sidebar>
