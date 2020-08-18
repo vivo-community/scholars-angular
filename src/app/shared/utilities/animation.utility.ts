@@ -8,8 +8,13 @@ export const fadeIn = trigger('fadeIn', [
 ]);
 
 export const fadeOutIn = trigger('fadeOutIn', [
-  state('true', style({ opacity: 0 })),
-  state('false', style({ opacity: 1 })),
+  state('true', style({
+    opacity: 0.5,
+    filter: 'blur(10px)'
+  })),
+  state('false', style({
+    opacity: 1
+  })),
   transition('false=>true', animate('275ms ease-out')),
   transition('true=>false', animate('275ms ease-in'))
 ]);
