@@ -20,7 +20,7 @@ import { CustomRouterState } from '../../../core/store/router/router.reducer';
 import { selectRouterState, selectRouterQueryParams } from '../../../core/store/router';
 import { selectCollectionViewByName } from '../../../core/store/sdr';
 
-import { createSdrRequest } from '../../utilities/discovery.utility';
+import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue, getFacetFilterLabel } from '../../utilities/discovery.utility';
 
 import * as fromDialog from '../../../core/store/dialog/dialog.actions';
 
@@ -176,26 +176,24 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
   }
 
   public getFacetRangeValue(facet: Facet, entry: SdrFacetEntry): string {
-    const from = Number(entry.value);
-    const to = Number(entry.value) + Number(facet.rangeGap) - 1;
-    return `${from} to ${to}`;
+    return getFacetFilterLabel(facet, entry);
   }
 
   public getQueryParams(params: Params, facet: Facet, entry: SdrFacetEntry): Params {
     const queryParams: Params = Object.assign({}, params);
-    if (facet.type === FacetType.DATE_YEAR) {
-      const date = new Date(entry.value);
-      const year = date.getUTCFullYear();
-      queryParams[`${this.field}.filter`] = `[${year} TO ${year + 1}]`;
-      queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
-    } else if (facet.type === FacetType.NUMBER_RANGE) {
-      const from = Number(entry.value);
-      const to = Number(entry.value) + Number(facet.rangeGap) - 1;
-      queryParams[`${this.field}.filter`] = `[${from} TO ${to}]`;
-      queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
-    } else {
-      queryParams[`${this.field}.filter`] = entry.value;
-      queryParams[`${this.field}.opKey`] = OpKey.EQUALS;
+    switch (facet.type) {
+      case FacetType.DATE_YEAR:
+        queryParams[`${this.field}.filter`] = buildDateYearFilterValue(entry);
+        queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
+        break;
+      case FacetType.NUMBER_RANGE:
+        queryParams[`${this.field}.filter`] = buildNumberRangeFilterValue(facet, entry);
+        queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
+        break;
+      default:
+        queryParams[`${this.field}.filter`] = entry.value;
+        queryParams[`${this.field}.opKey`] = OpKey.EQUALS;
+        break;
     }
     queryParams[`${this.field}.pageNumber`] = 1;
     if (queryParams.filters && queryParams.filters.length > 0) {

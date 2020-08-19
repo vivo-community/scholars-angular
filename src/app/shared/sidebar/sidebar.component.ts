@@ -55,18 +55,6 @@ export class SidebarComponent implements OnInit {
     this.store.dispatch(action);
   }
 
-  public onSliderChange(sidebarItem: SidebarItem) {
-    const filters = sidebarItem.queryParams.filters;
-    sidebarItem.queryParams[`${sidebarItem.facet.field}.filter`] = `[${sidebarItem.rangeValues.from} TO ${sidebarItem.rangeValues.to}]`;
-    if (sidebarItem.queryParams.filters.indexOf(sidebarItem.facet.field) < 0) {
-      sidebarItem.queryParams.filters = filters.length ? `${filters},${sidebarItem.facet.field}` : sidebarItem.facet.field;
-    }
-    this.store.dispatch(new fromRouter.Go({
-      path: sidebarItem.route,
-      query: sidebarItem.queryParams
-    }));
-  }
-
   public isBrowserRendered(): boolean {
     return isPlatformBrowser(this.platformId);
   }
