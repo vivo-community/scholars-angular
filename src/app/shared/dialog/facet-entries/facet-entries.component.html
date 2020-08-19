@@ -15,7 +15,7 @@
             <td scope="row" [ngSwitch]="facet.type">
               <span *ngSwitchCase="'STRING'">
                 <a [routerLink]="routerLink" [queryParams]="getQueryParams(queryParams | async, facet, entry)" queryParamsHandling="merge">
-                  <span [innerHTML]="entry.value | formalize | safeHtml"></span>
+                  <span [innerHTML]="getStringValue(entry) | formalize | safeHtml"></span>
                 </a>
                 <span> ({{entry.count}})</span>
               </span>
