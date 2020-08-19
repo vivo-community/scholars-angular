@@ -175,12 +175,23 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
     );
   }
 
+  public getFacetRangeValue(facet: Facet, entry: SdrFacetEntry): string {
+    const from = Number(entry.value);
+    const to = Number(entry.value) + Number(facet.rangeGap) - 1;
+    return `${from} to ${to}`;
+  }
+
   public getQueryParams(params: Params, facet: Facet, entry: SdrFacetEntry): Params {
     const queryParams: Params = Object.assign({}, params);
     if (facet.type === FacetType.DATE_YEAR) {
       const date = new Date(entry.value);
       const year = date.getUTCFullYear();
       queryParams[`${this.field}.filter`] = `[${year} TO ${year + 1}]`;
+      queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
+    } else if (facet.type === FacetType.NUMBER_RANGE) {
+      const from = Number(entry.value);
+      const to = Number(entry.value) + Number(facet.rangeGap) - 1;
+      queryParams[`${this.field}.filter`] = `[${from} TO ${to}]`;
       queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
     } else {
       queryParams[`${this.field}.filter`] = entry.value;

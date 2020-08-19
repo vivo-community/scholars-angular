@@ -20,7 +20,7 @@ export enum Layout {
 export enum FacetType {
   STRING = 'STRING',
   DATE_YEAR = 'DATE_YEAR',
-  RANGE_SLIDER = 'RANGE_SLIDER'
+  NUMBER_RANGE = 'NUMBER_RANGE'
 }
 
 export enum FacetSort {
@@ -49,8 +49,9 @@ export interface Facet {
   readonly direction: Direction;
   readonly collapsed: boolean;
   readonly hidden: boolean;
-  readonly rangeMin?: number;
-  readonly rangeMax?: number;
+  readonly rangeStart?: string;
+  readonly rangeEnd?: string;
+  readonly rangeGap?: string;
 }
 
 export interface Filter {

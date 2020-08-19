@@ -5,8 +5,6 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { Ng5SliderModule } from 'ng5-slider';
-
 import { AlertComponent } from './alert/alert.component';
 import { DialogComponent } from './dialog/dialog.component';
 import { FacetEntriesComponent } from './dialog/facet-entries/facet-entries.component';
@@ -34,7 +32,6 @@ import { SafeUrlPipe } from './utilities/safe-url.pipe';
 const MODULES = [
   CommonModule,
   NgbModule,
-  Ng5SliderModule,
   FormsModule,
   ReactiveFormsModule,
   TranslateModule,

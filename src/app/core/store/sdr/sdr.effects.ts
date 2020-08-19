@@ -652,43 +652,6 @@ export class SdrEffects {
 
             sidebarMenu.sections.push(sidebarSection);
 
-            if (viewFacet.type === FacetType.RANGE_SLIDER) {
-
-              const requestFilter = route.queryParams.filters.split(',').find((rf: string) => rf === sdrFacet.field);
-
-              const rangeOptions = {
-                floor: viewFacet.rangeMin,
-                ceil: viewFacet.rangeMax
-              };
-              const rangeValues = {
-                from: viewFacet.rangeMin,
-                to: viewFacet.rangeMax
-              };
-
-              if (requestFilter) {
-                const filterValue = route.queryParams[`${requestFilter}.filter`];
-                if (filterValue.startsWith('[') && filterValue.indexOf('TO') >= 0 && filterValue.endsWith(']')) {
-                  const range = filterValue.substring(1, filterValue.length - 1).split(' TO ');
-                  rangeValues.from = range[0];
-                  rangeValues.to = range[1];
-                }
-                sidebarSection.collapsed = false;
-              }
-
-              const sidebarItem: SidebarItem = {
-                type: SidebarItemType.RANGE_SLIDER,
-                label: '',
-                facet: viewFacet,
-                route: [],
-                queryParams: Object.assign({}, route.queryParams),
-                rangeOptions,
-                rangeValues
-              };
-              sidebarItem.queryParams[`${sdrFacet.field}.filter`] = `[${sidebarItem.rangeValues.from} TO ${sidebarItem.rangeValues.to}]`;
-              sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
-              sidebarSection.items.push(sidebarItem);
-            }
-
             sdrFacet.entries.content
               .filter((facetEntry: SdrFacetEntry) => facetEntry.value.length > 0)
               .forEach((facetEntry: SdrFacetEntry) => {
@@ -705,6 +668,12 @@ export class SdrEffects {
                     if (route.queryParams[`${requestFacet}.filter`] === `[${from} TO ${to}]`) {
                       selected = true;
                     }
+                  } else if (viewFacet.type === FacetType.NUMBER_RANGE) {
+                    const from = Number(facetEntry.value);
+                    const to = Number(facetEntry.value) + Number(viewFacet.rangeGap) - 1;
+                    if (route.queryParams[`${requestFacet}.filter`] === `[${from} TO ${to}]`) {
+                      selected = true;
+                    }
                   } else {
                     if (route.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
                       selected = true;
@@ -712,9 +681,17 @@ export class SdrEffects {
                   }
                 }
 
+                let value = facetEntry.value;
+
+                if (viewFacet.type === FacetType.NUMBER_RANGE) {
+                  const from = Number(facetEntry.value);
+                  const to = Number(facetEntry.value) + Number(viewFacet.rangeGap) - 1;
+                  value = `${from} to ${to}`;
+                }
+
                 const sidebarItem: SidebarItem = {
                   type: SidebarItemType.FACET,
-                  label: facetEntry.value,
+                  label: value,
                   facet: viewFacet,
                   selected,
                   parenthetical: facetEntry.count,
@@ -729,7 +706,12 @@ export class SdrEffects {
                   const to = new Date(year + 1, 0, 1, -6).toISOString();
                   sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${from} TO ${to}]` : undefined;
                   sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
-                } else {
+                } else if (viewFacet.type === FacetType.NUMBER_RANGE) {
+                  const from = Number(facetEntry.value);
+                  const to = Number(facetEntry.value) + Number(viewFacet.rangeGap) - 1;
+                  sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${from} TO ${to}]` : undefined;
+                  sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
+                }  else {
                   sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
                   sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.EQUALS;
                 }
