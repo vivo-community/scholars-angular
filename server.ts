@@ -14,6 +14,7 @@ import { ngExpressEngine } from '@nguniversal/express-engine';
 
 import * as express from 'express';
 import * as compression from 'compression';
+import * as expressStaticGzip from 'express-static-gzip';
 
 import { AppConfig } from './src/app/app.config';
 import { AppServerModule } from './src/main.server';
@@ -59,6 +60,11 @@ export function app(appConfig: AppConfig) {
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
+
+  router.get('*.*', expressStaticGzip(distFolder, {
+    enableBrotli: true,
+    orderPreference: ['br', 'gzip']
+  }));
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
