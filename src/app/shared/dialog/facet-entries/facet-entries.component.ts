@@ -20,7 +20,7 @@ import { CustomRouterState } from '../../../core/store/router/router.reducer';
 import { selectRouterState, selectRouterQueryParams } from '../../../core/store/router';
 import { selectCollectionViewByName } from '../../../core/store/sdr';
 
-import { createSdrRequest } from '../../utilities/discovery.utility';
+import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue, getFacetFilterLabel } from '../../utilities/discovery.utility';
 
 import * as fromDialog from '../../../core/store/dialog/dialog.actions';
 
@@ -147,15 +147,15 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
                     const currentContent = lastTerm.length > term.length ? content : sdrFacet.entries.content;
                     lastTerm = term = term.toLowerCase();
                     sdrFacet.entries.content = currentContent.filter((entry) => {
-                      const index = entry.valueKey.toLowerCase().indexOf(term);
+                      const index = entry.value.toLowerCase().indexOf(term);
                       const hit = index >= 0;
                       if (hit) {
-                        const before = entry.valueKey.substring(0, index);
-                        const match = entry.valueKey.substring(index, index + term.length);
-                        const after = entry.valueKey.substring(index + term.length);
-                        entry.value = `${before}<span style="background: #E3D67F">${match}</span>${after}`;
+                        const before = entry.value.substring(0, index);
+                        const match = entry.value.substring(index, index + term.length);
+                        const after = entry.value.substring(index + term.length);
+                        entry.valueHtml = `${before}<span style="background: #E3D67F">${match}</span>${after}`;
                       } else {
-                        entry.value = entry.valueKey;
+                        entry.valueHtml = entry.value;
                       }
                       return hit;
                     });
@@ -175,16 +175,29 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
     );
   }
 
+  public getFacetRangeValue(facet: Facet, entry: SdrFacetEntry): string {
+    return getFacetFilterLabel(facet, entry);
+  }
+
+  public getStringValue(entry: SdrFacetEntry): string {
+    return entry.valueHtml ? entry.valueHtml : entry.value;
+  }
+
   public getQueryParams(params: Params, facet: Facet, entry: SdrFacetEntry): Params {
     const queryParams: Params = Object.assign({}, params);
-    if (facet.type === FacetType.DATE_YEAR) {
-      const date = new Date(entry.value);
-      const year = date.getUTCFullYear();
-      queryParams[`${this.field}.filter`] = `[${year} TO ${year + 1}]`;
-      queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
-    } else {
-      queryParams[`${this.field}.filter`] = entry.value;
-      queryParams[`${this.field}.opKey`] = OpKey.EQUALS;
+    switch (facet.type) {
+      case FacetType.DATE_YEAR:
+        queryParams[`${this.field}.filter`] = buildDateYearFilterValue(entry);
+        queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
+        break;
+      case FacetType.NUMBER_RANGE:
+        queryParams[`${this.field}.filter`] = buildNumberRangeFilterValue(facet, entry);
+        queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
+        break;
+      default:
+        queryParams[`${this.field}.filter`] = entry.value;
+        queryParams[`${this.field}.opKey`] = OpKey.EQUALS;
+        break;
     }
     queryParams[`${this.field}.pageNumber`] = 1;
     if (queryParams.filters && queryParams.filters.length > 0) {

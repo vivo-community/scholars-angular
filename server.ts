@@ -18,6 +18,16 @@ import * as compression from 'compression';
 import { AppConfig } from './src/app/app.config';
 import { AppServerModule } from './src/main.server';
 
+function shouldCompress(req, res) {
+  if (req.headers['x-no-compression']) {
+    // don't compress responses with this request header
+    return false;
+  }
+
+  // fallback to standard filter function
+  return compression.filter(req, res);
+}
+
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(appConfig: AppConfig) {
   const server = express();
@@ -35,18 +45,17 @@ export function app(appConfig: AppConfig) {
   });
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
-  server.engine(
-    'html',
-    ngExpressEngine({
-      bootstrap: AppServerModule,
-      providers: [
-        {
-          provide: 'APP_CONFIG',
-          useValue: appConfig,
-        },
-      ],
-    })
-  );
+  server.engine('html', ngExpressEngine({
+    bootstrap: AppServerModule,
+    providers: [
+      {
+        provide: 'APP_CONFIG',
+        useValue: appConfig,
+      },
+    ],
+  }));
+
+  server.use(compression({ filter: shouldCompress }));
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
@@ -60,15 +69,10 @@ export function app(appConfig: AppConfig) {
 
   // All regular routes use the Universal engine
   router.get('*', (req, res) => {
-    res.render(indexHtml, {
-      req,
-      providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }],
-    });
+    res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
   });
 
   server.use(appConfig.baseHref, router);
-
-  server.use(compression());
 
   return server;
 }

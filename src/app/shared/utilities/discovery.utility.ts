@@ -2,8 +2,32 @@ import { Params } from '@angular/router';
 
 import { CustomRouterState } from '../../core/store/router/router.reducer';
 import { SdrRequest, Pageable, Sort, Direction, Facetable, Filterable, Boostable, Highlightable } from '../../core/model/request';
-import { OpKey } from '../../core/model/view';
+import { OpKey, Facet, FacetType } from '../../core/model/view';
 import { Queryable } from 'src/app/core/model/request/sdr.request';
+import { SdrFacetEntry } from 'src/app/core/model/sdr';
+
+export const buildDateYearFilterValue = (facetEntry: SdrFacetEntry): string => {
+  const date = new Date(facetEntry.value);
+  const year = date.getUTCFullYear();
+  const from = new Date(year, 0, 1, -6).toISOString();
+  const to = new Date(year + 1, 0, 1, -6).toISOString();
+  return `[${from} TO ${to}]`;
+};
+
+export const buildNumberRangeFilterValue = (facet: Facet, facetEntry: SdrFacetEntry): string => {
+  const from = Number(facetEntry.value);
+  const to = Number(facetEntry.value) + Number(facet.rangeGap) - 1;
+  return `[${from} TO ${to}]`;
+};
+
+export const getFacetFilterLabel = (facet: Facet, facetEntry: SdrFacetEntry): string => {
+  let label = facetEntry.value;
+  if (facet.type === FacetType.NUMBER_RANGE) {
+    label = buildNumberRangeFilterValue(facet, facetEntry);
+    label = label.toLowerCase().substring(1, label.length - 1);
+  }
+  return label;
+};
 
 export const createSdrRequest = (routerState: CustomRouterState): SdrRequest => {
   const queryParams = routerState.queryParams;
@@ -51,7 +75,7 @@ const buildFacets = (queryParams: Params): Facetable[] => {
   const fields: string[] = queryParams.facets !== undefined ? queryParams.facets.split(',') : [];
   fields.forEach((field: string) => {
     const facet: Facetable = { field };
-    ['type', 'pageSize', 'pageNumber', 'sort', 'filter'].forEach((key: string) => {
+    ['type', 'pageSize', 'pageNumber', 'sort', 'rangeStart', 'rangeEnd', 'rangeGap'].forEach((key: string) => {
       if (queryParams[`${field}.${key}`]) {
         facet[key] = queryParams[`${field}.${key}`];
       }

@@ -29,7 +29,7 @@
                 <span class="badge badge-light" *ngIf="item.parenthetical">{{item.parenthetical}}</span>
               </span>
 
-              <span *ngSwitchCase="'RANGE_SLIDER'" class="d-flex flex-nowrap justify-content-between">
+              <span *ngSwitchCase="'NUMBER_RANGE'" class="d-flex flex-nowrap justify-content-between">
                 <a [routerLink]="item.route" [queryParams]="item.queryParams" queryParamsHandling="merge">
                   <span>
                     <span *ngIf="item.selected" class="fa fa-close mr-2"></span>
@@ -48,12 +48,6 @@
                 </a>
                 <span class="badge badge-light" *ngIf="item.parenthetical">{{item.parenthetical}}</span>
               </span>
-            </span>
-
-            <span *ngSwitchCase="'RANGE_SLIDER'">
-              <div class="custom-slider" *ngIf="isBrowserRendered()">
-                <ng5-slider [(value)]="item.rangeValues.from" [(highValue)]="item.rangeValues.to" [options]="item.rangeOptions" (userChangeEnd)="onSliderChange(item)"></ng5-slider>
-              </div>
             </span>
 
             <span *ngSwitchCase="'ACTION'">
