@@ -17,7 +17,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "compress": "ts-node brotli_compress.ts",
+    "compress": "ts-node scripts/brotli-compress.ts",
     "dev:ssr": "ng run scholars-angular:serve-ssr",
     "serve:ssr": "node dist/scholars-angular/server/main.js",
     "build:ssr": "ng build --prod && ng run scholars-angular:server:production && npm run compress",
