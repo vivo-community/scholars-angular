@@ -32,6 +32,7 @@ In addition to having [Docker](https://docs.docker.com/) installed, a running [S
   -e EMBED_URL="http://localhost:4201" \
   -e VIVO_URL="http://localhost:8080/vivo" \
   -e VIVO_EDITOR_URL="http://localhost:8080/vivo_editor" \
+  -e COLLECT_SEARCH_STATS=true \
   scholars/angular
 ```
 
