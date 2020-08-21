@@ -35,5 +35,7 @@ import { routes } from './display.routes';
   ],
 })
 export class DisplayModule {
+
   public static routes = routes;
+
 }

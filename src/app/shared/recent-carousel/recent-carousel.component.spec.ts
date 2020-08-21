@@ -8,6 +8,7 @@ import { RecentCarouselComponent } from './recent-carousel.component';
 import { testAppConfig } from '../../../test.config';
 import { SharedModule } from '../shared.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { APP_CONFIG } from 'src/app/app.config';
 
 describe('RecentCarouselComponent', () => {
   let component: RecentCarouselComponent;
@@ -29,7 +30,7 @@ describe('RecentCarouselComponent', () => {
         }),
         TranslateModule.forRoot(),
       ],
-      providers: [{ provide: 'APP_CONFIG', useValue: testAppConfig }],
+      providers: [{ provide: APP_CONFIG, useValue: testAppConfig }],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));

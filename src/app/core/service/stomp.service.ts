@@ -7,10 +7,14 @@ import { asapScheduler } from 'rxjs';
 // import * as Stomp from 'stompjs';
 // import * as SockJS from 'sockjs-client';
 
-import { AppConfig } from '../../app.config';
+import { AppConfig, APP_CONFIG } from '../../app.config';
 import { StompSubscription } from '../model/stomp';
 
 // import { environment } from '../../../environments/environment';
+
+// NOTE: Commented out any reference to sockjs-client and stompjs.
+// They have been removed due to being built with commonjs and causes
+// optimization bailouts. Can be reintroduced when they are updated.
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +25,7 @@ export class StompService {
 
   private pending: Map<string, { observer: Observer<StompSubscription>; subscription: StompSubscription }>;
 
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, @Inject(PLATFORM_ID) private platformId: string) {
+  constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, @Inject(PLATFORM_ID) private platformId: string) {
     this.pending = new Map<string, { observer: Observer<StompSubscription>; subscription: StompSubscription }>();
   }
 
@@ -121,4 +125,5 @@ export class StompService {
     // return scheduled([this.client.unsubscribe(id)], asapScheduler);
     return scheduled([false], asapScheduler);
   }
+
 }

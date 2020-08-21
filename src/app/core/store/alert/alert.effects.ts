@@ -12,7 +12,10 @@ import * as fromAlert from '../alert/alert.actions';
 
 @Injectable()
 export class AlertEffects {
-  constructor(private actions: Actions, private store: Store<AppState>) {}
+
+  constructor(private actions: Actions, private store: Store<AppState>) {
+
+  }
 
   @Effect({ dispatch: false }) setAlertTimer = this.actions.pipe(
     ofType(fromAlert.AlertActionTypes.ADD_ALERT),
@@ -26,4 +29,5 @@ export class AlertEffects {
       }
     })
   );
+
 }

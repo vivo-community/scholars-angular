@@ -72,4 +72,5 @@ export class SubsectionComponent implements AfterViewInit, OnInit, OnDestroy {
   public getResourcesPage(resources: any[], sort: Sort[], page: SdrPage): any[] {
     return getResourcesPage(resources, sort, page);
   }
+
 }

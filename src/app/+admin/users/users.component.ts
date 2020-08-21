@@ -18,6 +18,7 @@ import { selectAllResources, selectResourcesPage } from '../../core/store/sdr';
   encapsulation: ViewEncapsulation.None,
 })
 export class UsersComponent implements OnInit {
+
   public users: Observable<User[]>;
 
   public page: Observable<SdrPage>;
@@ -36,4 +37,5 @@ export class UsersComponent implements OnInit {
   public getRoleValue(role: Role): string {
     return Role[role];
   }
+
 }

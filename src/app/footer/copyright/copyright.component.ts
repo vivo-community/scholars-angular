@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['copyright.component.scss'],
 })
 export class CopyrightComponent {
+
   public updated: Date = new Date();
+
 }

@@ -15,6 +15,7 @@ import { selectDiscoveryViewByClass } from '../../core/store/sdr';
   styleUrls: ['about.component.scss'],
 })
 export class AboutComponent implements OnInit {
+
   public discoveryView: Observable<DiscoveryView>;
 
   constructor(private store: Store<AppState>) {}
@@ -25,4 +26,5 @@ export class AboutComponent implements OnInit {
       filter((view: DiscoveryView) => view !== undefined)
     );
   }
+
 }

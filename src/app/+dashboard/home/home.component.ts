@@ -26,6 +26,7 @@ import * as fromAuth from '../../core/store/auth/auth.actions';
   encapsulation: ViewEncapsulation.None,
 })
 export class HomeComponent implements OnInit, OnDestroy {
+
   public discoveryView: Observable<DiscoveryView>;
 
   public home: Observable<Home>;
@@ -103,4 +104,5 @@ export class HomeComponent implements OnInit, OnDestroy {
     const variables = `--hero-color:${hero.fontColor};--hero-link-color:${hero.linkColor};--hero-link-hover-color:${hero.linkHoverColor}`;
     return this.sanitizer.bypassSecurityTrustStyle(variables);
   }
+
 }

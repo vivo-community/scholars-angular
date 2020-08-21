@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 import { ActionReducerMap, MetaReducer } from '@ngrx/store';
 
-import { AppConfig } from '../../app.config';
+import { AppConfig, APP_CONFIG } from '../../app.config';
 
 import { Individual } from '../model/discovery';
 
@@ -74,7 +74,7 @@ export const reducerToken = new InjectionToken<ActionReducerMap<AppState>>('Regi
 export const reducerProvider = {
   provide: reducerToken,
   useFactory: reducers,
-  deps: ['APP_CONFIG'],
+  deps: [APP_CONFIG],
 };
 
 export const metaReducers: MetaReducer<AppState>[] = [fromRootStore.universalMetaReducer];

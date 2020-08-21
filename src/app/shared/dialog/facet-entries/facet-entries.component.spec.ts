@@ -17,6 +17,7 @@ import { metaReducers, reducers } from '../../../core/store';
 import { testAppConfig } from '../../../../test.config';
 
 import { getRequest } from 'src/app/app.browser.module';
+import { APP_CONFIG } from 'src/app/app.config';
 
 describe('FacetEntriesComponent', () => {
   let component: FacetEntriesComponent;
@@ -42,7 +43,7 @@ describe('FacetEntriesComponent', () => {
       ],
       providers: [
         { provide: REQUEST, useFactory: getRequest },
-        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_CONFIG, useValue: testAppConfig },
         RestService,
         IndividualRepo
       ]

@@ -15,6 +15,7 @@ import { metaReducers, reducers } from '../../core/store';
 import { routes } from '../display.routes';
 
 import { testAppConfig } from '../../../test.config';
+import { APP_CONFIG } from 'src/app/app.config';
 
 describe('SectionComponent', () => {
   let component: SectionComponent;
@@ -38,7 +39,7 @@ describe('SectionComponent', () => {
         RouterTestingModule.withRoutes(routes[0].children),
       ],
       providers: [
-        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_CONFIG, useValue: testAppConfig },
         {
           provide: ActivatedRoute,
           useValue: {

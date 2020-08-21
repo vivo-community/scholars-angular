@@ -5,7 +5,10 @@ import { Meta, MetaDefinition } from '@angular/platform-browser';
   providedIn: 'root',
 })
 export class MetadataService {
-  constructor(private meta: Meta) {}
+
+  constructor(private meta: Meta) {
+
+  }
 
   public addTags(tags: MetaDefinition[]): void {
     tags.forEach((tag: MetaDefinition) => this.addTag(tag));
@@ -30,4 +33,5 @@ export class MetadataService {
       this.meta.updateTag(tag);
     }
   }
+
 }

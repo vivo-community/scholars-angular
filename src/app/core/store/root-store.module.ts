@@ -40,7 +40,20 @@ import { environment } from '../../../environments/environment';
     StoreRouterConnectingModule.forRoot({
       serializer: CustomRouterStateSerializer,
     }),
-    EffectsModule.forRoot([RootStoreEffects, RouterEffects, ThemeEffects, StompEffects, SdrEffects, SidebarEffects, MetadataEffects, LayoutEffects, LanguageEffects, DialogEffects, AuthEffects, AlertEffects]),
+    EffectsModule.forRoot([
+      RootStoreEffects,
+      RouterEffects,
+      ThemeEffects,
+      StompEffects,
+      SdrEffects,
+      SidebarEffects,
+      MetadataEffects,
+      LayoutEffects,
+      LanguageEffects,
+      DialogEffects,
+      AuthEffects,
+      AlertEffects
+    ]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
@@ -48,4 +61,4 @@ import { environment } from '../../../environments/environment';
   ],
   providers: [reducerProvider],
 })
-export class RootStoreModule {}
+export class RootStoreModule { }

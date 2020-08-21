@@ -21,6 +21,7 @@ import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class LanguageEffects {
+
   constructor(
     @Optional() @Inject(REQUEST) private request: Request,
     @Inject(PLATFORM_ID) private platformId: any,
@@ -28,7 +29,9 @@ export class LanguageEffects {
     private store: Store<AppState>,
     private translate: TranslateService,
     private alert: AlertService
-  ) { }
+  ) {
+
+  }
 
   @Effect() setLanguage = this.actions.pipe(
     ofType(fromLanguage.LanguageActionTypes.SET_LANGUAGE),
@@ -89,4 +92,5 @@ export class LanguageEffects {
     }
     return language;
   }
+
 }

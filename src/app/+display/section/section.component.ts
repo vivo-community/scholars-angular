@@ -5,7 +5,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppConfig } from '../../app.config';
+import { AppConfig, APP_CONFIG } from '../../app.config';
 import { DisplayTabSectionView, Sort } from '../../core/model/view';
 import { SolrDocument } from '../../core/model/discovery';
 import { SdrPage } from '../../core/model/sdr';
@@ -36,7 +36,7 @@ export class SectionComponent implements AfterViewInit, OnInit, OnDestroy {
   private subscriptions: Subscription[];
 
   constructor(
-    @Inject('APP_CONFIG') private appConfig: AppConfig,
+    @Inject(APP_CONFIG) private appConfig: AppConfig,
     @Inject(PLATFORM_ID) private platformId: string,
     private router: Router,
     private route: ActivatedRoute

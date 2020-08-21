@@ -62,6 +62,4 @@ export const createStyleLoader = (document: Document): ComputedStyleLoader => {
     }
   ]
 })
-export class AppBrowserModule {
-
-}
+export class AppBrowserModule { }

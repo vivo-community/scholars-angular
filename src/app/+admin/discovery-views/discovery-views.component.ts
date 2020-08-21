@@ -16,6 +16,7 @@ import { selectAllResources, selectResourcesPage } from '../../core/store/sdr';
   encapsulation: ViewEncapsulation.None,
 })
 export class DiscoveryViewsComponent implements OnInit {
+
   public discoveryViews: Observable<DiscoveryView[]>;
 
   public page: Observable<SdrPage>;
@@ -26,4 +27,5 @@ export class DiscoveryViewsComponent implements OnInit {
     this.discoveryViews = this.store.pipe(select(selectAllResources<DiscoveryView>('discoveryViews')));
     this.page = this.store.pipe(select(selectResourcesPage<DiscoveryView>('discoveryViews')));
   }
+
 }

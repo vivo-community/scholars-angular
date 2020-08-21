@@ -11,4 +11,4 @@ import { BannerComponent } from './banner/banner.component';
   imports: [CommonModule, SharedModule],
   exports: [HeaderComponent],
 })
-export class HeaderModule {}
+export class HeaderModule { }

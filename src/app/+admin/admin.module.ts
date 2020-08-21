@@ -39,5 +39,7 @@ import { routes } from './admin.routes';
   ],
 })
 export class AdminModule {
+
   public static routes = routes;
+
 }

@@ -8,6 +8,7 @@ import { RestService } from './rest.service';
 
 import { getRequest } from '../../app.browser.module';
 import { testAppConfig } from '../../../test.config';
+import { APP_CONFIG } from 'src/app/app.config';
 
 describe('AuthService', () => {
   beforeEach(() => {
@@ -15,7 +16,7 @@ describe('AuthService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         { provide: REQUEST, useFactory: getRequest },
-        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_CONFIG, useValue: testAppConfig },
         RestService,
         AuthService
       ],

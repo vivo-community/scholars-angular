@@ -11,7 +11,10 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class RestService {
-  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: string, @Inject(REQUEST) private request: any) { }
+
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: string, @Inject(REQUEST) private request: any) {
+
+  }
 
   public hasSession(): boolean {
     // tslint:disable-next-line: no-string-literal
@@ -95,4 +98,5 @@ export class RestService {
   private useSession(options: any): boolean {
     return options.withCredentials && isPlatformServer(this.platformId) && this.hasSession();
   }
+
 }

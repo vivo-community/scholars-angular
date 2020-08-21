@@ -3,7 +3,7 @@ import { HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
-import { AppConfig } from '../../app.config';
+import { AppConfig, APP_CONFIG } from '../../app.config';
 import { User } from '../model/user';
 import { LoginRequest, RegistrationRequest } from '../model/request';
 
@@ -13,7 +13,8 @@ import { RestService } from './rest.service';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, private restService: RestService) {}
+
+  constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, private restService: RestService) {}
 
   public hasSession(): boolean {
     return this.restService.hasSession();
@@ -58,4 +59,5 @@ export class AuthService {
       withCredentials: true,
     });
   }
+
 }

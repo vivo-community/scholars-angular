@@ -25,6 +25,7 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+
   public style: Observable<SafeStyle>;
 
   public location = AlertLocation.MAIN;
@@ -73,4 +74,5 @@ export class AppComponent implements OnInit {
   private findLinkTarget(target: any, depth: number): any {
     return target.href ? target : depth < 3 ? this.findLinkTarget(target.parentElement, ++depth) : target;
   }
+
 }
