@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AlertLocation, AlertType } from '../model/alert';
@@ -11,8 +12,10 @@ import * as fromSdr from '../store/sdr/sdr.actions';
 })
 export class AlertService {
 
-  constructor(private translate: TranslateService) {
+  private isPlatformBrowser: boolean;
 
+  constructor(@Inject(PLATFORM_ID) platformId: string, private translate: TranslateService) {
+    this.isPlatformBrowser = isPlatformBrowser(platformId);
   }
 
   // NOTE: using translate.instant requires the translation json be loaded before
@@ -170,9 +173,13 @@ export class AlertService {
   }
 
   public alert(location: AlertLocation, type: AlertType, message: string, dismissible: boolean, timer?: number): fromAlert.AddAlertAction {
-    return new fromAlert.AddAlertAction({
-      alert: { location, type, message, dismissible, timer },
-    });
+    if (this.isPlatformBrowser) {
+      return new fromAlert.AddAlertAction({
+        alert: { location, type, message, dismissible, timer },
+      });
+    } else {
+      console.log(location, type, message);
+    }
   }
 
 }

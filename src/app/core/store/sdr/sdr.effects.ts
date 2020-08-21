@@ -618,8 +618,7 @@ export class SdrEffects {
     if (route.queryParams.collection) {
       this.stats.collect(route.queryParams).toPromise().then((data: any) => {
         if (data) {
-          // tslint:disable-next-line: no-console
-          console.info('collected stats', data);
+          // do nothing
         }
       }).catch((error: any) => {
         console.error(error);
