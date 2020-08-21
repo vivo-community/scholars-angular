@@ -18,7 +18,7 @@ import * as expressStaticGzip from 'express-static-gzip';
 import { AppConfig, APP_CONFIG } from './src/app/app.config';
 import { AppServerModule } from './src/main.server';
 
-import { compress } from './compression';
+import { compressStatic } from './compression';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(appConfig: AppConfig) {
@@ -26,8 +26,10 @@ export function app(appConfig: AppConfig) {
   const router = express.Router();
   const distFolder = join(process.cwd(), 'dist/scholars-angular/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
+  const distConfigFile = join(distFolder, 'assets/appConfig.json');
 
-  writeFileSync(join(distFolder, 'assets/appConfig.json'), compress(JSON.stringify(appConfig), 1));
+  writeFileSync(distConfigFile, JSON.stringify(appConfig));
+  compressStatic(distConfigFile, 1);
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine('html', ngExpressEngine({
