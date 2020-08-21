@@ -5,9 +5,8 @@ import 'zone.js/dist/zone-node';
  */
 import '@angular/localize/init';
 
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { compress } from 'brotli';
 
 import { APP_BASE_HREF } from '@angular/common';
 
@@ -16,23 +15,10 @@ import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import * as expressStaticGzip from 'express-static-gzip';
 
-import * as glob from 'glob';
-
 import { AppConfig, APP_CONFIG } from './src/app/app.config';
 import { AppServerModule } from './src/main.server';
 
-function compressStatic(extensions: string[], mode: number) {
-  extensions.forEach((ext: string) => glob(`dist/**/*${ext}`, {}, (error, files) => {
-    files.forEach(file => writeFileSync(`${file}.br`, compress(readFileSync(file), {
-      extension: 'br',
-      skipLarger: true,
-      mode,             // 0 = generic, 1 = text, 2 = font (WOFF2)
-      quality: 10,      // 0 - 11,
-      lgwin: 12,        // default
-      threshold: 10240
-    })));
-  }));
-}
+import { compress } from './compression';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(appConfig: AppConfig) {
@@ -41,10 +27,7 @@ export function app(appConfig: AppConfig) {
   const distFolder = join(process.cwd(), 'dist/scholars-angular/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
 
-  writeFileSync(join(distFolder, 'assets/appConfig.json'), JSON.stringify(appConfig));
-
-  compressStatic(['js', 'json', 'css', 'svg', 'html'], 1);
-  compressStatic(['woff2'], 2);
+  writeFileSync(join(distFolder, 'assets/appConfig.json'), compress(JSON.stringify(appConfig), 1));
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine('html', ngExpressEngine({
@@ -53,8 +36,8 @@ export function app(appConfig: AppConfig) {
       {
         provide: APP_CONFIG,
         useValue: appConfig,
-      },
-    ],
+      }
+    ]
   }));
 
   server.set('view engine', 'html');

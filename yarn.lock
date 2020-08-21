@@ -2290,7 +2290,7 @@ brorand@^1.0.1:
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
   integrity sha1-EsJe/kCkXjwyPrhnWgoM5XsiNx8=
 
-brotli@^1.3.2:
+brotli@1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/brotli/-/brotli-1.3.2.tgz#525a9cad4fcba96475d7d388f6aecb13eed52f46"
   integrity sha1-UlqcrU/LqWR119OI9q7LE+7VL0Y=
@@ -2920,7 +2920,7 @@ compressible@~2.0.16:
   dependencies:
     mime-db ">= 1.43.0 < 2"
 
-compression@1.7.4, compression@^1.7.4:
+compression@^1.7.4:
   version "1.7.4"
   resolved "https://registry.yarnpkg.com/compression/-/compression-1.7.4.tgz#95523eff170ca57c29a0ca41e6fe131f41e5bb8f"
   integrity sha512-jaSIDzP9pZVS4ZfQ+TzvtiWhdpFhE2RDHz8QJkpX9SIpLq88VueF5jJw6t+6CUQcAoA6t+x89MLrWAqpfDE8iQ==
@@ -3972,7 +3972,7 @@ expand-brackets@^2.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-express-static-gzip@^2.0.7:
+express-static-gzip@2.0.7:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/express-static-gzip/-/express-static-gzip-2.0.7.tgz#274d35c92c5f5cd222a6d3b504f343bd9931519e"
   integrity sha512-cOYQsNfijszmuhbySBBnnBDAz6VEL7euBdnb6DtGaRdXlhA2NPmuuOsTlApYh3aKAv+E/P33L4JMnBoiz99/PA==
