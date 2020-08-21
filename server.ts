@@ -103,6 +103,8 @@ function run() {
   const server = app(appConfig);
   server.listen(PORT, () => {
     console.log(`Node Express server listening on http://${HOST}:${PORT}${BASE_HREF}`);
+    console.log('Using runtime app config:');
+    console.log(appConfig);
   });
 }
 
