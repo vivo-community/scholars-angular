@@ -28,7 +28,10 @@ import * as fromSdr from '../sdr/sdr.actions';
 
 @Injectable()
 export class AuthEffects {
-  constructor(private actions: Actions, private store: Store<AppState>, private alert: AlertService, private authService: AuthService, private dialog: DialogService) { }
+
+  constructor(private actions: Actions, private store: Store<AppState>, private alert: AlertService, private authService: AuthService, private dialog: DialogService) {
+
+  }
 
   @Effect() reconnect = this.actions.pipe(
     ofType(fromAuth.AuthActionTypes.LOGIN_SUCCESS, fromAuth.AuthActionTypes.LOGOUT_SUCCESS),
@@ -240,4 +243,5 @@ export class AuthEffects {
   @Effect() init = defer(() => {
     return scheduled([new fromAuth.CheckSessionAction()], asapScheduler);
   });
+
 }

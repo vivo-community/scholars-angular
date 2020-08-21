@@ -20,7 +20,9 @@ export class ThemeEffects {
     private actions: Actions,
     private themeService: ThemeService,
     private alert: AlertService
-  ) { }
+  ) {
+
+  }
 
   @Effect() loadActiveTheme = this.actions.pipe(
     ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE),

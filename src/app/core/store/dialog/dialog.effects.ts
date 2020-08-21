@@ -17,7 +17,10 @@ import * as fromAlert from '../alert/alert.actions';
 
 @Injectable()
 export class DialogEffects {
-  constructor(private actions: Actions, private store: Store<AppState>, private modalService: NgbModal) {}
+
+  constructor(private actions: Actions, private store: Store<AppState>, private modalService: NgbModal) {
+
+  }
 
   @Effect() openDialog = this.actions.pipe(
     ofType(fromDialog.DialogActionTypes.OPEN_DIALOG),
@@ -51,4 +54,5 @@ export class DialogEffects {
       });
     })
   );
+
 }

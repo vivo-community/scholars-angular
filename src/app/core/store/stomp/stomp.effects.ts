@@ -16,7 +16,10 @@ import * as fromStomp from './stomp.actions';
 
 @Injectable()
 export class StompEffects {
-  constructor(private actions: Actions, private store: Store<AppState>, private stomp: StompService, private alert: AlertService) {}
+
+  constructor(private actions: Actions, private store: Store<AppState>, private stomp: StompService, private alert: AlertService) {
+
+  }
 
   @Effect() connect = this.actions.pipe(
     ofType(fromStomp.StompActionTypes.CONNECT),

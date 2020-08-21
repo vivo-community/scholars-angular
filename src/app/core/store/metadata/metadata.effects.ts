@@ -16,6 +16,7 @@ import * as fromMetadata from './metadata.actions';
 
 @Injectable()
 export class MetadataEffects {
+
   constructor(private actions: Actions, private router: Router, private store: Store<AppState>, private metadataService: MetadataService) {
     this.listenForRouteDataTags();
   }
@@ -82,4 +83,5 @@ export class MetadataEffects {
       }
     });
   }
+
 }
