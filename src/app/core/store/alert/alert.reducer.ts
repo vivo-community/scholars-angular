@@ -36,6 +36,9 @@ export function reducer(state = initialState, action: AlertActions): AlertState 
         ...state,
       };
     }
+    case AlertActionTypes.ADD_ALERT:
+      console.log(action.payload);
+      break;
     default:
       return state;
   }

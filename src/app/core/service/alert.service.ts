@@ -20,7 +20,7 @@ export class AlertService {
 
   // NOTE: using translate.instant requires the translation json be loaded before
 
-  public setLanguageSuccessAlert(payload: { language: string }): fromAlert.AddAlertAction {
+  public setLanguageSuccessAlert(payload: { language: string }): fromAlert.AlertActions {
     return this.alert(
       AlertLocation.MAIN,
       AlertType.SUCCESS,
@@ -32,7 +32,7 @@ export class AlertService {
     );
   }
 
-  public setLanguageFailureAlert(payload: { error: any; language: string }): fromAlert.AddAlertAction {
+  public setLanguageFailureAlert(payload: { error: any; language: string }): fromAlert.AlertActions {
     return this.alert(
       AlertLocation.MAIN,
       AlertType.DANGER,
@@ -44,141 +44,143 @@ export class AlertService {
     );
   }
 
-  public loginSuccessAlert(): fromAlert.AddAlertAction {
+  public loginSuccessAlert(): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.SUCCESS, this.translate.instant('SHARED.ALERT.LOGIN_SUCCESS'), true, 10000);
   }
 
-  public loginFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public loginFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.DIALOG, AlertType.DANGER, payload.response.error, true, 15000);
   }
 
-  public submitRegistrationSuccessAlert(): fromAlert.AddAlertAction {
+  public submitRegistrationSuccessAlert(): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.SUCCESS, this.translate.instant('SHARED.ALERT.SUBMIT_REGISTRATION_SUCCESS'), true, 15000);
   }
 
-  public submitRegistrationFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public submitRegistrationFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.DIALOG, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public confirmRegistrationSuccessAlert(): fromAlert.AddAlertAction {
+  public confirmRegistrationSuccessAlert(): fromAlert.AlertActions {
     return this.alert(AlertLocation.DIALOG, AlertType.SUCCESS, this.translate.instant('SHARED.ALERT.CONFIRM_REGISTRATION_SUCCESS'), false);
   }
 
-  public confirmRegistrationFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public confirmRegistrationFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.error}`, true, 15000);
   }
 
-  public completeRegistrationSuccessAlert(): fromAlert.AddAlertAction {
+  public completeRegistrationSuccessAlert(): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.SUCCESS, this.translate.instant('SHARED.ALERT.COMPLETE_REGISTRATION_SUCCESS'), true, 15000);
   }
 
-  public completeRegistrationFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public completeRegistrationFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.DIALOG, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public unauthorizedAlert(): fromAlert.AddAlertAction {
+  public unauthorizedAlert(): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, this.translate.instant('SHARED.ALERT.UNAUTHORIZED'), true, 15000);
   }
 
-  public forbiddenAlert(): fromAlert.AddAlertAction {
+  public forbiddenAlert(): fromAlert.AlertActions {
     return this.alert(AlertLocation.DIALOG, AlertType.WARNING, this.translate.instant('SHARED.ALERT.FORBIDDEN'), false);
   }
 
-  public connectFailureAlert(): fromAlert.AddAlertAction {
+  public connectFailureAlert(): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, this.translate.instant('SHARED.ALERT.FAILED'), true, 15000);
   }
 
-  public disconnectFailureAlert(): fromAlert.AddAlertAction {
+  public disconnectFailureAlert(): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, this.translate.instant('SHARED.ALERT.FAILED'), true, 15000);
   }
 
-  public unsubscribeFailureAlert(): fromAlert.AddAlertAction {
+  public unsubscribeFailureAlert(): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, this.translate.instant('SHARED.ALERT.FAILED'), true, 15000);
   }
 
-  public loadActiveThemeFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public loadActiveThemeFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public applyActiveThemeFailureAlert(payload: { error: string }): fromAlert.AddAlertAction {
+  public applyActiveThemeFailureAlert(payload: { error: string }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, payload.error, true, 15000);
   }
 
-  public getAllFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public getAllFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public getOneFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public getOneFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public findByIdInFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public findByIdInFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public findByTypesInFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public findByTypesInFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public fetchLazyRefernceFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public fetchLazyRefernceFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public pageFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public pageFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public countFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public countFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public recentlyUpdatedFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public recentlyUpdatedFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public searchFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public searchFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public postSuccessAlert(action: fromSdr.PostResourceSuccessAction): fromAlert.AddAlertAction {
+  public postSuccessAlert(action: fromSdr.PostResourceSuccessAction): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.SUCCESS, this.translate.instant('SHARED.ALERT.POST_SUCCESS'), true, 10000);
   }
 
-  public postFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public postFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public putSuccessAlert(action: fromSdr.PutResourceSuccessAction): fromAlert.AddAlertAction {
+  public putSuccessAlert(action: fromSdr.PutResourceSuccessAction): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.SUCCESS, this.translate.instant('SHARED.ALERT.PUT_SUCCESS'), true, 10000);
   }
 
-  public putFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public putFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public patchSuccessAlert(action: fromSdr.PatchResourceSuccessAction): fromAlert.AddAlertAction {
+  public patchSuccessAlert(action: fromSdr.PatchResourceSuccessAction): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.SUCCESS, this.translate.instant('SHARED.ALERT.PATCH_SUCCESS'), true, 10000);
   }
 
-  public patchFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public patchFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public deleteSuccessAlert(action: fromSdr.DeleteResourceSuccessAction): fromAlert.AddAlertAction {
+  public deleteSuccessAlert(action: fromSdr.DeleteResourceSuccessAction): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.SUCCESS, this.translate.instant('SHARED.ALERT.DELETE_SUCCESS'), true, 10000);
   }
 
-  public deleteFailureAlert(payload: { response: any }): fromAlert.AddAlertAction {
+  public deleteFailureAlert(payload: { response: any }): fromAlert.AlertActions {
     return this.alert(AlertLocation.MAIN, AlertType.DANGER, `(${payload.response.status}) ${payload.response.message}`, true, 15000);
   }
 
-  public alert(location: AlertLocation, type: AlertType, message: string, dismissible: boolean, timer?: number): fromAlert.AddAlertAction {
+  public alert(location: AlertLocation, type: AlertType, message: string, dismissible: boolean, timer?: number): fromAlert.AlertActions {
     if (this.isPlatformBrowser) {
       return new fromAlert.AddAlertAction({
         alert: { location, type, message, dismissible, timer },
       });
     } else {
-      console.log(location, type, message);
+      return new fromAlert.NoopAlertAction({
+        alert: { location, type, message, dismissible, timer },
+      });
     }
   }
 
