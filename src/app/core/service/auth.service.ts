@@ -13,6 +13,7 @@ import { RestService } from './rest.service';
   providedIn: 'root',
 })
 export class AuthService {
+
   constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, private restService: RestService) {}
 
   public hasSession(): boolean {
@@ -58,4 +59,5 @@ export class AuthService {
       withCredentials: true,
     });
   }
+
 }

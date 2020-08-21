@@ -81,4 +81,5 @@ export class TabComponent implements OnDestroy, OnInit {
   public getSectionsToShow(tab: DisplayTabView, document: SolrDocument): DisplayTabSectionView[] {
     return sectionsToShow(tab.sections, document);
   }
+
 }

@@ -7,10 +7,9 @@ import { RestService } from './rest.service';
 @Injectable()
 export class StatsService {
 
-  constructor(
-    @Inject(APP_CONFIG) private appConfig: AppConfig,
-    private rest: RestService
-  ) { }
+  constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, private rest: RestService) {
+
+  }
 
   public collect(queryParams: Params): Observable<any> {
     return new Observable((observer) => {

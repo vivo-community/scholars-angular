@@ -16,6 +16,7 @@ import { selectAllResources, selectResourcesPage } from '../../core/store/sdr';
   encapsulation: ViewEncapsulation.None,
 })
 export class ThemesComponent implements OnInit {
+
   public themes: Observable<Theme[]>;
 
   public page: Observable<SdrPage>;
@@ -26,4 +27,5 @@ export class ThemesComponent implements OnInit {
     this.themes = this.store.pipe(select(selectAllResources<Theme>('themes')));
     this.page = this.store.pipe(select(selectResourcesPage<Theme>('themes')));
   }
+
 }

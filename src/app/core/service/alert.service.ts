@@ -10,7 +10,10 @@ import * as fromSdr from '../store/sdr/sdr.actions';
   providedIn: 'root',
 })
 export class AlertService {
-  constructor(private translate: TranslateService) {}
+
+  constructor(private translate: TranslateService) {
+
+  }
 
   // NOTE: using translate.instant requires the translation json be loaded before
 
@@ -171,4 +174,5 @@ export class AlertService {
       alert: { location, type, message, dismissible, timer },
     });
   }
+
 }

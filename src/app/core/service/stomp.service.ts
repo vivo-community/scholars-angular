@@ -12,6 +12,10 @@ import { StompSubscription } from '../model/stomp';
 
 // import { environment } from '../../../environments/environment';
 
+// NOTE: Commented out any reference to sockjs-client and stompjs.
+// They have been removed due to being built with commonjs and causes
+// optimization bailouts. Can be reintroduced when they are updated.
+
 @Injectable({
   providedIn: 'root',
 })
@@ -121,4 +125,5 @@ export class StompService {
     // return scheduled([this.client.unsubscribe(id)], asapScheduler);
     return scheduled([false], asapScheduler);
   }
+
 }

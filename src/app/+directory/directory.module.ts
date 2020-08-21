@@ -27,5 +27,7 @@ import { routes } from './directory.routes';
   ],
 })
 export class DirectoryModule {
+
   public static routes = routes;
+
 }

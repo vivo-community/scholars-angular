@@ -15,6 +15,7 @@ import { selectActiveThemeHeaderBanner } from '../../core/store/theme';
   styleUrls: ['banner.component.scss'],
 })
 export class BannerComponent implements OnInit {
+
   public banner: Observable<Banner>;
 
   constructor(private store: Store<AppState>) {}
@@ -25,4 +26,5 @@ export class BannerComponent implements OnInit {
       skipWhile((banner: Banner) => banner === undefined)
     );
   }
+
 }

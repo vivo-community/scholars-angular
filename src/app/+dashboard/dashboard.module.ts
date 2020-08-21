@@ -33,5 +33,7 @@ import { routes } from './dashboard.routes';
   ],
 })
 export class DashboardModule {
+
   public static routes = routes;
+
 }

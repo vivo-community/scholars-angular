@@ -16,7 +16,10 @@ import { hexToRgb, luminance, mix, yiq } from '../../shared/utilities/color.util
   providedIn: 'root',
 })
 export class ThemeService {
-  constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, private sanitizer: DomSanitizer, private restService: RestService, private styleLoader: ComputedStyleLoader) {}
+
+  constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, private sanitizer: DomSanitizer, private restService: RestService, private styleLoader: ComputedStyleLoader) {
+
+  }
 
   public getActiveTheme(): Observable<Theme> {
     return this.restService.get<Theme>(this.appConfig.serviceUrl + '/themes/search/active');
@@ -173,4 +176,5 @@ export class ThemeService {
     }
     return styles;
   }
+
 }

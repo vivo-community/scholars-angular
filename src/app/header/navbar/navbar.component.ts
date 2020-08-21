@@ -18,6 +18,7 @@ import * as fromLayout from '../../core/store/layout/layout.actions';
   styleUrls: ['navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
+
   public isNavbarCollapsed: Observable<boolean>;
 
   public isNavbarExpanded: Observable<boolean>;
@@ -38,4 +39,5 @@ export class NavbarComponent implements OnInit {
   public toggleNavbar(): void {
     this.store.dispatch(new fromLayout.ToggleNavbarAction());
   }
+
 }
