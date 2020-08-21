@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AppConfig } from 'src/app/app.config';
+import { AppConfig, APP_CONFIG } from 'src/app/app.config';
 import { RestService } from './rest.service';
 
 @Injectable()
 export class StatsService {
 
   constructor(
-    @Inject('APP_CONFIG') private appConfig: AppConfig,
+    @Inject(APP_CONFIG) private appConfig: AppConfig,
     private rest: RestService
   ) { }
 

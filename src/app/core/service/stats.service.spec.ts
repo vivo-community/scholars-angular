@@ -5,13 +5,14 @@ import { StatsService } from './stats.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { getRequest } from 'src/app/app.browser.module';
+import { APP_CONFIG } from 'src/app/app.config';
 
 describe('StatsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_CONFIG, useValue: testAppConfig },
         { provide: REQUEST, useFactory: getRequest },
         StatsService,
         RestService

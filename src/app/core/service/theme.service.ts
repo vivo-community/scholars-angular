@@ -7,7 +7,7 @@ import { asapScheduler } from 'rxjs';
 import { ComputedStyleLoader } from '../computed-style-loader';
 import { RestService } from './rest.service';
 
-import { AppConfig } from '../../app.config';
+import { AppConfig, APP_CONFIG } from '../../app.config';
 import { Theme, Style } from '../model/theme';
 
 import { hexToRgb, luminance, mix, yiq } from '../../shared/utilities/color.utility';
@@ -16,7 +16,7 @@ import { hexToRgb, luminance, mix, yiq } from '../../shared/utilities/color.util
   providedIn: 'root',
 })
 export class ThemeService {
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, private sanitizer: DomSanitizer, private restService: RestService, private styleLoader: ComputedStyleLoader) {}
+  constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, private sanitizer: DomSanitizer, private restService: RestService, private styleLoader: ComputedStyleLoader) {}
 
   public getActiveTheme(): Observable<Theme> {
     return this.restService.get<Theme>(this.appConfig.serviceUrl + '/themes/search/active');

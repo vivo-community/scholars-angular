@@ -12,6 +12,7 @@ import { metaReducers, reducers } from '../../../store';
 
 import { getRequest } from '../../../../app.browser.module';
 import { testAppConfig } from '../../../../../test.config';
+import { APP_CONFIG } from 'src/app/app.config';
 
 describe('UserRepo', () => {
   beforeEach(() => {
@@ -30,7 +31,7 @@ describe('UserRepo', () => {
       ],
       providers: [
         { provide: REQUEST, useFactory: getRequest },
-        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_CONFIG, useValue: testAppConfig },
         RestService,
         UserRepo
       ],

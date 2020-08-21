@@ -19,7 +19,7 @@ import { RootStoreModule } from './core/store/root-store.module';
 
 import { AppState } from './core/store';
 
-import { AppConfig } from './app.config';
+import { AppConfig, APP_CONFIG } from './app.config';
 
 import * as fromStore from './core/store/root-store.actions';
 
@@ -56,7 +56,7 @@ const getBaseHref = (document: Document, appConfig: AppConfig): string => {
     {
       provide: APP_BASE_HREF,
       useFactory: getBaseHref,
-      deps: [DOCUMENT, 'APP_CONFIG']
+      deps: [DOCUMENT, APP_CONFIG]
     }
   ]
 })

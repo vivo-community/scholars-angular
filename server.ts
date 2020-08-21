@@ -5,28 +5,33 @@ import 'zone.js/dist/zone-node';
  */
 import '@angular/localize/init';
 
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { existsSync, writeFile } from 'fs';
+import { compress } from 'brotli';
 
 import { APP_BASE_HREF } from '@angular/common';
 
 import { ngExpressEngine } from '@nguniversal/express-engine';
 
 import * as express from 'express';
-import * as compression from 'compression';
 import * as expressStaticGzip from 'express-static-gzip';
 
-import { AppConfig } from './src/app/app.config';
+import * as glob from 'glob';
+
+import { AppConfig, APP_CONFIG } from './src/app/app.config';
 import { AppServerModule } from './src/main.server';
 
-function shouldCompress(req, res) {
-  if (req.headers['x-no-compression']) {
-    // don't compress responses with this request header
-    return false;
-  }
-
-  // fallback to standard filter function
-  return compression.filter(req, res);
+function compressStatic(extensions: string[], mode: number) {
+  extensions.forEach((ext: string) => glob(`dist/**/*${ext}`, {}, (error, files) => {
+    files.forEach(file => writeFileSync(`${file}.br`, compress(readFileSync(file), {
+      extension: 'br',
+      skipLarger: true,
+      mode,             // 0 = generic, 1 = text, 2 = font (WOFF2)
+      quality: 10,      // 0 - 11,
+      lgwin: 12,        // default
+      threshold: 10240
+    })));
+  }));
 }
 
 // The Express app is exported so that it can be used by serverless Functions.
@@ -36,46 +41,49 @@ export function app(appConfig: AppConfig) {
   const distFolder = join(process.cwd(), 'dist/scholars-angular/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
 
-  writeFile(join(distFolder, 'assets/appConfig.json'), JSON.stringify(appConfig), (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('Static runtime app config created:');
-      console.log(appConfig);
-    }
-  });
+  writeFileSync(join(distFolder, 'assets/appConfig.json'), JSON.stringify(appConfig));
+
+  compressStatic(['js', 'json', 'css', 'svg', 'html'], 1);
+  compressStatic(['woff2'], 2);
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine('html', ngExpressEngine({
     bootstrap: AppServerModule,
     providers: [
       {
-        provide: 'APP_CONFIG',
+        provide: APP_CONFIG,
         useValue: appConfig,
       },
     ],
   }));
 
-  server.use(compression({ filter: shouldCompress }));
-
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
-  router.get('*.*', expressStaticGzip(distFolder, {
-    enableBrotli: true,
-    orderPreference: ['br', 'gzip']
-  }));
+  router.get('*.*', (req, res, next) => {
+    if (req.headers['x-no-compression']) {
+      return next;
+    }
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
-  // Serve static files from /browser
+    return expressStaticGzip(distFolder, {
+      enableBrotli: true,
+      orderPreference: ['br', 'gzip']
+    })(req, res, next);
+  });
+
   router.get('*.*', express.static(distFolder, {
     maxAge: '1y',
   }));
 
   // All regular routes use the Universal engine
   router.get('*', (req, res) => {
-    res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+    res.render(indexHtml, {
+      req,
+      providers: [{
+        provide: APP_BASE_HREF,
+        useValue: req.baseUrl
+      }]
+    });
   });
 
   server.use(appConfig.baseHref, router);

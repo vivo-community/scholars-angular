@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { RestService } from '../../../service/rest.service';
 import { SdrRepo } from './sdr-repo';
 
-import { AppConfig } from '../../../../app.config';
+import { AppConfig, APP_CONFIG } from '../../../../app.config';
 import { Sort, Facetable, Filterable, Boostable, SdrRequest } from '../../request';
 import { Count } from '../count';
 import { SdrResource } from '../sdr-resource';
@@ -17,7 +17,7 @@ import { SdrCollection } from '../sdr-collection';
 })
 export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<R> {
 
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, protected restService: RestService) { }
+  constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, protected restService: RestService) { }
 
   public search(request: SdrRequest): Observable<SdrCollection> {
     return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/advanced${this.mapParameters(request)}`, {

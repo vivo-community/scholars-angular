@@ -11,6 +11,7 @@ import { getRequest, createStyleLoader } from '../../app.browser.module';
 
 import { ComputedStyleLoader } from '../computed-style-loader';
 import { testAppConfig } from '../../../test.config';
+import { APP_CONFIG } from 'src/app/app.config';
 
 describe('ThemeService', () => {
   beforeEach(() => {
@@ -18,7 +19,7 @@ describe('ThemeService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         { provide: REQUEST, useFactory: getRequest },
-        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_CONFIG, useValue: testAppConfig },
         { provide: ComputedStyleLoader, useFactory: createStyleLoader, deps: [DOCUMENT] },
         RestService,
         ThemeService,
