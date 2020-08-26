@@ -10,6 +10,7 @@ import { NavigationComponent } from './navigation.component';
 
 import { metaReducers, reducers } from '../../core/store';
 import { testAppConfig } from '../../../test.config';
+import { APP_CONFIG } from 'src/app/app.config';
 
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
@@ -33,7 +34,7 @@ describe('NavigationComponent', () => {
       ],
       providers: [
         {
-          provide: 'APP_CONFIG',
+          provide: APP_CONFIG,
           useValue: testAppConfig,
         },
       ],

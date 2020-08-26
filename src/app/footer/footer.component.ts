@@ -24,6 +24,7 @@ import * as fromAuth from '../core/store/auth/auth.actions';
   styleUrls: ['footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
+
   public isAuthenticated: Observable<boolean>;
 
   public isAdmin: Observable<boolean>;
@@ -61,4 +62,5 @@ export class FooterComponent implements OnInit {
   public logout(): void {
     this.store.dispatch(new fromAuth.LogoutAction());
   }
+
 }

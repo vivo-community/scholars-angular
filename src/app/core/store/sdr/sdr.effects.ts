@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 
 import { combineLatest, defer, Observable, scheduled } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
+import { asapScheduler } from 'rxjs';
 import { catchError, filter, map, mergeMap, skipWhile, switchMap, take, withLatestFrom } from 'rxjs/operators';
 
 import { AlertService } from '../../service/alert.service';
@@ -24,7 +24,7 @@ import { Facet, DiscoveryView, DirectoryView, FacetType, OpKey } from '../../mod
 
 import { injectable, repos } from '../../model/repos';
 
-import { createSdrRequest } from '../../../shared/utilities/discovery.utility';
+import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue, getFacetFilterLabel } from '../../../shared/utilities/discovery.utility';
 
 import { selectSdrState } from './';
 import { SdrState } from './sdr.reducer';
@@ -77,7 +77,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -111,7 +111,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -150,7 +150,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -189,7 +189,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -233,7 +233,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         );
@@ -265,7 +265,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -304,7 +304,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -315,7 +315,7 @@ export class SdrEffects {
     ofType(...this.buildActions(fromSdr.SdrActionTypes.SEARCH_SUCCESS)),
     switchMap((action: fromSdr.SearchResourcesSuccessAction) =>
       combineLatest([
-        scheduled([action], asap),
+        scheduled([action], asapScheduler),
         this.store.pipe(
           select(selectRouterState),
           take(1)
@@ -367,7 +367,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -399,7 +399,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -431,7 +431,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -456,7 +456,7 @@ export class SdrEffects {
         .put(action.payload.resource)
         .pipe(
           map((resource: SdrResource) => new fromSdr.PutResourceSuccessAction(action.name, { resource })),
-          catchError((response) => scheduled([new fromSdr.PutResourceFailureAction(action.name, { response })], asap))
+          catchError((response) => scheduled([new fromSdr.PutResourceFailureAction(action.name, { response })], asapScheduler))
         )
     )
   );
@@ -486,7 +486,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -518,7 +518,7 @@ export class SdrEffects {
                   response,
                 }),
               ],
-              asap
+              asapScheduler
             )
           )
         )
@@ -557,7 +557,7 @@ export class SdrEffects {
   @Effect() initViews = defer(() => scheduled([
     new fromSdr.GetAllResourcesAction('directoryViews'),
     new fromSdr.GetAllResourcesAction('discoveryViews')
-  ], asap));
+  ], asapScheduler));
 
   private injectRepos(): void {
     const injector = Injector.create({
@@ -583,7 +583,7 @@ export class SdrEffects {
 
   private waitForStompConnection(name: string): Observable<[string, boolean]> {
     return combineLatest([
-      scheduled([name], asap),
+      scheduled([name], asapScheduler),
       this.store.pipe(
         select(selectIsStompConnected),
         skipWhile((connected: boolean) => !connected),
@@ -618,8 +618,7 @@ export class SdrEffects {
     if (route.queryParams.collection) {
       this.stats.collect(route.queryParams).toPromise().then((data: any) => {
         if (data) {
-          // tslint:disable-next-line: no-console
-          console.info('collected stats', data);
+          // do nothing
         }
       }).catch((error: any) => {
         console.error(error);
@@ -652,43 +651,6 @@ export class SdrEffects {
 
             sidebarMenu.sections.push(sidebarSection);
 
-            if (viewFacet.type === FacetType.RANGE_SLIDER) {
-
-              const requestFilter = route.queryParams.filters.split(',').find((rf: string) => rf === sdrFacet.field);
-
-              const rangeOptions = {
-                floor: viewFacet.rangeMin,
-                ceil: viewFacet.rangeMax
-              };
-              const rangeValues = {
-                from: viewFacet.rangeMin,
-                to: viewFacet.rangeMax
-              };
-
-              if (requestFilter) {
-                const filterValue = route.queryParams[`${requestFilter}.filter`];
-                if (filterValue.startsWith('[') && filterValue.indexOf('TO') >= 0 && filterValue.endsWith(']')) {
-                  const range = filterValue.substring(1, filterValue.length - 1).split(' TO ');
-                  rangeValues.from = range[0];
-                  rangeValues.to = range[1];
-                }
-                sidebarSection.collapsed = false;
-              }
-
-              const sidebarItem: SidebarItem = {
-                type: SidebarItemType.RANGE_SLIDER,
-                label: '',
-                facet: viewFacet,
-                route: [],
-                queryParams: Object.assign({}, route.queryParams),
-                rangeOptions,
-                rangeValues
-              };
-              sidebarItem.queryParams[`${sdrFacet.field}.filter`] = `[${sidebarItem.rangeValues.from} TO ${sidebarItem.rangeValues.to}]`;
-              sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
-              sidebarSection.items.push(sidebarItem);
-            }
-
             sdrFacet.entries.content
               .filter((facetEntry: SdrFacetEntry) => facetEntry.value.length > 0)
               .forEach((facetEntry: SdrFacetEntry) => {
@@ -697,41 +659,42 @@ export class SdrEffects {
                 const requestFacet = route.queryParams.facets.split(',').find((rf: string) => rf === sdrFacet.field);
 
                 if (requestFacet && route.queryParams[`${requestFacet}.filter`] !== undefined) {
-                  if (viewFacet.type === FacetType.DATE_YEAR) {
-                    const date = new Date(facetEntry.value);
-                    const year = date.getUTCFullYear();
-                    const from = new Date(year, 0, 1, -6).toISOString();
-                    const to = new Date(year + 1, 0, 1, -6).toISOString();
-                    if (route.queryParams[`${requestFacet}.filter`] === `[${from} TO ${to}]`) {
-                      selected = true;
-                    }
-                  } else {
-                    if (route.queryParams[`${requestFacet}.filter`] === facetEntry.value) {
-                      selected = true;
-                    }
+                  switch (viewFacet.type) {
+                    case FacetType.DATE_YEAR:
+                      selected = route.queryParams[`${requestFacet}.filter`] === buildDateYearFilterValue(facetEntry);
+                      break;
+                    case FacetType.NUMBER_RANGE:
+                      selected = route.queryParams[`${requestFacet}.filter`] === buildNumberRangeFilterValue(viewFacet, facetEntry);
+                      break;
+                    default:
+                      selected = route.queryParams[`${requestFacet}.filter`] === facetEntry.value;
+                      break;
                   }
                 }
 
                 const sidebarItem: SidebarItem = {
                   type: SidebarItemType.FACET,
-                  label: facetEntry.value,
+                  label: getFacetFilterLabel(viewFacet, facetEntry),
                   facet: viewFacet,
-                  selected,
                   parenthetical: facetEntry.count,
+                  selected,
                   route: [],
                   queryParams: Object.assign({}, route.queryParams)
                 };
 
-                if (viewFacet.type === FacetType.DATE_YEAR) {
-                  const date = new Date(facetEntry.value);
-                  const year = date.getUTCFullYear();
-                  const from = new Date(year, 0, 1, -6).toISOString();
-                  const to = new Date(year + 1, 0, 1, -6).toISOString();
-                  sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? `[${from} TO ${to}]` : undefined;
-                  sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
-                } else {
-                  sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
-                  sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.EQUALS;
+                switch (viewFacet.type) {
+                  case FacetType.DATE_YEAR:
+                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? buildDateYearFilterValue(facetEntry) : undefined;
+                    sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
+                    break;
+                  case FacetType.NUMBER_RANGE:
+                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? buildNumberRangeFilterValue(viewFacet, facetEntry) : undefined;
+                    sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
+                    break;
+                  default:
+                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
+                    sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.EQUALS;
+                    break;
                 }
 
                 sidebarItem.queryParams.page = 1;

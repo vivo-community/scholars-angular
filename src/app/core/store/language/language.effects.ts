@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
 import { defer, scheduled } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
+import { asapScheduler } from 'rxjs';
 import { map, switchMap, catchError, withLatestFrom } from 'rxjs/operators';
 
 import { AlertService } from '../../service/alert.service';
@@ -21,6 +21,7 @@ import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class LanguageEffects {
+
   constructor(
     @Optional() @Inject(REQUEST) private request: Request,
     @Inject(PLATFORM_ID) private platformId: any,
@@ -28,7 +29,9 @@ export class LanguageEffects {
     private store: Store<AppState>,
     private translate: TranslateService,
     private alert: AlertService
-  ) { }
+  ) {
+
+  }
 
   @Effect() setLanguage = this.actions.pipe(
     ofType(fromLanguage.LanguageActionTypes.SET_LANGUAGE),
@@ -37,7 +40,7 @@ export class LanguageEffects {
     switchMap((language: string) =>
       this.translate.use(language).pipe(
         map(() => new fromLanguage.SetLanguageSuccessAction({ language })),
-        catchError((error: any) => scheduled([new fromLanguage.SetLanguageFailureAction({ error, language })], asap))
+        catchError((error: any) => scheduled([new fromLanguage.SetLanguageFailureAction({ error, language })], asapScheduler))
       )
     )
   );
@@ -48,7 +51,7 @@ export class LanguageEffects {
     switchMap(([action, language]) =>
       this.translate.use(language).pipe(
         map((r) => new fromLanguage.SetLanguageSuccessAction({ language })),
-        catchError((error: any) => scheduled([new fromLanguage.SetLanguageFailureAction({ error, language })], asap))
+        catchError((error: any) => scheduled([new fromLanguage.SetLanguageFailureAction({ error, language })], asapScheduler))
       )
     )
   );
@@ -77,7 +80,7 @@ export class LanguageEffects {
     if (['en'].indexOf(language) < 0) {
       language = environment.language;
     }
-    return scheduled([new fromLanguage.SetDefaultLanguageAction({ language })], asap);
+    return scheduled([new fromLanguage.SetDefaultLanguageAction({ language })], asapScheduler);
   });
 
   private getLanguage(): string {
@@ -89,4 +92,5 @@ export class LanguageEffects {
     }
     return language;
   }
+
 }

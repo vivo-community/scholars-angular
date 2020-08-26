@@ -2,12 +2,12 @@ import { Injectable, Inject } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 import { Observable, scheduled } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
+import { asapScheduler } from 'rxjs';
 
 import { ComputedStyleLoader } from '../computed-style-loader';
 import { RestService } from './rest.service';
 
-import { AppConfig } from '../../app.config';
+import { AppConfig, APP_CONFIG } from '../../app.config';
 import { Theme, Style } from '../model/theme';
 
 import { hexToRgb, luminance, mix, yiq } from '../../shared/utilities/color.utility';
@@ -16,7 +16,10 @@ import { hexToRgb, luminance, mix, yiq } from '../../shared/utilities/color.util
   providedIn: 'root',
 })
 export class ThemeService {
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, private sanitizer: DomSanitizer, private restService: RestService, private styleLoader: ComputedStyleLoader) {}
+
+  constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, private sanitizer: DomSanitizer, private restService: RestService, private styleLoader: ComputedStyleLoader) {
+
+  }
 
   public getActiveTheme(): Observable<Theme> {
     return this.restService.get<Theme>(this.appConfig.serviceUrl + '/themes/search/active');
@@ -27,7 +30,7 @@ export class ThemeService {
     styles += this.processThemeColors(theme.colors);
     styles += this.processThemeVariants(theme.variants);
     styles += this.processThemeVariables(theme);
-    return scheduled([this.sanitizer.bypassSecurityTrustStyle(styles)], asap);
+    return scheduled([this.sanitizer.bypassSecurityTrustStyle(styles)], asapScheduler);
   }
 
   private processThemeColors(colors: Style[]): string {
@@ -173,4 +176,5 @@ export class ThemeService {
     }
     return styles;
   }
+
 }

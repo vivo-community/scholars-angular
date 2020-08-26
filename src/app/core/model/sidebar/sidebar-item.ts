@@ -3,7 +3,7 @@ import { Action } from '@ngrx/store';
 
 export enum SidebarItemType {
   FACET = 'FACET',
-  RANGE_SLIDER = 'RANGE_SLIDER',
+  NUMBER_RANGE = 'NUMBER_RANGE',
   ACTION = 'ACTION',
   INFO = 'INFO',
 }

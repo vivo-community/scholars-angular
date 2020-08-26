@@ -17,7 +17,10 @@ import * as fromDialog from '../../core/store/dialog/dialog.actions';
   providedIn: 'root',
 })
 export class DialogService {
-  constructor(private translate: TranslateService) { }
+
+  constructor(private translate: TranslateService) {
+
+  }
 
   // NOTE: using translate.instant requires the translation json be loaded before
 
@@ -84,4 +87,5 @@ export class DialogService {
   private options(ariaLabelledBy: string, centered = false, backdrop: boolean | 'static' = 'static'): NgbModalOptions {
     return { ariaLabelledBy, centered, backdrop };
   }
+
 }

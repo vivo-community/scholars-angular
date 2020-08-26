@@ -6,7 +6,6 @@ import { BehaviorSubject, Observable, Subscription, interval } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { AppState } from '../../core/store';
-import { AppConfig } from '../../app.config';
 
 import { OpKey } from '../../core/model/view';
 import { Individual } from '../../core/model/discovery';
@@ -43,7 +42,7 @@ export class RecentCarouselComponent implements AfterViewInit, OnInit, OnDestroy
 
   private subscriptions: Subscription[];
 
-  constructor(@Inject('APP_CONFIG') private appConfig: AppConfig, @Inject(PLATFORM_ID) private platformId: string, private store: Store<AppState>, private translate: TranslateService) {
+  constructor(@Inject(PLATFORM_ID) private platformId: string, private store: Store<AppState>, private translate: TranslateService) {
     this.items = new BehaviorSubject<ScrollItem[]>([]);
     this.subscriptions = [];
   }

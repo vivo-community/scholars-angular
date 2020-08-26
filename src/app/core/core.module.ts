@@ -50,7 +50,8 @@ const PROVIDERS = [
   ],
 })
 export class CoreModule {
-  public static forRoot(): ModuleWithProviders {
+
+  public static forRoot(): ModuleWithProviders<CoreModule> {
     return {
       ngModule: CoreModule,
       providers: [
@@ -64,4 +65,5 @@ export class CoreModule {
       throw new Error('CoreModule is already loaded. Import it in the AppModule only');
     }
   }
+
 }

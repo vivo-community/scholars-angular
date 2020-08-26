@@ -44,11 +44,9 @@
         <span>{{option}}</span>
       </a>
     </div>
-    <div *ngIf="(loading | async) === false" [@fadeIn]>
-      <scholars-pagination *ngIf="documents | async; let documents" [page]="page" [ngSwitch]="directoryView.layout" [pageSizeOptionsType]="'list'">
-        <scholars-grid-view *ngSwitchCase="'GRID'" [view]="directoryView" [resources]="documents"></scholars-grid-view>
-        <scholars-list-view *ngSwitchCase="'LIST'" [view]="directoryView" [resources]="documents"></scholars-list-view>
-      </scholars-pagination>
-    </div>
+    <scholars-pagination [page]="page" [ngSwitch]="directoryView.layout" [pageSizeOptionsType]="'list'">
+      <scholars-grid-view *ngSwitchCase="'GRID'" [view]="directoryView" [resources]="documents | async" [loading]="loading | async"></scholars-grid-view>
+      <scholars-list-view *ngSwitchCase="'LIST'" [view]="directoryView" [resources]="documents | async" [loading]="loading | async"></scholars-list-view>
+    </scholars-pagination>
   </div>
 </scholars-sidebar>

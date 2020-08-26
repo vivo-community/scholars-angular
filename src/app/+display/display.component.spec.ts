@@ -15,6 +15,7 @@ import { routes } from './display.routes';
 
 import { metaReducers, reducers } from '../core/store';
 import { testAppConfig } from '../../test.config';
+import { APP_CONFIG } from '../app.config';
 
 describe('DisplayComponent', () => {
   let component: DisplayComponent;
@@ -39,7 +40,7 @@ describe('DisplayComponent', () => {
         RouterTestingModule.withRoutes(routes),
       ],
       providers: [
-        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_CONFIG, useValue: testAppConfig },
         { provide: APP_BASE_HREF, useValue: '/' },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

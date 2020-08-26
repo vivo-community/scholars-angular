@@ -23,6 +23,7 @@ export interface AdminTab {
   styleUrls: ['admin.component.scss'],
 })
 export class AdminComponent implements OnInit {
+
   public discoveryView: Observable<DiscoveryView>;
 
   public windowDimensions: Observable<WindowDimensions>;
@@ -65,4 +66,5 @@ export class AdminComponent implements OnInit {
   public showTabs(windowDimensions: WindowDimensions): boolean {
     return windowDimensions.width > 767;
   }
+
 }

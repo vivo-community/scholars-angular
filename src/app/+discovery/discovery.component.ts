@@ -7,13 +7,11 @@ import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { AppState } from '../core/store';
-import { AppConfig } from '../app.config';
+import { AppConfig, APP_CONFIG } from '../app.config';
 import { DiscoveryView, Filter } from '../core/model/view';
 import { SolrDocument } from '../core/model/discovery';
 import { SdrPage, SdrFacet } from '../core/model/sdr';
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
-
-import { fadeIn } from '../shared/utilities/animation.utility';
 
 import { selectRouterSearchQuery, selectRouterUrl, selectRouterQueryParamFilters, selectRouterQueryParams } from '../core/store/router';
 import { selectAllResources, selectResourcesPage, selectResourcesFacets, selectResourceById, selectResourceIsLoading } from '../core/store/sdr';
@@ -25,7 +23,6 @@ import { addExportToQueryParams, showFilter, showClearFilters, getFilterField, g
   selector: 'scholars-discovery',
   templateUrl: 'discovery.component.html',
   styleUrls: ['discovery.component.scss'],
-  animations: [fadeIn],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiscoveryComponent implements OnDestroy, OnInit {
@@ -55,7 +52,7 @@ export class DiscoveryComponent implements OnDestroy, OnInit {
   private subscriptions: Subscription[];
 
   constructor(
-    @Inject('APP_CONFIG') private appConfig: AppConfig,
+    @Inject(APP_CONFIG) private appConfig: AppConfig,
     private store: Store<AppState>,
     private router: Router,
     private route: ActivatedRoute

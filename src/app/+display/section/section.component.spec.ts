@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { scheduled } from 'rxjs';
-import { queue } from 'rxjs/internal/scheduler/queue';
+import { queueScheduler } from 'rxjs';
 
 import { DisplayModule } from '../display.module';
 
@@ -15,6 +15,7 @@ import { metaReducers, reducers } from '../../core/store';
 import { routes } from '../display.routes';
 
 import { testAppConfig } from '../../../test.config';
+import { APP_CONFIG } from 'src/app/app.config';
 
 describe('SectionComponent', () => {
   let component: SectionComponent;
@@ -38,11 +39,11 @@ describe('SectionComponent', () => {
         RouterTestingModule.withRoutes(routes[0].children),
       ],
       providers: [
-        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_CONFIG, useValue: testAppConfig },
         {
           provide: ActivatedRoute,
           useValue: {
-            queryParams: scheduled([params], queue),
+            queryParams: scheduled([params], queueScheduler),
           },
         },
       ],
@@ -55,6 +56,7 @@ describe('SectionComponent', () => {
     component.section = {
       name: 'Test',
       field: 'publications',
+      order: 1,
       filters: [],
       sort: [],
       pageSize: 5,

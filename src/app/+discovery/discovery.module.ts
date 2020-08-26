@@ -27,5 +27,7 @@ import { routes } from './discovery.routes';
   ],
 })
 export class DiscoveryModule {
+
   public static routes = routes;
+
 }

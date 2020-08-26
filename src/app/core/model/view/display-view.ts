@@ -1,25 +1,18 @@
 import { View } from './';
-import { Filter, Sort } from './collection-view';
+import { FieldView } from './field-view';
 
 export enum Side {
   LEFT = 'LEFT',
   RIGHT = 'RIGHT',
 }
 
-export interface Subsection {
-  readonly name: string;
-  readonly field: string;
-  readonly filters: Filter[];
-  readonly sort: Sort[];
+export interface DisplaySubsectionView extends FieldView {
   readonly pageSize: number;
   readonly template: string;
   templateFunction?: (document: any) => string;
 }
 
-export interface DisplayTabSectionView extends View {
-  readonly field: string;
-  readonly filters: Filter[];
-  readonly sort: Sort[];
+export interface DisplaySectionView extends FieldView {
   readonly hidden: boolean;
   readonly shared: boolean;
   readonly paginated: boolean;
@@ -28,12 +21,12 @@ export interface DisplayTabSectionView extends View {
   templateFunction?: (document: any) => string;
   readonly requiredFields: string[];
   readonly lazyReferences: string[];
-  readonly subsections: Subsection[];
+  readonly subsections: DisplaySubsectionView[];
 }
 
 export interface DisplayTabView extends View {
   readonly hidden: boolean;
-  readonly sections: DisplayTabSectionView[];
+  readonly sections: DisplaySectionView[];
 }
 
 export interface DisplayView extends View {

@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
 import { defer, scheduled, Observable } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
+import { asapScheduler } from 'rxjs';
 import { catchError, map, switchMap, withLatestFrom, skipWhile, mergeMap } from 'rxjs/operators';
 
 import { AppState } from '../';
@@ -16,14 +16,17 @@ import * as fromStomp from './stomp.actions';
 
 @Injectable()
 export class StompEffects {
-  constructor(private actions: Actions, private store: Store<AppState>, private stomp: StompService, private alert: AlertService) {}
+
+  constructor(private actions: Actions, private store: Store<AppState>, private stomp: StompService, private alert: AlertService) {
+
+  }
 
   @Effect() connect = this.actions.pipe(
     ofType(fromStomp.StompActionTypes.CONNECT),
     switchMap(() =>
       this.stomp.connect().pipe(
         map(() => new fromStomp.ConnectSuccessAction()),
-        catchError((response) => scheduled([new fromStomp.ConnectFailureAction({ response })], asap))
+        catchError((response) => scheduled([new fromStomp.ConnectFailureAction({ response })], asapScheduler))
       )
     )
   );
@@ -44,7 +47,7 @@ export class StompEffects {
       });
       return this.stomp.disconnect().pipe(
         map(() => new fromStomp.DisconnectSuccessAction({ reconnect })),
-        catchError((response) => scheduled([new fromStomp.DisconnectFailureAction({ response })], asap))
+        catchError((response) => scheduled([new fromStomp.DisconnectFailureAction({ response })], asapScheduler))
       );
     })
   );
@@ -81,7 +84,7 @@ export class StompEffects {
                 response,
               }),
             ],
-            asap
+            asapScheduler
           )
         )
       )
@@ -94,14 +97,14 @@ export class StompEffects {
     withLatestFrom(this.store),
     skipWhile(([action, store]) => !store.stomp.subscriptions.has(action.payload.channel)),
     switchMap(([action, store]) =>
-      scheduled([store.stomp.subscriptions.get(action.payload.channel).unsubscribe()], asap).pipe(
+      scheduled([store.stomp.subscriptions.get(action.payload.channel).unsubscribe()], asapScheduler).pipe(
         map(
           () =>
             new fromStomp.UnsubscribeSuccessAction({
               channel: action.payload.channel,
             })
         ),
-        catchError((response) => scheduled([new fromStomp.UnsubscribeFailureAction({ response })], asap))
+        catchError((response) => scheduled([new fromStomp.UnsubscribeFailureAction({ response })], asapScheduler))
       )
     )
   );
@@ -112,6 +115,6 @@ export class StompEffects {
   );
 
   @Effect() init = defer(() => {
-    return scheduled([new fromStomp.ConnectAction()], asap);
+    return scheduled([new fromStomp.ConnectAction()], asapScheduler);
   });
 }

@@ -16,6 +16,7 @@ import { selectAllResources, selectResourcesPage } from '../../core/store/sdr';
   encapsulation: ViewEncapsulation.None,
 })
 export class DirectoryViewsComponent implements OnInit {
+
   public directoryViews: Observable<DirectoryView[]>;
 
   public page: Observable<SdrPage>;
@@ -26,4 +27,5 @@ export class DirectoryViewsComponent implements OnInit {
     this.directoryViews = this.store.pipe(select(selectAllResources<DirectoryView>('directoryViews')));
     this.page = this.store.pipe(select(selectResourcesPage<DirectoryView>('directoryViews')));
   }
+
 }

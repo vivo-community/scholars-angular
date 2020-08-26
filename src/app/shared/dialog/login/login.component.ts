@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Store, select } from '@ngrx/store';
 
 import { combineLatest, scheduled, Observable } from 'rxjs';
-import { queue } from 'rxjs/internal/scheduler/queue';
+import { queueScheduler } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { AppState } from '../../../core/store';
@@ -42,7 +42,11 @@ export class LoginComponent implements OnInit {
         type: DialogButtonType.OUTLINE_PRIMARY,
         label: this.translate.get('SHARED.DIALOG.LOGIN.SUBMIT'),
         action: () => this.store.dispatch(new fromAuth.LoginAction({ login: this.dialog.form.value })),
-        disabled: () => combineLatest([scheduled([this.dialog.form.invalid], queue), scheduled([this.dialog.form.pristine], queue), this.store.pipe(select(selectIsLoggingIn))]).pipe(map((results) => results[0] || results[1] || results[2])),
+        disabled: () => combineLatest([
+          scheduled([this.dialog.form.invalid], queueScheduler),
+          scheduled([this.dialog.form.pristine], queueScheduler),
+          this.store.pipe(select(selectIsLoggingIn))
+        ]).pipe(map((results) => results[0] || results[1] || results[2])),
       },
     };
   }
@@ -71,7 +75,7 @@ export class LoginComponent implements OnInit {
               field,
             });
           default:
-            return scheduled(['unknown error'], queue);
+            return scheduled(['unknown error'], queueScheduler);
         }
       }
     }

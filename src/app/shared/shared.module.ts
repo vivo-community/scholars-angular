@@ -5,8 +5,6 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { Ng5SliderModule } from 'ng5-slider';
-
 import { AlertComponent } from './alert/alert.component';
 import { DialogComponent } from './dialog/dialog.component';
 import { FacetEntriesComponent } from './dialog/facet-entries/facet-entries.component';
@@ -26,8 +24,6 @@ import { TwitterComponent } from './twitter/twitter.component';
 import { YouTubeComponent } from './youtube/youtube.component';
 import { UserEditComponent } from './dialog/user-edit/user-edit.component';
 
-import { LoaderDirective } from './loader/loader.directive';
-
 import { FilterPipe } from './utilities/filter.pipe';
 import { FormalizePipe } from './utilities/formalize.pipe';
 import { SafeHtmlPipe } from './utilities/safe-html.pipe';
@@ -36,7 +32,6 @@ import { SafeUrlPipe } from './utilities/safe-url.pipe';
 const MODULES = [
   CommonModule,
   NgbModule,
-  Ng5SliderModule,
   FormsModule,
   ReactiveFormsModule,
   TranslateModule,
@@ -70,7 +65,7 @@ const COMPONENTS = [
 ];
 
 const DIRECTIVES = [
-  LoaderDirective
+
 ];
 
 const ENTRY_COMPONENTS = [

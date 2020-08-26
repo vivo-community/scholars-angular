@@ -6,7 +6,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { Sort } from '../../core/model/view';
 import { SolrDocument } from '../../core/model/discovery';
-import { Subsection } from '../../core/model/view/display-view';
+import { DisplaySubsectionView } from '../../core/model/view/display-view';
 import { SdrPage } from '../../core/model/sdr';
 import { getResourcesPage, getSubsectionResources, loadBadges } from '../../shared/utilities/view.utility';
 
@@ -18,7 +18,7 @@ import { getResourcesPage, getSubsectionResources, loadBadges } from '../../shar
 export class SubsectionComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @Input()
-  public subsection: Subsection;
+  public subsection: DisplaySubsectionView;
 
   @Input()
   public document: SolrDocument;
@@ -72,4 +72,5 @@ export class SubsectionComponent implements AfterViewInit, OnInit, OnDestroy {
   public getResourcesPage(resources: any[], sort: Sort[], page: SdrPage): any[] {
     return getResourcesPage(resources, sort, page);
   }
+
 }

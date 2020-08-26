@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 
 import { defer, combineLatest, scheduled } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
+import { asapScheduler } from 'rxjs';
 import { catchError, map, switchMap, withLatestFrom, skipWhile, take } from 'rxjs/operators';
 
 import { AppState } from '../';
@@ -28,7 +28,10 @@ import * as fromSdr from '../sdr/sdr.actions';
 
 @Injectable()
 export class AuthEffects {
-  constructor(private actions: Actions, private store: Store<AppState>, private alert: AlertService, private authService: AuthService, private dialog: DialogService) { }
+
+  constructor(private actions: Actions, private store: Store<AppState>, private alert: AlertService, private authService: AuthService, private dialog: DialogService) {
+
+  }
 
   @Effect() reconnect = this.actions.pipe(
     ofType(fromAuth.AuthActionTypes.LOGIN_SUCCESS, fromAuth.AuthActionTypes.LOGOUT_SUCCESS),
@@ -41,7 +44,7 @@ export class AuthEffects {
     switchMap((payload: { login: LoginRequest }) =>
       this.authService.login(payload.login).pipe(
         map((user: User) => new fromAuth.LoginSuccessAction({ user })),
-        catchError((response) => scheduled([new fromAuth.LoginFailureAction({ response })], asap))
+        catchError((response) => scheduled([new fromAuth.LoginFailureAction({ response })], asapScheduler))
       )
     )
   );
@@ -70,7 +73,7 @@ export class AuthEffects {
     switchMap((payload: { registration: RegistrationRequest }) =>
       this.authService.submitRegistration(payload.registration).pipe(
         map((registration: RegistrationRequest) => new fromAuth.SubmitRegistrationSuccessAction({ registration })),
-        catchError((response) => scheduled([new fromAuth.SubmitRegistrationFailureAction({ response })], asap))
+        catchError((response) => scheduled([new fromAuth.SubmitRegistrationFailureAction({ response })], asapScheduler))
       )
     )
   );
@@ -93,7 +96,7 @@ export class AuthEffects {
     switchMap((payload: { key: string }) =>
       this.authService.confirmRegistration(payload.key).pipe(
         map((registration: RegistrationRequest) => new fromAuth.ConfirmRegistrationSuccessAction({ registration })),
-        catchError((response) => scheduled([new fromAuth.ConfirmRegistrationFailureAction({ response })], asap))
+        catchError((response) => scheduled([new fromAuth.ConfirmRegistrationFailureAction({ response })], asapScheduler))
       )
     )
   );
@@ -119,7 +122,7 @@ export class AuthEffects {
     switchMap((payload: { key: string; registration: RegistrationRequest }) =>
       this.authService.completeRegistration(payload.key, payload.registration).pipe(
         map((user: User) => new fromAuth.CompleteRegistrationSuccessAction({ user })),
-        catchError((response) => scheduled([new fromAuth.CompleteRegistrationFailureAction({ response })], asap))
+        catchError((response) => scheduled([new fromAuth.CompleteRegistrationFailureAction({ response })], asapScheduler))
       )
     )
   );
@@ -141,7 +144,7 @@ export class AuthEffects {
     switchMap(() =>
       this.authService.logout().pipe(
         map((response: any) => new fromAuth.LogoutSuccessAction({ message: response.message })),
-        catchError((response) => scheduled([new fromAuth.LogoutFailureAction({ response })], asap))
+        catchError((response) => scheduled([new fromAuth.LogoutFailureAction({ response })], asapScheduler))
       )
     )
   );
@@ -156,7 +159,7 @@ export class AuthEffects {
     switchMap(() =>
       this.authService.getUser().pipe(
         map((user: User) => new fromAuth.GetUserSuccessAction({ user })),
-        catchError((response) => scheduled([new fromAuth.GetUserFailureAction({ response })], asap))
+        catchError((response) => scheduled([new fromAuth.GetUserFailureAction({ response })], asapScheduler))
       )
     )
   );
@@ -238,6 +241,7 @@ export class AuthEffects {
   );
 
   @Effect() init = defer(() => {
-    return scheduled([new fromAuth.CheckSessionAction()], asap);
+    return scheduled([new fromAuth.CheckSessionAction()], asapScheduler);
   });
+
 }

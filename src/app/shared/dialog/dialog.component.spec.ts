@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { StoreModule } from '@ngrx/store';
 
 import { scheduled } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
+import { asapScheduler } from 'rxjs';
 
 import { SharedModule } from '../shared.module';
 
@@ -41,13 +41,13 @@ describe('DialogComponent', () => {
     fixture = TestBed.createComponent(DialogComponent);
     component = fixture.componentInstance;
     component.dialog = {
-      title: scheduled(['Login'], asap),
+      title: scheduled(['Login'], asapScheduler),
       form: undefined,
       close: {
         type: DialogButtonType.OUTLINE_WARNING,
-        label: scheduled(['Cancel'], asap),
+        label: scheduled(['Cancel'], asapScheduler),
         action: () => {},
-        disabled: () => scheduled([false], asap),
+        disabled: () => scheduled([false], asapScheduler),
       },
     };
     fixture.detectChanges();

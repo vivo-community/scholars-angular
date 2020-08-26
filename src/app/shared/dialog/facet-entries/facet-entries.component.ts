@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Params, Router, NavigationStart } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
 import { scheduled, Subscription, Observable } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
-import { queue } from 'rxjs/internal/scheduler/queue';
+import { filter, map, tap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { queueScheduler } from 'rxjs';
 
 import { AppState } from '../../../core/store';
 import { DialogButtonType, DialogControl } from '../../../core/model/dialog';
@@ -19,7 +20,7 @@ import { CustomRouterState } from '../../../core/store/router/router.reducer';
 import { selectRouterState, selectRouterQueryParams } from '../../../core/store/router';
 import { selectCollectionViewByName } from '../../../core/store/sdr';
 
-import { createSdrRequest } from '../../utilities/discovery.utility';
+import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue, getFacetFilterLabel } from '../../utilities/discovery.utility';
 
 import * as fromDialog from '../../../core/store/dialog/dialog.actions';
 
@@ -50,12 +51,15 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
 
   public routerLink = [];
 
+  public form: FormGroup;
+
   public dialog: DialogControl;
 
   private subscriptions: Subscription[];
 
   constructor(
     private router: Router,
+    private formBuilder: FormBuilder,
     private store: Store<AppState>,
     private translate: TranslateService,
     private individualRepo: IndividualRepo
@@ -78,20 +82,26 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
       map((router: any) => router.state)
     );
 
+    const formGroup = {
+      filter: new FormControl()
+    };
+
+    this.form = this.formBuilder.group(formGroup);
+
     this.queryParams = this.store.pipe(select(selectRouterQueryParams));
 
     this.subscriptions.push(
       this.routerState.subscribe((routerState: CustomRouterState) => {
 
         this.dialog = {
-          title: scheduled([this.name], queue),
+          title: scheduled([this.name], queueScheduler),
           close: {
             type: DialogButtonType.OUTLINE_WARNING,
             label: this.translate.get('SHARED.DIALOG.FACET_ENTRIES.CANCEL'),
             action: () => {
               this.store.dispatch(new fromDialog.CloseDialogAction());
             },
-            disabled: () => scheduled([false], queue),
+            disabled: () => scheduled([false], queueScheduler),
           },
         };
 
@@ -125,7 +135,32 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
 
             // NOTE: isolating request for facets without going through the stores, leaving facets in store intact
             this.sdrFacet = this.individualRepo.search(sdrRequest).pipe(
-              map((collection: SdrCollection) => collection.facets[0])
+              map((collection: SdrCollection) => collection.facets[0]),
+              tap((sdrFacet) => {
+                const content = Object.assign([], sdrFacet.entries.content);
+                let lastTerm = '';
+                this.subscriptions.push(
+                  this.form.controls.filter.valueChanges.pipe(
+                    debounceTime(500),
+                    distinctUntilChanged()
+                  ).subscribe((term: string) => {
+                    const currentContent = lastTerm.length > term.length ? content : sdrFacet.entries.content;
+                    lastTerm = term = term.toLowerCase();
+                    sdrFacet.entries.content = currentContent.filter((entry) => {
+                      const index = entry.value.toLowerCase().indexOf(term);
+                      const hit = index >= 0;
+                      if (hit) {
+                        const before = entry.value.substring(0, index);
+                        const match = entry.value.substring(index, index + term.length);
+                        const after = entry.value.substring(index + term.length);
+                        entry.valueHtml = `${before}<span style="background: #E3D67F">${match}</span>${after}`;
+                      } else {
+                        entry.valueHtml = entry.value;
+                      }
+                      return hit;
+                    });
+                  }));
+              })
             );
 
           })
@@ -140,16 +175,29 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
     );
   }
 
+  public getFacetRangeValue(facet: Facet, entry: SdrFacetEntry): string {
+    return getFacetFilterLabel(facet, entry);
+  }
+
+  public getStringValue(entry: SdrFacetEntry): string {
+    return entry.valueHtml ? entry.valueHtml : entry.value;
+  }
+
   public getQueryParams(params: Params, facet: Facet, entry: SdrFacetEntry): Params {
     const queryParams: Params = Object.assign({}, params);
-    if (facet.type === FacetType.DATE_YEAR) {
-      const date = new Date(entry.value);
-      const year = date.getUTCFullYear();
-      queryParams[`${this.field}.filter`] = `[${year} TO ${year + 1}]`;
-      queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
-    } else {
-      queryParams[`${this.field}.filter`] = entry.value;
-      queryParams[`${this.field}.opKey`] = OpKey.EQUALS;
+    switch (facet.type) {
+      case FacetType.DATE_YEAR:
+        queryParams[`${this.field}.filter`] = buildDateYearFilterValue(entry);
+        queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
+        break;
+      case FacetType.NUMBER_RANGE:
+        queryParams[`${this.field}.filter`] = buildNumberRangeFilterValue(facet, entry);
+        queryParams[`${this.field}.opKey`] = OpKey.BETWEEN;
+        break;
+      default:
+        queryParams[`${this.field}.filter`] = entry.value;
+        queryParams[`${this.field}.opKey`] = OpKey.EQUALS;
+        break;
     }
     queryParams[`${this.field}.pageNumber`] = 1;
     if (queryParams.filters && queryParams.filters.length > 0) {

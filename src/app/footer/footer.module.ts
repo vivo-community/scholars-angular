@@ -10,4 +10,4 @@ import { CopyrightComponent } from './copyright/copyright.component';
   imports: [CommonModule, SharedModule],
   exports: [FooterComponent],
 })
-export class FooterModule {}
+export class FooterModule { }

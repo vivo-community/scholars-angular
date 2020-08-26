@@ -34,7 +34,8 @@
               "src/assets/scripts/badge.js",
               "src/assets/scripts/embed.js",
               "src/assets/scripts/widget.js"
-            ]
+            ],
+            "allowedCommonJsDependencies": []
           },
           "configurations": {
             "production": {

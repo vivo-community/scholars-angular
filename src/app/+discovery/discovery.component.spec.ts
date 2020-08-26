@@ -14,6 +14,7 @@ import { routes } from './discovery.routes';
 
 import { metaReducers, reducers } from '../core/store';
 import { testAppConfig } from '../../test.config';
+import { APP_CONFIG } from '../app.config';
 
 describe('DiscoveryComponent', () => {
   let component: DiscoveryComponent;
@@ -38,7 +39,7 @@ describe('DiscoveryComponent', () => {
         RouterTestingModule.withRoutes(routes),
       ],
       providers: [
-        { provide: 'APP_CONFIG', useValue: testAppConfig },
+        { provide: APP_CONFIG, useValue: testAppConfig },
         { provide: APP_BASE_HREF, useValue: '/' },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
