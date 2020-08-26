@@ -86,7 +86,7 @@ function run() {
   const VIVO_URL = process.env.VIVO_URL || 'http://localhost:8080/vivo';
   const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'http://localhost:8080/vivo_editor';
 
-  const COLLECT_SEARCH_STATS = Boolean(process.env.COLLECT_SEARCH_STATS) || false;
+  const COLLECT_SEARCH_STATS = process.env.COLLECT_SEARCH_STATS === 'true';
 
   const appConfig: AppConfig = {
     host: HOST,
