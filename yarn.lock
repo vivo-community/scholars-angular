@@ -1586,10 +1586,10 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
-"@types/express@4.17.8":
-  version "4.17.8"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.8.tgz#3df4293293317e61c60137d273a2e96cd8d5f27a"
-  integrity sha512-wLhcKh3PMlyA2cNAB9sjM1BntnhPMiM0JOBwPBqttjHev2428MLEB4AYVN+d8s2iyCVZac+o41Pflm/ZH5vLXQ==
+"@types/express@4.17.7":
+  version "4.17.7"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.7.tgz#42045be6475636d9801369cd4418ef65cdb0dd59"
+  integrity sha512-dCOT5lcmV/uC2J9k0rPafATeeyz+99xTt54ReX11/LObZgfzJqZNcW27zGhYyX+9iSEGXGt5qLPwRSvBZcLvtQ==
   dependencies:
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "*"
@@ -9781,14 +9781,7 @@ yn@3.1.1:
   resolved "https://registry.yarnpkg.com/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
   integrity sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 
-zone.js@0.11.2:
-  version "0.11.2"
-  resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.11.2.tgz#bde87c9523f46a71b04f0f02b87af3edbb99b534"
-  integrity sha512-JUpNKmWIovqRZlqkX6pFdBVlOU42n5Mt1n2yEaJdy+msBant/l2L1hTG6BFxCzM+KV3SX4XQOcwbhnwsPAeUTA==
-  dependencies:
-    tslib "^2.0.0"
-
-zone.js@~0.10.3:
+zone.js@0.10.3, zone.js@~0.10.3:
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.10.3.tgz#3e5e4da03c607c9dcd92e37dd35687a14a140c16"
   integrity sha512-LXVLVEq0NNOqK/fLJo3d0kfzd4sxwn2/h67/02pjCjfKDxgx1i9QqpvtHD8CrBnSSwMw5+dy11O7FRX5mkO7Cg==
