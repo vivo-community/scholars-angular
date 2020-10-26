@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SharedModule } from '../shared.module';
 
@@ -10,7 +10,7 @@ describe('ResultViewComponent', () => {
   let component: ResultViewComponent;
   let fixture: ComponentFixture<ResultViewComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule],
     }).compileComponents();

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { CopyrightComponent } from './copyright.component';
@@ -8,7 +8,7 @@ describe('CopyrightComponent', () => {
   let component: CopyrightComponent;
   let fixture: ComponentFixture<CopyrightComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CopyrightComponent],
       imports: [TranslateModule.forRoot()],
