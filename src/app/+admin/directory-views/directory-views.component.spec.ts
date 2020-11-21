@@ -1,5 +1,5 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,7 +19,7 @@ describe('DirectoryViewsComponent', () => {
   let component: DirectoryViewsComponent;
   let fixture: ComponentFixture<DirectoryViewsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [DirectoryViewsComponent],
       providers: [

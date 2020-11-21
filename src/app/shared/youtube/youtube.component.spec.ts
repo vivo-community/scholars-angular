@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SharedModule } from '../shared.module';
 
@@ -8,7 +8,7 @@ describe('YouTubeComponent', () => {
   let component: YouTubeComponent;
   let fixture: ComponentFixture<YouTubeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule],
     }).compileComponents();
