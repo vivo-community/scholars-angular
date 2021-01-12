@@ -1,6 +1,6 @@
 name: Node CI with NPM
 
-on: ["push", "pull_request"]
+on: [push, pull_request]
 
 jobs:
 
@@ -41,4 +41,4 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: "./coverage/scholars-angular/lcov.info"
+        path-to-lcov: ./coverage/scholars-angular/lcov.info
