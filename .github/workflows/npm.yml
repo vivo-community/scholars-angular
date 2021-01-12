@@ -29,13 +29,12 @@ jobs:
           ${{ runner.os }}-
 
     - run: sudo apt-get install xvfb
-    - run: xvfb-run --auto-servernum npm test
 
     - name: Install
       run: yarn install
 
     - name: Test CI
-      run: yarn test:ci
+      run: xvfb-run --auto-servernum yarn test:ci
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
