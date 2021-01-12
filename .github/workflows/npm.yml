@@ -15,12 +15,6 @@ jobs:
       with:
         node-version: 12.x
 
-    - uses: nanasess/setup-chromedriver@master
-    - run: |
-        export DISPLAY=:99
-        chromedriver --url-base=/wd/hub &
-        sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-
     - name: Cache node modules
       uses: actions/cache@v2
       env:
@@ -33,6 +27,9 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
+
+    - run: sudo apt-get install xvfb
+    - run: xvfb-run --auto-servernum npm test
 
     - name: Install
       run: yarn install
