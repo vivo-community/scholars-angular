@@ -28,15 +28,16 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - run: sudo apt-get install xvfb
+    - name: Install Chrome drivers
+      run: sudo apt-get install xvfb
 
-    - name: Install
+    - name: Install dependencies
       run: yarn install
 
     - name: Test CI
       run: xvfb-run --auto-servernum yarn test:ci
 
-    - name: Coveralls
+    - name: Coveralls coverage report
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
