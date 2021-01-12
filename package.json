@@ -23,7 +23,6 @@
     "build:ssr": "ng build --prod && ng run scholars-angular:server:production && npm run compress",
     "prerender": "ng run scholars-angular:prerender",
     "test:coverage": "ng test --no-watch --code-coverage --browsers HeadlessChrome",
-    "test:report": "cat ./coverage/scholars-angular/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test:ci": "yarn lint && yarn build:ssr && yarn e2e && yarn test:coverage"
   },
   "private": false,

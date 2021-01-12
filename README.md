@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/vivo-community/scholars-angular.svg?branch=master)](https://travis-ci.org/vivo-community/scholars-angular)
-[![Coverage Status](https://coveralls.io/repos/github/vivo-community/scholars-angular/badge.svg?branch=master)](https://coveralls.io/github/vivo-community/scholars-angular?branch=master)
+![Node CI with NPM](https://github.com/TAMULib/scholars-angular/workflows/Node%20CI%20with%20NPM/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/TAMULib/scholars-angular/badge.svg?branch=tamu-master)](https://coveralls.io/github/TAMULib/scholars-angular?branch=tamu-master)
 
 # scholars-angular
 
