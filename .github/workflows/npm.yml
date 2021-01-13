@@ -20,7 +20,6 @@ jobs:
       with:
         path: ~/.npm
         key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
-        restore-keys: ${{ runner.os }}-npm-
 
     - name: Install Chrome drivers
       run: sudo apt-get install xvfb
