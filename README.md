@@ -5,8 +5,6 @@
 
 Scholars Angular is a frontend application for exposing VIVO content that is being served via [Scholars Discovery](https://github.com/vivo-community/scholars-discovery).
 
-[more details]
-
 ## Installation
 
 ### Prerequisites
