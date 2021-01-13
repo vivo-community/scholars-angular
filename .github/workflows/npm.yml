@@ -18,8 +18,8 @@ jobs:
     - name: Cache node modules
       uses: actions/cache@v2
       with:
-        path: ~/.npm
-        key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
+        path: node_modules
+        key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package.json') }}
 
     - name: Install Chrome drivers
       run: sudo apt-get install xvfb
