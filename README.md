@@ -1,4 +1,4 @@
-![Node CI with NPM](https://github.com/TAMULib/scholars-angular/workflows/Node%20CI%20with%20NPM/badge.svg)
+[![Node CI with NPM](https://github.com/TAMULib/scholars-angular/workflows/Node%20CI%20with%20NPM/badge.svg)](https://github.com/TAMULib/scholars-angular/actions?query=workflow%3A%22Node+CI+with+NPM%22)
 [![Coverage Status](https://coveralls.io/repos/github/TAMULib/scholars-angular/badge.svg?branch=tamu-master)](https://coveralls.io/github/TAMULib/scholars-angular?branch=tamu-master)
 
 # scholars-angular
