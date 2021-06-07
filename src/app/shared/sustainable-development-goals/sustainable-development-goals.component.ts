@@ -9,7 +9,6 @@ import { selectDiscoveryViewByClass, selectResourcesCountByLabel } from 'src/app
 import * as fromSdr from '../../core/store/sdr/sdr.actions';
 import { getQueryParams } from '../utilities/view.utility';
 
-
 @Component({
   selector: 'scholars-sustainable-development-goals',
   templateUrl: 'sustainable-development-goals.component.html',
@@ -60,22 +59,10 @@ export class SustainableDevelopmentGoalsComponent {
     this.store.dispatch(
       new fromSdr.CountResourcesAction('individual', {
         label: profileTitle,
-        request: {
-          filters: [
-            {
-              field: 'class',
-              value: 'Person',
-              opKey: OpKey.EQUALS,
-            },
-            {
-              field: 'tags',
-              value: goal.value,
-              opKey: OpKey.EQUALS,
-            }
-          ],
-        },
+        request: this.buildRequest('Person', goal)
       })
     );
+
     this.profileCount = this.store.pipe(select(selectResourcesCountByLabel('individual', profileTitle)));
 
     this.profileDiscoveryView = this.store.pipe(
@@ -88,36 +75,23 @@ export class SustainableDevelopmentGoalsComponent {
     this.store.dispatch(
       new fromSdr.CountResourcesAction('individual', {
         label: researchTitle,
-        request: {
-          filters: [
-            {
-              field: 'class',
-              value: 'Document',
-              opKey: OpKey.EQUALS,
-            },
-            {
-              field: 'tags',
-              value: goal.value,
-              opKey: OpKey.EQUALS,
-            }
-          ],
-        },
+        request: this.buildRequest('Document', goal)
       })
     );
+
     this.researchCount = this.store.pipe(select(selectResourcesCountByLabel('individual', researchTitle)));
 
     this.researchDiscoveryView = this.store.pipe(
       select(selectDiscoveryViewByClass('Document')),
       filter((view: DiscoveryView) => view !== undefined)
     );
-
   }
 
-  public getDiscoveryRouterLink(discoveryView: DiscoveryView): string[] {
+  getDiscoveryRouterLink(discoveryView: DiscoveryView): string[] {
     return [`/discovery/${discoveryView.name}`];
   }
 
-  public getDiscoveryQueryParams(discoveryView: DiscoveryView, goal: any): Params {
+  getDiscoveryQueryParams(discoveryView: DiscoveryView, goal: any): Params {
     const queryParams: Params = getQueryParams(discoveryView);
     queryParams.page = 1;
     queryParams['tags.filter'] = goal.value;
@@ -128,6 +102,23 @@ export class SustainableDevelopmentGoalsComponent {
 
   trackByFn(index, item) {
     return index;
+  }
+
+  private buildRequest(classifier: string, goal: any): any {
+    return {
+      filters: [
+        {
+          field: 'class',
+          value: classifier,
+          opKey: OpKey.EQUALS,
+        },
+        {
+          field: 'tags',
+          value: goal.value,
+          opKey: OpKey.EQUALS,
+        }
+      ]
+    };
   }
 
 }
