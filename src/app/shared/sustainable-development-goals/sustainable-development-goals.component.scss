@@ -1,0 +1,11 @@
+:host {
+  img {
+    max-height: 150px;
+    max-width: 150px;
+    padding: 10px;
+    @media (min-width: 576px) {
+      max-height: 115px;
+      max-width: 115px;
+    }
+  }
+}

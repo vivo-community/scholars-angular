@@ -20,6 +20,7 @@ import { RegistrationComponent } from './dialog/registration/registration.compon
 import { SearchBoxComponent } from './search-box/search-box.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { StatsBoxComponent } from './stats-box/stats-box.component';
+import { SustainableDevelopmentGoalsComponent } from './sustainable-development-goals/sustainable-development-goals.component';
 import { TwitterComponent } from './twitter/twitter.component';
 import { YouTubeComponent } from './youtube/youtube.component';
 import { UserEditComponent } from './dialog/user-edit/user-edit.component';
@@ -60,6 +61,7 @@ const COMPONENTS = [
   SearchBoxComponent,
   SidebarComponent,
   StatsBoxComponent,
+  SustainableDevelopmentGoalsComponent,
   TwitterComponent,
   YouTubeComponent
 ];
