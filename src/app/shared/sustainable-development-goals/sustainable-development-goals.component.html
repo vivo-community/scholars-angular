@@ -6,8 +6,8 @@
       <span class="fa fa-info-circle" [ngStyle]="{'color': goal.color}" aria-hidden="true"></span>
     </ng-template>
     <ng-template #goalsPopover>
-      <div *ngIf="profileDiscoveryView | async; let discoveryView"><a class="goal-link" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{profileCount | async}} Profiles</a></div>
-      <div *ngIf="researchDiscoveryView | async; let discoveryView"><a class="goal-link" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{researchCount | async}} Research</a></div>
+      <div *ngIf="profileDiscoveryView | async; let discoveryView"><a class="goal-link" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{ 'SHARED.SUSTAINABLE_DEVELOPMENT_GOALS.PROFILES_COUNT' | translate:{count: (profileCount | async)} }}</a></div>
+      <div *ngIf="researchDiscoveryView | async; let discoveryView"><a class="goal-link" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{ 'SHARED.SUSTAINABLE_DEVELOPMENT_GOALS.RESEARCH_COUNT' | translate:{count: (researchCount | async)} }}</a></div>
     </ng-template>
   </ng-template>
 </div>

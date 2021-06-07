@@ -182,6 +182,10 @@
         "ARIA_LABEL_COLLAPSE": "Collapse the {{label}} section.",
         "ARIA_LABEL_EXPAND": "Expand the {{label}} section."
       }
+    },
+    "SUSTAINABLE_DEVELOPMENT_GOALS": {
+      "PROFILES_COUNT": "{{count}} Profiles",
+      "RESEARCH_COUNT": "{{count}} Research"
     }
   },
   "LANGUAGE": {
