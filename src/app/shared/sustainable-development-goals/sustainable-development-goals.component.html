@@ -5,7 +5,8 @@
       <span class="goal-title" [ngStyle]="{'border-left-color': goal.color}">{{goal.title}}</span>
     </ng-template>
     <ng-template #goalsPopover>
-      <span>Hello, World!</span>
+      <div *ngIf="profileDiscoveryView | async; let discoveryView"><a [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{profileCount | async}} Profiles</a></div>
+      <div *ngIf="researchDiscoveryView | async; let discoveryView"><a [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{researchCount | async}} Research</a></div>
     </ng-template>
   </ng-template>
 </div>
