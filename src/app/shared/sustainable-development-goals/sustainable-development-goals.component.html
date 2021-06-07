@@ -1,13 +1,13 @@
 <div class="d-flex flex-wrap justify-content-center justify-content-md-start">
   <ng-template ngFor let-goal [ngForOf]="goals" let-i="index" [ngForTrackBy]="trackByFn">
-    <img class="link" [src]="goal.icon" [ngbPopover]="goalsPopover" [popoverTitle]="goalsPopoverTitle" (hidden)="hidden(goal)" (shown)="shown(goal)" placement="bottom-right" triggers="click">
+    <img class="goal-logo link" [src]="goal.icon" [ngbPopover]="goalsPopover" [popoverTitle]="goalsPopoverTitle" (hidden)="hidden(goal)" (shown)="shown(goal)" placement="bottom-right" triggers="click">
     <ng-template #goalsPopoverTitle>
       <span class="goal-title" [ngStyle]="{'border-left-color': goal.color}">{{goal.title}}</span>
       <span class="fa fa-info-circle" [ngStyle]="{'color': goal.color}" aria-hidden="true"></span>
     </ng-template>
     <ng-template #goalsPopover>
-      <div *ngIf="profileDiscoveryView | async; let discoveryView"><a [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{profileCount | async}} Profiles</a></div>
-      <div *ngIf="researchDiscoveryView | async; let discoveryView"><a [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{researchCount | async}} Research</a></div>
+      <div *ngIf="profileDiscoveryView | async; let discoveryView"><a class="goal-link" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{profileCount | async}} Profiles</a></div>
+      <div *ngIf="researchDiscoveryView | async; let discoveryView"><a class="goal-link" [routerLink]="getDiscoveryRouterLink(discoveryView)" [queryParams]="getDiscoveryQueryParams(discoveryView, goal)">{{researchCount | async}} Research</a></div>
     </ng-template>
   </ng-template>
 </div>
