@@ -272,6 +272,7 @@ export const isCounting = <R extends SdrResource>(state: SdrState<R>) => state.c
 
 export const getPage = <R extends SdrResource>(state: SdrState<R>) => state.page;
 export const getCounts = <R extends SdrResource>(state: SdrState<R>) => state.counts;
+export const getCountByLabel = (label: string) => <R extends SdrResource>(state: SdrState<R>) => state.counts[label];
 export const getFacets = <R extends SdrResource>(state: SdrState<R>) => state.facets;
 export const getLinks = <R extends SdrResource>(state: SdrState<R>) => state.links;
 export const getRecentlyUpdated = <R extends SdrResource>(state: SdrState<R>) => state.recentlyUpdated;

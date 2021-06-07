@@ -14,18 +14,26 @@
     padding-bottom: 0;
     .container {
       padding-top: 5px;
-      @media (min-width: 376px) { padding-top: 9px; }
-      @media (min-width: 576px) { padding-top: 22.5px; }
-      @media (min-width: 768px) { padding-top: 45px; }
-      @media (min-width: 992px) { padding-top: 80px; }
+      @media (min-width: 376px) {
+        padding-top: 9px;
+      }
+      @media (min-width: 576px) {
+        padding-top: 22.5px;
+      }
+      @media (min-width: 768px) {
+        padding-top: 45px;
+      }
+      @media (min-width: 992px) {
+        padding-top: 80px;
+      }
       .water-mark {
-          height: 200px;
-          background-size: contain;
-          background-repeat: no-repeat;
-          background-position: center center;
-          font-weight: bold;
-          font-size: 20px;
-          color: var(--hero-color);
+        height: 200px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+        font-weight: bold;
+        font-size: 20px;
+        color: var(--hero-color);
       }
       .home-stats {
         margin: 40px 0px 20px 0px;
@@ -70,7 +78,7 @@
   .home-recent .container,
   .home-recent .container .row {
     height: 220px;
-  } 
+  }
   .home-recent .container .row {
     margin-top: -25px;
     margin-bottom: -25px;
@@ -82,5 +90,14 @@
     display: inline-block;
     font-size: 15px;
     color: #464646;
+  }
+}
+.sustainable-development-goals {
+  p {
+    line-height: 1em;
+  }
+  img {
+    max-height: 100%;
+    max-width: 100%;
   }
 }
