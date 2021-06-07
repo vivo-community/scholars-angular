@@ -1,5 +1,11 @@
 <div class="d-flex flex-wrap justify-content-center justify-content-md-start">
-  <ng-template ngFor let-icon [ngForOf]="icons" let-i="index" [ngForTrackBy]="trackByFn">
-    <img [src]="icon">
+  <ng-template ngFor let-goal [ngForOf]="goals" let-i="index" [ngForTrackBy]="trackByFn">
+    <img [src]="goal.icon" [ngbPopover]="goalsPopover" [popoverTitle]="goalsPopoverTitle" (hidden)="hidden(goal)" (shown)="shown(goal)" placement="bottom-right" triggers="click">
+    <ng-template #goalsPopoverTitle>
+      <span class="goal-title" [ngStyle]="{'border-left-color': goal.color}">{{goal.title}}</span>
+    </ng-template>
+    <ng-template #goalsPopover>
+      <span>Hello, World!</span>
+    </ng-template>
   </ng-template>
 </div>

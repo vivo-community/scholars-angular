@@ -1,19 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import 'styles/variables';
-@import 'styles/imports';
-@import 'styles/mixins';
-@import 'styles/overrides';
+@import "styles/variables";
+@import "styles/imports";
+@import "styles/mixins";
+@import "styles/overrides";
 
 html {
   overflow-y: scroll;
 }
 
 body {
-  font-family: 'Lato', Calibri, Arial, sans-serif;
+  font-family: "Lato", Calibri, Arial, sans-serif;
   min-width: 320px;
   .search {
-    background: var(--search-gradient)
+    background: var(--search-gradient);
   }
   .link {
     color: var(--link-color);
@@ -29,4 +29,9 @@ body {
   a:hover {
     color: var(--link-color-hover);
   }
+}
+
+.bs-popover-bottom > .arrow::after,
+.bs-popover-auto[x-placement^="bottom"] > .arrow::after {
+  border-bottom-color: #f7f7f7;
 }
