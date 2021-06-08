@@ -54,7 +54,7 @@
     "glob": "7.1.6",
     "ie11-custom-properties": "4.1.0",
     "rxjs": "6.6.3",
-    "scholars-embed-utilities": "0.2.13",
+    "scholars-embed-utilities": "0.3.0",
     "tslib": "2.0.3",
     "web-animations-js": "2.3.2",
     "zone.js": "0.10.3"
