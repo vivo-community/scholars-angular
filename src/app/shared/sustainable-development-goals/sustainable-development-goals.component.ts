@@ -16,24 +16,24 @@ import { getQueryParams } from '../utilities/view.utility';
 })
 export class SustainableDevelopmentGoalsComponent {
 
-  goals = [
-    { title: 'SDG 1', value: '1 no poverty', icon: 'assets/images/goals/E Inverted Icons_WEB-01.png', selected: 'assets/images/goals/E-WEB-Goal-01.png', color: '#E5243B' },
-    { title: 'SDG 2', value: '2 zero hunger', icon: 'assets/images/goals/E Inverted Icons_WEB-02.png', selected: 'assets/images/goals/E-WEB-Goal-02.png', color: '#DDA63A' },
-    { title: 'SDG 3', value: '3 good health and well-being', icon: 'assets/images/goals/E Inverted Icons_WEB-03.png', selected: 'assets/images/goals/E-WEB-Goal-03.png', color: '#4C9F38' },
-    { title: 'SDG 4', value: '4 quality education', icon: 'assets/images/goals/E Inverted Icons_WEB-04.png', selected: 'assets/images/goals/E-WEB-Goal-04.png', color: '#C5192D' },
-    { title: 'SDG 5', value: '5 gender equality', icon: 'assets/images/goals/E Inverted Icons_WEB-05.png', selected: 'assets/images/goals/E-WEB-Goal-05.png', color: '#FF3A21' },
-    { title: 'SDG 6', value: '6 clean water and sanitation', icon: 'assets/images/goals/E Inverted Icons_WEB-06.png', selected: 'assets/images/goals/E-WEB-Goal-06.png', color: '#26BDE2' },
-    { title: 'SDG 7', value: '7 affordable and clean energy', icon: 'assets/images/goals/E Inverted Icons_WEB-07.png', selected: 'assets/images/goals/E-WEB-Goal-07.png', color: '#FCC30B' },
-    { title: 'SDG 8', value: '8 decent work and economic growth', icon: 'assets/images/goals/E Inverted Icons_WEB-08.png', selected: 'assets/images/goals/E-WEB-Goal-08.png', color: '#A21942' },
-    { title: 'SDG 9', value: '9 industry, innovation and infrastructure', icon: 'assets/images/goals/E Inverted Icons_WEB-09.png', selected: 'assets/images/goals/E-WEB-Goal-09.png', color: '#FD6925' },
-    { title: 'SDG 10', value: '10 reduced inequalities', icon: 'assets/images/goals/E Inverted Icons_WEB-10.png', selected: 'assets/images/goals/E-WEB-Goal-10.png', color: '#DD1367' },
-    { title: 'SDG 11', value: '11 sustainable cities and communities', icon: 'assets/images/goals/E Inverted Icons_WEB-11.png', selected: 'assets/images/goals/E-WEB-Goal-11.png', color: '#FD9D24' },
-    { title: 'SDG 12', value: '12 responsible consumption and production', icon: 'assets/images/goals/E Inverted Icons_WEB-12.png', selected: 'assets/images/goals/E-WEB-Goal-12.png', color: '#BF8B2E' },
-    { title: 'SDG 13', value: '13 climate action', icon: 'assets/images/goals/E Inverted Icons_WEB-13.png', selected: 'assets/images/goals/E-WEB-Goal-13.png', color: '#3F7E44' },
-    { title: 'SDG 14', value: '14 life below water', icon: 'assets/images/goals/E Inverted Icons_WEB-14.png', selected: 'assets/images/goals/E-WEB-Goal-14.png', color: '#0A97D9' },
-    { title: 'SDG 15', value: '15 life on land', icon: 'assets/images/goals/E Inverted Icons_WEB-15.png', selected: 'assets/images/goals/E-WEB-Goal-15.png', color: '#56C02B' },
-    { title: 'SDG 16', value: '16 peace, justice and strong institutions', icon: 'assets/images/goals/E Inverted Icons_WEB-16.png', selected: 'assets/images/goals/E-WEB-Goal-16.png', color: '#00689D' },
-    { title: 'SDG 17', value: '17 partenrships for the goals', icon: 'assets/images/goals/E Inverted Icons_WEB-17.png', selected: 'assets/images/goals/E-WEB-Goal-17.png', color: '#19486A' }
+  goals: { title: string, value: string, color: string, icon?: string }[] = [
+    { title: 'SDG 1', value: '1 no poverty', color: '#E5243B' },
+    { title: 'SDG 2', value: '2 zero hunger', color: '#DDA63A' },
+    { title: 'SDG 3', value: '3 good health and well-being', color: '#4C9F38' },
+    { title: 'SDG 4', value: '4 quality education', color: '#C5192D' },
+    { title: 'SDG 5', value: '5 gender equality', color: '#FF3A21' },
+    { title: 'SDG 6', value: '6 clean water and sanitation', color: '#26BDE2' },
+    { title: 'SDG 7', value: '7 affordable and clean energy', color: '#FCC30B' },
+    { title: 'SDG 8', value: '8 decent work and economic growth', color: '#A21942' },
+    { title: 'SDG 9', value: '9 industry, innovation and infrastructure', color: '#FD6925' },
+    { title: 'SDG 10', value: '10 reduced inequalities', color: '#DD1367' },
+    { title: 'SDG 11', value: '11 sustainable cities and communities', color: '#FD9D24' },
+    { title: 'SDG 12', value: '12 responsible consumption and production', color: '#BF8B2E' },
+    { title: 'SDG 13', value: '13 climate action', color: '#3F7E44' },
+    { title: 'SDG 14', value: '14 life below water', color: '#0A97D9' },
+    { title: 'SDG 15', value: '15 life on land', color: '#56C02B' },
+    { title: 'SDG 16', value: '16 peace, justice and strong institutions', color: '#00689D' },
+    { title: 'SDG 17', value: '17 partnerships for the goals', color: '#19486A' }
   ];
 
   public profileCount: Observable<number>;
@@ -44,15 +44,18 @@ export class SustainableDevelopmentGoalsComponent {
 
   public researchDiscoveryView: Observable<DiscoveryView>;
 
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppState>) {
+    this.goals.forEach(goal => {
+      goal.icon = `assets/images/goals/${goal.value}.png`;
+    });
+  }
 
   hidden(goal: any): void {
-    goal.icon = goal.temp;
+    goal.icon = `assets/images/goals/${goal.value}.png`;
   }
 
   shown(goal: any): void {
-    goal.temp = goal.icon;
-    goal.icon = goal.selected;
+    goal.icon = `assets/images/goals/${goal.value} selected.png`;
 
     const profileTitle = `Profile ${goal.title}`;
 
