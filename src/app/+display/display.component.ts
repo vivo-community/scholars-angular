@@ -245,20 +245,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
                     this.readySubject.next(true);
 
                     if (this.route.children.length === 0) {
-                      let tabName;
-
-                      if (displayView.name !== 'Persons' && displayView.name !== 'Organizations') {
-                        for (const tab of this.getTabsToShow(displayView.tabs, document)) {
-                          if (tabName === undefined) {
-                            tabName = tab.name;
-                            break;
-                          }
-                        }
-                      } else {
-                        tabName = 'View All';
-                      }
-
-                      this.router.navigate([displayView.name, tabName], {
+                      this.router.navigate([displayView.name, 'View All'], {
                         relativeTo: this.route,
                         replaceUrl: true,
                       }).then(() => loadBadges(this.platformId));
