@@ -162,7 +162,7 @@
       "LABEL": "Find Research at {{organization}}",
       "PLACEHOLDER": "Search...",
       "VIEW_PLACEHOLDER": "Search {{view}}...",
-      "DISCOVERY": "Discovery",
+      "ADVANCED_SEARCH": "Advanced Search",
       "SEARCH_TIPS": "Search Tips"
     },
     "SIDEBAR": {
