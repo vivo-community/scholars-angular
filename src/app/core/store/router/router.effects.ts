@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 
 import { filter, map, withLatestFrom, skipWhile } from 'rxjs/operators';
@@ -26,7 +26,7 @@ export class RouterEffects {
     this.listenForRouteChange();
   }
 
-  @Effect({ dispatch: false }) navigate = this.actions.pipe(
+  navigate = createEffect(() => this.actions.pipe(
     ofType(fromRouter.RouterActionTypes.GO),
     map((action: fromRouter.Go) => action.payload),
     map(({ path, query: queryParams, extras }) =>
@@ -36,31 +36,31 @@ export class RouterEffects {
         ...extras,
       })
     )
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false }) navigateByUrl = this.actions.pipe(
+  navigateByUrl = createEffect(() => this.actions.pipe(
     ofType(fromRouter.RouterActionTypes.LINK),
     map((action: fromRouter.Link) => action.payload),
     map(({ url }) => this.router.navigateByUrl(url))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false }) navigateBack = this.actions.pipe(
+  navigateBack = createEffect(() => this.actions.pipe(
     ofType(fromRouter.RouterActionTypes.BACK),
     map(() => this.location.back())
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false }) navigateForward = this.actions.pipe(
+  navigateForward = createEffect(() => this.actions.pipe(
     ofType(fromRouter.RouterActionTypes.FORWARD),
     map(() => this.location.forward())
-  );
+  ), { dispatch: false });
 
-  @Effect() redirect = this.actions.pipe(
+  redirect = createEffect(() => this.actions.pipe(
     ofType(fromRouter.RouterActionTypes.CHANGED),
     withLatestFrom(this.store.pipe(select(selectLoginRedirect))),
     map(([action, redirect]) => redirect),
     skipWhile((redirect: fromRouter.RouterNavigation) => redirect === undefined),
     map(() => new fromAuth.UnsetLoginRedirectAction())
-  );
+  ));
 
   private listenForRouteChange() {
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {

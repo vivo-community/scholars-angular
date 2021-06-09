@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SafeStyle } from '@angular/platform-browser';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 
-import { defer, scheduled } from 'rxjs';
+import { scheduled } from 'rxjs';
 import { asapScheduler } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
@@ -12,9 +12,10 @@ import { ThemeService } from '../../service/theme.service';
 import { Theme } from '../../model/theme';
 
 import * as fromTheme from './theme.actions';
+import { Action } from '@ngrx/store';
 
 @Injectable()
-export class ThemeEffects {
+export class ThemeEffects implements OnInitEffects {
 
   constructor(
     private actions: Actions,
@@ -24,7 +25,7 @@ export class ThemeEffects {
 
   }
 
-  @Effect() loadActiveTheme = this.actions.pipe(
+  loadActiveTheme = createEffect(() => this.actions.pipe(
     ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE),
     switchMap(() =>
       this.themeService.getActiveTheme().pipe(
@@ -32,9 +33,9 @@ export class ThemeEffects {
         catchError((response) => scheduled([new fromTheme.LoadActiveThemeFailureAction({ response })], asapScheduler))
       )
     )
-  );
+  ));
 
-  @Effect() loadActiveThemeSuccess = this.actions.pipe(
+  loadActiveThemeSuccess = createEffect(() => this.actions.pipe(
     ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE_SUCCESS),
     map((action: fromTheme.LoadActiveThemeSuccessAction) => action.payload.theme),
     switchMap((theme: Theme) =>
@@ -43,20 +44,20 @@ export class ThemeEffects {
         catchError((error) => scheduled([new fromTheme.ApplyActiveThemeFailureAction({ error })], asapScheduler))
       )
     )
-  );
+  ));
 
-  @Effect() loadActiveThemeFailure = this.actions.pipe(
+  loadActiveThemeFailure = createEffect(() => this.actions.pipe(
     ofType(fromTheme.ThemeActionTypes.LOAD_ACTIVE_FAILURE),
     map((action: fromTheme.LoadActiveThemeFailureAction) => this.alert.loadActiveThemeFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() applyActiveThemeFailure = this.actions.pipe(
+  applyActiveThemeFailure = createEffect(() => this.actions.pipe(
     ofType(fromTheme.ThemeActionTypes.APPLY_ACTIVE_FAILURE),
     map((action: fromTheme.ApplyActiveThemeFailureAction) => this.alert.applyActiveThemeFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() init = defer(() => {
-    return scheduled([new fromTheme.LoadActiveThemeAction()], asapScheduler);
-  });
+  ngrxOnInitEffects(): Action {
+    return new fromTheme.LoadActiveThemeAction();
+  }
 
 }

@@ -1,11 +1,9 @@
 import { isPlatformBrowser, Location } from '@angular/common';
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
-import { Effect, ofType, Actions } from '@ngrx/effects';
-import { Store, select } from '@ngrx/store';
+import { ofType, Actions, createEffect, OnInitEffects } from '@ngrx/effects';
+import { Store, select, Action } from '@ngrx/store';
 
-import { defer, scheduled, EMPTY } from 'rxjs';
-import { asapScheduler } from 'rxjs';
 import { map, withLatestFrom, filter } from 'rxjs/operators';
 
 import { AppState } from '../';
@@ -20,7 +18,7 @@ import * as fromLayout from '../layout/layout.actions';
 import * as fromSidebar from '../sidebar/sidebar.actions';
 
 @Injectable()
-export class LayoutEffects {
+export class LayoutEffects implements OnInitEffects {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: string,
@@ -30,7 +28,7 @@ export class LayoutEffects {
     private router: Router
   ) { }
 
-  @Effect({ dispatch: false }) updateQueryParamOnSidebarToggleCollapse = this.actions.pipe(
+  updateQueryParamOnSidebarToggleCollapse = createEffect(() => this.actions.pipe(
     ofType(fromSidebar.SidebarActionTypes.TOGGLE_COLLAPSIBLE_SECTION),
     map((action: fromSidebar.ToggleCollapsibleSectionAction) => action.payload.sectionIndex),
     withLatestFrom(
@@ -38,46 +36,40 @@ export class LayoutEffects {
       this.store.pipe(select(selectRouterUrl))
     ),
     map(([sectionIndex, menu, url]) => this.updateUrl(menu, url))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false }) updateQueryParamOnLoadSidebar = this.actions.pipe(
+  updateQueryParamOnLoadSidebar = createEffect(() => this.actions.pipe(
     ofType(fromSidebar.SidebarActionTypes.LOAD_SIDEBAR),
     map((action: fromSidebar.LoadSidebarAction) => action.payload.menu),
     withLatestFrom(this.store.pipe(select(selectRouterUrl))),
     map(([menu, url]) => this.updateUrl(menu, url))
-  );
+  ), { dispatch: false });
 
-  @Effect() checkSidebarOnResize = this.actions.pipe(
+  checkSidebarOnResize = createEffect(() => this.actions.pipe(
     ofType(fromLayout.LayoutActionTypes.CHECK_WINDOW),
     map((action: fromLayout.CheckWindowAction) => action.payload.windowDimensions),
     withLatestFrom(this.store.pipe(select(selectWindowDimensions))),
     filter(([windowDimensions, lastWindowDimensions]) => lastWindowDimensions.width !== windowDimensions.width),
     map(([windowDimensions, lastWindowDimensions]) => windowDimensions),
     map((windowDimensions: WindowDimensions) => new fromLayout.ResizeWindowAction({ windowDimensions }))
-  );
+  ));
 
-  @Effect() checkSidebarOnLoad = this.actions.pipe(
+  checkSidebarOnLoad = createEffect(() => this.actions.pipe(
     ofType(fromSidebar.SidebarActionTypes.LOAD_SIDEBAR, fromLayout.LayoutActionTypes.RESIZE_WINDOW),
     withLatestFrom(this.store.pipe(select(selectWindowDimensions))),
     map(([action, windowDimensions]) => this.checkSidebar(windowDimensions))
-  );
+  ));
 
-  @Effect() initLayout = defer(() => {
+  ngrxOnInitEffects(): Action {
     if (isPlatformBrowser(this.platformId)) {
-      return scheduled(
-        [
-          new fromLayout.ResizeWindowAction({
-            windowDimensions: {
-              width: window.innerWidth,
-              height: window.innerHeight,
-            },
-          }),
-        ],
-        asapScheduler
-      );
+      return new fromLayout.ResizeWindowAction({
+        windowDimensions: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        },
+      });
     }
-    return EMPTY;
-  });
+  }
 
   private checkSidebar(windowDimensions: WindowDimensions): fromLayout.LayoutActions {
     return windowDimensions.width <= 991 ? new fromLayout.CloseSidebarAction() : new fromLayout.OpenSidebarAction();
