@@ -69,6 +69,7 @@ export class LayoutEffects implements OnInitEffects {
         },
       });
     }
+    return { type: '' };
   }
 
   private checkSidebar(windowDimensions: WindowDimensions): fromLayout.LayoutActions {
