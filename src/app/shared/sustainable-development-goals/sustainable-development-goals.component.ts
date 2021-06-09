@@ -62,7 +62,7 @@ export class SustainableDevelopmentGoalsComponent {
     this.store.dispatch(
       new fromSdr.CountResourcesAction('individual', {
         label: profileTitle,
-        request: this.buildRequest('Person', goal)
+        request: this.buildRequest('Person', goal, 'selectedPublicationTag')
       })
     );
 
@@ -78,7 +78,7 @@ export class SustainableDevelopmentGoalsComponent {
     this.store.dispatch(
       new fromSdr.CountResourcesAction('individual', {
         label: researchTitle,
-        request: this.buildRequest('Document', goal)
+        request: this.buildRequest('Document', goal, 'tags')
       })
     );
 
@@ -94,12 +94,12 @@ export class SustainableDevelopmentGoalsComponent {
     return [`/discovery/${discoveryView.name}`];
   }
 
-  getDiscoveryQueryParams(discoveryView: DiscoveryView, goal: any): Params {
-    const queryParams: Params = getQueryParams(discoveryView);
+  getDiscoveryQueryParams(discoveryView: DiscoveryView, goal: any, filter: string): Params {
+    const queryParams: Params = Object.assign({}, getQueryParams(discoveryView));
     queryParams.page = 1;
-    queryParams['tags.filter'] = goal.value;
-    queryParams['tags.opKey'] = 'EQUALS';
-    queryParams.filters += ',tags';
+    queryParams[`${filter}.filter`] = goal.value;
+    queryParams[`${filter}.opKey`] = 'EQUALS';
+    queryParams.filters += `,${filter}`;
     return queryParams;
   }
 
@@ -107,7 +107,7 @@ export class SustainableDevelopmentGoalsComponent {
     return index;
   }
 
-  private buildRequest(classifier: string, goal: any): any {
+  private buildRequest(classifier: string, goal: any, filter: string): any {
     return {
       filters: [
         {
@@ -116,7 +116,7 @@ export class SustainableDevelopmentGoalsComponent {
           opKey: OpKey.EQUALS,
         },
         {
-          field: 'tags',
+          field: filter,
           value: goal.value,
           opKey: OpKey.EQUALS,
         }
