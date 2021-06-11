@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect,  ofType } from '@ngrx/effects';
 import { MetaDefinition } from '@angular/platform-browser';
 import { Router, ActivationStart } from '@angular/router';
 import { Store, select } from '@ngrx/store';
@@ -21,13 +21,13 @@ export class MetadataEffects {
     this.listenForRouteDataTags();
   }
 
-  @Effect({ dispatch: false }) clearTags = this.actions.pipe(
+  clearTags = createEffect(() => this.actions.pipe(
     ofType(fromMetadata.MetadataActionTypes.CLEAR_TAGS),
     withLatestFrom(this.store.pipe(select(selectMetadataTags))),
     map(([action, tags]) => this.metadataService.removeTags(tags))
-  );
+  ), { dispatch: false });
 
-  @Effect() setTags = this.actions.pipe(
+  setTags = createEffect(() => this.actions.pipe(
     ofType(fromMetadata.MetadataActionTypes.SET_TAGS),
     map((action: fromMetadata.SetMetadataTagsAction) => action.payload),
     withLatestFrom(this.store.pipe(select(selectMetadataTags))),
@@ -35,42 +35,42 @@ export class MetadataEffects {
       this.metadataService.removeTags(tags);
       return new fromMetadata.AddMetadataTagsAction(payload);
     })
-  );
+  ));
 
-  @Effect({ dispatch: false }) addTags = this.actions.pipe(
+  addTags = createEffect(() => this.actions.pipe(
     ofType(fromMetadata.MetadataActionTypes.ADD_TAGS),
     map((action: fromMetadata.AddMetadataTagsAction) => action.payload),
     map((payload: { tags: MetaDefinition[] }) => payload.tags),
     map((tags: MetaDefinition[]) => this.metadataService.addTags(tags))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false }) removeTags = this.actions.pipe(
+  removeTags = createEffect(() => this.actions.pipe(
     ofType(fromMetadata.MetadataActionTypes.REMOVE_TAGS),
     map((action: fromMetadata.RemoveMetadataTagsAction) => action.payload),
     map((payload: { tags: MetaDefinition[] }) => payload.tags),
     map((tags: MetaDefinition[]) => this.metadataService.removeTags(tags))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false }) addTag = this.actions.pipe(
+  addTag = createEffect(() => this.actions.pipe(
     ofType(fromMetadata.MetadataActionTypes.ADD_TAG),
     map((action: fromMetadata.AddMetadataTagAction) => action.payload),
     map((payload: { tag: MetaDefinition }) => payload.tag),
     map((tag: MetaDefinition) => this.metadataService.addTag(tag))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false }) removeTag = this.actions.pipe(
+  removeTag = createEffect(() => this.actions.pipe(
     ofType(fromMetadata.MetadataActionTypes.REMOVE_TAG),
     map((action: fromMetadata.RemoveMetadataTagAction) => action.payload),
     map((payload: { selector: string }) => payload.selector),
     map((selector: string) => this.metadataService.removeTag(selector))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false }) updateTag = this.actions.pipe(
+  updateTag = createEffect(() => this.actions.pipe(
     ofType(fromMetadata.MetadataActionTypes.UPDATE_TAG),
     map((action: fromMetadata.AddMetadataTagAction) => action.payload),
     map((payload: { tag: MetaDefinition }) => payload.tag),
     map((tag: MetaDefinition) => this.metadataService.updateTag(tag))
-  );
+  ), { dispatch: false });
 
   private listenForRouteDataTags() {
     this.router.events.pipe(filter((event) => event instanceof ActivationStart)).subscribe((event: ActivationStart) => {

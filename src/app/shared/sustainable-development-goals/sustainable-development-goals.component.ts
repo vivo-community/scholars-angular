@@ -94,12 +94,12 @@ export class SustainableDevelopmentGoalsComponent {
     return [`/discovery/${discoveryView.name}`];
   }
 
-  getDiscoveryQueryParams(discoveryView: DiscoveryView, goal: any, filter: string): Params {
+  getDiscoveryQueryParams(discoveryView: DiscoveryView, goal: any, field: string): Params {
     const queryParams: Params = Object.assign({}, getQueryParams(discoveryView));
     queryParams.page = 1;
-    queryParams[`${filter}.filter`] = goal.value;
-    queryParams[`${filter}.opKey`] = 'EQUALS';
-    queryParams.filters += `,${filter}`;
+    queryParams[`${field}.filter`] = goal.value;
+    queryParams[`${field}.opKey`] = 'EQUALS';
+    queryParams.filters += `,${field}`;
     return queryParams;
   }
 
@@ -107,7 +107,7 @@ export class SustainableDevelopmentGoalsComponent {
     return index;
   }
 
-  private buildRequest(classifier: string, goal: any, filter: string): any {
+  private buildRequest(classifier: string, goal: any, field: string): any {
     return {
       filters: [
         {
@@ -116,7 +116,7 @@ export class SustainableDevelopmentGoalsComponent {
           opKey: OpKey.EQUALS,
         },
         {
-          field: filter,
+          field,
           value: goal.value,
           opKey: OpKey.EQUALS,
         }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
 import { map } from 'rxjs/operators';
@@ -17,7 +17,7 @@ export class AlertEffects {
 
   }
 
-  @Effect({ dispatch: false }) setAlertTimer = this.actions.pipe(
+  setAlertTimer = createEffect(() => this.actions.pipe(
     ofType(fromAlert.AlertActionTypes.ADD_ALERT),
     map((action: fromAlert.AddAlertAction) => action.payload),
     map((payload: { alert: Alert }) => payload.alert),
@@ -28,6 +28,6 @@ export class AlertEffects {
         }, alert.timer);
       }
     })
-  );
+  ), { dispatch: false });
 
 }

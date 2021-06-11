@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { Actions, createEffect, Effect, ofType, OnInitEffects } from '@ngrx/effects';
+import { Action, Store } from '@ngrx/store';
 
 import { defer, scheduled, Observable } from 'rxjs';
 import { asapScheduler } from 'rxjs';
@@ -15,13 +15,13 @@ import { StompService } from '../../service/stomp.service';
 import * as fromStomp from './stomp.actions';
 
 @Injectable()
-export class StompEffects {
+export class StompEffects implements OnInitEffects {
 
   constructor(private actions: Actions, private store: Store<AppState>, private stomp: StompService, private alert: AlertService) {
 
   }
 
-  @Effect() connect = this.actions.pipe(
+  connect = createEffect(() => this.actions.pipe(
     ofType(fromStomp.StompActionTypes.CONNECT),
     switchMap(() =>
       this.stomp.connect().pipe(
@@ -29,14 +29,14 @@ export class StompEffects {
         catchError((response) => scheduled([new fromStomp.ConnectFailureAction({ response })], asapScheduler))
       )
     )
-  );
+  ));
 
-  @Effect() connectFailure = this.actions.pipe(
+  connectFailure = createEffect(() => this.actions.pipe(
     ofType(fromStomp.StompActionTypes.CONNECT_FAILURE),
     map(() => this.alert.connectFailureAlert())
-  );
+  ));
 
-  @Effect() disconnect = this.actions.pipe(
+  disconnect = createEffect(() => this.actions.pipe(
     ofType(fromStomp.StompActionTypes.DISCONNECT),
     map((action: fromStomp.DisconnectAction) => action.payload),
     withLatestFrom(this.store),
@@ -50,21 +50,21 @@ export class StompEffects {
         catchError((response) => scheduled([new fromStomp.DisconnectFailureAction({ response })], asapScheduler))
       );
     })
-  );
+  ));
 
-  @Effect() disconnectSuccess = this.actions.pipe(
+  disconnectSuccess = createEffect(() => this.actions.pipe(
     ofType(fromStomp.StompActionTypes.DISCONNECT_SUCCESS),
     map((action: fromStomp.DisconnectSuccessAction) => action.payload),
     skipWhile((payload: { reconnect: boolean }) => !payload.reconnect),
     map(() => new fromStomp.ConnectAction())
-  );
+  ));
 
-  @Effect() disconnectFailure = this.actions.pipe(
+  disconnectFailure = createEffect(() => this.actions.pipe(
     ofType(fromStomp.StompActionTypes.DISCONNECT_FAILURE),
     map(() => this.alert.disconnectFailureAlert())
-  );
+  ));
 
-  @Effect() subscribe = this.actions.pipe(
+  subscribe = createEffect(() => this.actions.pipe(
     ofType(fromStomp.StompActionTypes.SUBSCRIBE),
     map((action: fromStomp.SubscribeAction) => action.payload),
     mergeMap((payload: { channel: string; handle: () => Observable<any> }) =>
@@ -89,9 +89,9 @@ export class StompEffects {
         )
       )
     )
-  );
+  ));
 
-  @Effect() unsubscribe = this.actions.pipe(
+  unsubscribe = createEffect(() => this.actions.pipe(
     ofType(fromStomp.StompActionTypes.UNSUBSCRIBE),
     map((action: fromStomp.UnsubscribeAction) => action),
     withLatestFrom(this.store),
@@ -107,14 +107,15 @@ export class StompEffects {
         catchError((response) => scheduled([new fromStomp.UnsubscribeFailureAction({ response })], asapScheduler))
       )
     )
-  );
+  ));
 
-  @Effect() unsubscribeFailure = this.actions.pipe(
+  unsubscribeFailure = createEffect(() => this.actions.pipe(
     ofType(fromStomp.StompActionTypes.UNSUBSCRIBE_FAILURE),
     map(() => this.alert.unsubscribeFailureAlert())
-  );
+  ));
 
-  @Effect() init = defer(() => {
-    return scheduled([new fromStomp.ConnectAction()], asapScheduler);
-  });
+  ngrxOnInitEffects(): Action {
+    return new fromStomp.ConnectAction();
+  }
+
 }
