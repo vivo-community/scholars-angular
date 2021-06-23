@@ -43,6 +43,16 @@ export const getSdrInitialState = <R extends SdrResource>(key: string) => {
 };
 
 export const getSdrReducer = <R extends SdrResource>(name: string, additionalContext: any) => {
+  const sortTags = (tags: Array<string>): void => {
+    tags.sort((t1, t2) => Number(t1.split(' ')[0]) > Number(t2.split(' ')[0]) ? 1 : -1);
+  };
+  const sortCollectionTags = (collection: Array<any>): void => {
+    collection.forEach(individual => {
+      if (!!individual.tags) {
+        sortTags(individual.tags);
+      }
+    });
+  };
   const getResourceItem = (resource: any, references: any[]) => {
     if (Array.isArray(resource[references[0].property])) {
       const refItems = resource[references[0].property].filter((item) => item.id === references[0].id);
@@ -66,6 +76,9 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
         resources.forEach((view: DisplayView) => augmentDisplayViewTemplates(view, additionalContext));
         break;
       case 'individual':
+        if (!!action.payload.collection._embedded) {
+          sortCollectionTags(action.payload.collection._embedded.individual);
+        }
         if (action.payload.collection.highlights) {
           action.payload.collection.highlights.forEach((highlight: SdrHighlight) => {
             const individual = resources.filter((resource) => resource.id === highlight.id).map((resource) => {
@@ -99,6 +112,11 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
         break;
       case 'displayViews':
         augmentDisplayViewTemplates(resource, additionalContext);
+        break;
+      case 'individual':
+        if (resource.tags) {
+          sortTags(resource.tags);
+        }
         break;
     }
     return resource;
@@ -150,7 +168,8 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
         const id = action.payload.document.id;
         const isArray = Array.isArray(state.entities[id][action.payload.field]);
         // tslint:disable-next-line: no-string-literal
-        const embedded = action.payload.resources._embedded['individual'];
+        const embedded = action.payload.resources._embedded.individual;
+        sortCollectionTags(embedded);
         changes[action.payload.field] = isArray ? embedded : embedded[0];
         return getSdrAdapter<R>(keys[name]).updateOne(
           { id, changes },
@@ -272,6 +291,7 @@ export const isCounting = <R extends SdrResource>(state: SdrState<R>) => state.c
 
 export const getPage = <R extends SdrResource>(state: SdrState<R>) => state.page;
 export const getCounts = <R extends SdrResource>(state: SdrState<R>) => state.counts;
+export const getCountByLabel = (label: string) => <R extends SdrResource>(state: SdrState<R>) => state.counts[label];
 export const getFacets = <R extends SdrResource>(state: SdrState<R>) => state.facets;
 export const getLinks = <R extends SdrResource>(state: SdrState<R>) => state.links;
 export const getRecentlyUpdated = <R extends SdrResource>(state: SdrState<R>) => state.recentlyUpdated;

@@ -31,7 +31,7 @@
     </div>
   </div>
 </div>
-<div class="home-recent mt-2" *ngIf="home | async; let home">
+<div class="home-recent mt-2 mb-2" *ngIf="home | async; let home">
   <div class="container">
     <div class="row">
       <div class="col-md-2 my-auto text-center">
@@ -42,6 +42,26 @@
       </div>
       <div class="col-md-2 my-auto text-center">
         <span class="gallery-info">{{ 'DASHBOARD.HOME.CLICK_PUBLICATION_TEXT' | translate }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="sustainable-development-goals mt-2 mb-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 mb-2">
+        <div class="mb-3">
+          <span class="h4 font-weight-bolder">{{ 'DASHBOARD.HOME.GOALS_TITLE' | translate }}</span>
+        </div>
+        <div>
+          <p>{{ 'DASHBOARD.HOME.GOALS_TEXT' | translate }}</p>
+        </div>
+        <div>
+          <img alt="{{ 'DASHBOARD.HOME.GOALS_TITLE' | translate }}" src="assets/images/sustainable-development-goals.png" />
+        </div>
+      </div>
+      <div class="col-md-9">
+        <scholars-sustainable-development-goals></scholars-sustainable-development-goals>
       </div>
     </div>
   </div>

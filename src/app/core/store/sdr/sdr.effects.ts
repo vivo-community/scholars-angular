@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -57,7 +57,7 @@ export class SdrEffects {
 
   // TODO: alerts should be in dialog location if a dialog is opened
 
-  @Effect() getAll = this.actions.pipe(
+  getAll = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_ALL)),
     mergeMap((action: fromSdr.GetAllResourcesAction) =>
       this.repos
@@ -82,21 +82,21 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false }) getAllSuccess = this.actions.pipe(
+  getAllSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_ALL_SUCCESS)),
     switchMap((action: fromSdr.GetAllResourcesSuccessAction) => this.waitForStompConnection(action.name)),
     withLatestFrom(this.store.pipe(select(selectStompState))),
     map(([combination, stomp]) => this.subscribeToResourceQueue(combination[0], stomp))
-  );
+  ), { dispatch: false });
 
-  @Effect() getAllFailure = this.actions.pipe(
+  getAllFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_ALL_FAILURE)),
     map((action: fromSdr.GetAllResourcesFailureAction) => this.alert.getAllFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() getOne = this.actions.pipe(
+  getOne = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_ONE)),
     switchMap((action: fromSdr.GetOneResourceAction) =>
       this.repos
@@ -116,21 +116,21 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false }) getOneSuccess = this.actions.pipe(
+  getOneSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_ONE_SUCCESS)),
     switchMap((action: fromSdr.GetOneResourceSuccessAction) => this.waitForStompConnection(action.name)),
     withLatestFrom(this.store.pipe(select(selectStompState))),
     map(([combination, stomp]) => this.subscribeToResourceQueue(combination[0], stomp))
-  );
+  ), { dispatch: false });
 
-  @Effect() getOneFailure = this.actions.pipe(
+  getOneFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_ONE_FAILURE)),
     map((action: fromSdr.GetOneResourceFailureAction) => this.alert.getOneFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() findByIdIn = this.actions.pipe(
+  findByIdIn = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.FIND_BY_ID_IN)),
     mergeMap((action: fromSdr.FindByIdInResourceAction) =>
       this.repos
@@ -155,21 +155,21 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false }) findByIdInSuccess = this.actions.pipe(
+  findByIdInSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.FIND_BY_ID_IN_SUCCESS)),
     switchMap((action: fromSdr.FindByIdInResourceSuccessAction) => this.waitForStompConnection(action.name)),
     withLatestFrom(this.store.pipe(select(selectStompState))),
     map(([combination, stomp]) => this.subscribeToResourceQueue(combination[0], stomp))
-  );
+  ), { dispatch: false });
 
-  @Effect() gfindByIdInFailure = this.actions.pipe(
+  findByIdInFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.FIND_BY_ID_IN_FAILURE)),
     map((action: fromSdr.FindByIdInResourceFailureAction) => this.alert.findByIdInFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() findByTypesIn = this.actions.pipe(
+  findByTypesIn = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.FIND_BY_TYPES_IN)),
     switchMap((action: fromSdr.FindByTypesInResourceAction) =>
       this.repos
@@ -194,21 +194,21 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false }) findByTypesInSuccess = this.actions.pipe(
+  findByTypesInSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.FIND_BY_TYPES_IN_SUCCESS)),
     switchMap((action: fromSdr.FindByTypesInResourceSuccessAction) => this.waitForStompConnection(action.name)),
     withLatestFrom(this.store.pipe(select(selectStompState))),
     map(([combination, stomp]) => this.subscribeToResourceQueue(combination[0], stomp))
-  );
+  ), { dispatch: false });
 
-  @Effect() findByTypesInFailure = this.actions.pipe(
+  findByTypesInFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.FIND_BY_TYPES_IN_FAILURE)),
     map((action: fromSdr.FindByTypesInResourceFailureAction) => this.alert.findByTypesInFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() fetchLazyReference = this.actions.pipe(
+  fetchLazyReference = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.FETCH_LAZY_REFERENCE)),
     switchMap((action: fromSdr.FetchLazyReferenceAction) => {
       const field = action.payload.field;
@@ -238,14 +238,14 @@ export class SdrEffects {
           )
         );
     })
-  );
+  ));
 
-  @Effect() fetchLazyReferenceFailure = this.actions.pipe(
+  fetchLazyReferenceFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.FETCH_LAZY_REFERENCE_FAILURE)),
     map((action: fromSdr.FetchLazyReferenceFailureAction) => this.alert.fetchLazyRefernceFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() page = this.actions.pipe(
+  page = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.PAGE)),
     switchMap((action: fromSdr.PageResourcesAction) =>
       this.repos
@@ -270,21 +270,21 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false }) pageSuccess = this.actions.pipe(
+  pageSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.PAGE_SUCCESS)),
     switchMap((action: fromSdr.PageResourcesSuccessAction) => this.waitForStompConnection(action.name)),
     withLatestFrom(this.store.pipe(select(selectStompState))),
     map(([combination, stomp]) => this.subscribeToResourceQueue(combination[0], stomp))
-  );
+  ), { dispatch: false });
 
-  @Effect() pageFailure = this.actions.pipe(
+  pageFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.PAGE_FAILURE)),
     map((action: fromSdr.PageResourcesFailureAction) => this.alert.pageFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() search = this.actions.pipe(
+  search = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.SEARCH)),
     switchMap((action: fromSdr.SearchResourcesAction) =>
       this.repos
@@ -309,9 +309,9 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false }) searchSuccess = this.actions.pipe(
+  searchSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.SEARCH_SUCCESS)),
     switchMap((action: fromSdr.SearchResourcesSuccessAction) =>
       combineLatest([
@@ -338,14 +338,14 @@ export class SdrEffects {
         discovery: latest[3] as SdrState<DiscoveryView>
       });
     })
-  );
+  ), { dispatch: false });
 
-  @Effect() searchFailure = this.actions.pipe(
+  searchFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.SEARCH_FAILURE)),
     map((action: fromSdr.SearchResourcesFailureAction) => this.alert.searchFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() count = this.actions.pipe(
+  count = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.COUNT)),
     mergeMap((action: fromSdr.CountResourcesAction) =>
       this.repos
@@ -372,14 +372,14 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect() countFailure = this.actions.pipe(
+  countFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.COUNT_FAILURE)),
     map((action: fromSdr.CountResourcesFailureAction) => this.alert.countFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() recentlyUpdated = this.actions.pipe(
+  recentlyUpdated = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.RECENTLY_UPDATED)),
     mergeMap((action: fromSdr.RecentlyUpdatedResourcesAction) =>
       this.repos
@@ -404,19 +404,19 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect() getRecentlyUpdatedFailure = this.actions.pipe(
+  getRecentlyUpdatedFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.RECENTLY_UPDATED_FAILURE)),
     map((action: fromSdr.RecentlyUpdatedResourcesFailureAction) => this.alert.recentlyUpdatedFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() clearResourceSubscription = this.actions.pipe(
+  clearResourceSubscription = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.CLEAR)),
     map((action: fromSdr.PageResourcesSuccessAction) => new fromStomp.UnsubscribeAction({ channel: `/queue/${action.name}` }))
-  );
+  ));
 
-  @Effect() post = this.actions.pipe(
+  post = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.POST)),
     switchMap((action: fromSdr.PostResourceAction) =>
       this.repos
@@ -436,19 +436,19 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect() postSuccess = this.actions.pipe(
+  postSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.POST_SUCCESS)),
     switchMap((action: fromSdr.PostResourceSuccessAction) => [new fromDialog.CloseDialogAction(), this.alert.postSuccessAlert(action)])
-  );
+  ));
 
-  @Effect() postFailure = this.actions.pipe(
+  postFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.POST_FAILURE)),
     map((action: fromSdr.PostResourceFailureAction) => this.alert.postFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() put = this.actions.pipe(
+  put = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.PUT)),
     switchMap((action: fromSdr.PutResourceAction) =>
       this.repos
@@ -459,19 +459,19 @@ export class SdrEffects {
           catchError((response) => scheduled([new fromSdr.PutResourceFailureAction(action.name, { response })], asapScheduler))
         )
     )
-  );
+  ));
 
-  @Effect() putSuccess = this.actions.pipe(
+  putSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.PUT_SUCCESS)),
     switchMap((action: fromSdr.PutResourceSuccessAction) => [new fromDialog.CloseDialogAction(), this.alert.putSuccessAlert(action)])
-  );
+  ));
 
-  @Effect() putFailure = this.actions.pipe(
+  putFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.PUT_FAILURE)),
     map((action: fromSdr.PutResourceFailureAction) => this.alert.putFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() patch = this.actions.pipe(
+  patch = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.PATCH)),
     switchMap((action: fromSdr.PatchResourceAction) =>
       this.repos
@@ -491,19 +491,19 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect() patchSuccess = this.actions.pipe(
+  patchSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.PATCH_SUCCESS)),
     switchMap((action: fromSdr.PatchResourceSuccessAction) => [new fromDialog.CloseDialogAction(), this.alert.patchSuccessAlert(action)])
-  );
+  ));
 
-  @Effect() patchFailure = this.actions.pipe(
+  patchFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.PATCH_FAILURE)),
     map((action: fromSdr.PatchResourceFailureAction) => this.alert.patchFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect() delete = this.actions.pipe(
+  delete = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.DELETE)),
     switchMap((action: fromSdr.DeleteResourceAction) =>
       this.repos
@@ -523,19 +523,19 @@ export class SdrEffects {
           )
         )
     )
-  );
+  ));
 
-  @Effect() deleteSuccess = this.actions.pipe(
+  deleteSuccess = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.DELETE_SUCCESS)),
     switchMap((action: fromSdr.DeleteResourceSuccessAction) => [new fromDialog.CloseDialogAction(), this.alert.deleteSuccessAlert(action)])
-  );
+  ));
 
-  @Effect() deleteFailure = this.actions.pipe(
+  deleteFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.DELETE_FAILURE)),
     map((action: fromSdr.DeleteResourceFailureAction) => this.alert.deleteFailureAlert(action.payload))
-  );
+  ));
 
-  @Effect({ dispatch: false }) navigation = this.actions.pipe(
+  navigation = createEffect(() => this.actions.pipe(
     ofType(fromRouter.RouterActionTypes.CHANGED),
     withLatestFrom(this.store.pipe(select(selectRouterState))),
     map(([action, router]) => {
@@ -552,12 +552,12 @@ export class SdrEffects {
         }
       }
     })
-  );
+  ), { dispatch: false });
 
-  @Effect() initViews = defer(() => scheduled([
+  initViews = createEffect(() => defer(() => scheduled([
     new fromSdr.GetAllResourcesAction('directoryViews'),
     new fromSdr.GetAllResourcesAction('discoveryViews')
-  ], asapScheduler));
+  ], asapScheduler)));
 
   private injectRepos(): void {
     const injector = Injector.create({

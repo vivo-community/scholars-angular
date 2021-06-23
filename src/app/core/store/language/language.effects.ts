@@ -2,10 +2,10 @@ import { Injectable, Optional, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
-import { Store, select } from '@ngrx/store';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Store, select, Action } from '@ngrx/store';
+import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 
-import { defer, scheduled } from 'rxjs';
+import { scheduled } from 'rxjs';
 import { asapScheduler } from 'rxjs';
 import { map, switchMap, catchError, withLatestFrom } from 'rxjs/operators';
 
@@ -20,7 +20,7 @@ import * as fromLanguage from './language.actions';
 import { environment } from '../../../../environments/environment';
 
 @Injectable()
-export class LanguageEffects {
+export class LanguageEffects implements OnInitEffects {
 
   constructor(
     @Optional() @Inject(REQUEST) private request: Request,
@@ -33,7 +33,7 @@ export class LanguageEffects {
 
   }
 
-  @Effect() setLanguage = this.actions.pipe(
+  setLanguage = createEffect(() => this.actions.pipe(
     ofType(fromLanguage.LanguageActionTypes.SET_LANGUAGE),
     map((action: fromLanguage.SetLanguageAction) => action.payload),
     map((payload: { language: string }) => payload.language),
@@ -43,9 +43,9 @@ export class LanguageEffects {
         catchError((error: any) => scheduled([new fromLanguage.SetLanguageFailureAction({ error, language })], asapScheduler))
       )
     )
-  );
+  ));
 
-  @Effect() resetLanguage = this.actions.pipe(
+  resetLanguage = createEffect(() => this.actions.pipe(
     ofType(fromLanguage.LanguageActionTypes.RESET_LANGUAGE),
     withLatestFrom(this.store.pipe(select(selectDefaultLanguage))),
     switchMap(([action, language]) =>
@@ -54,34 +54,34 @@ export class LanguageEffects {
         catchError((error: any) => scheduled([new fromLanguage.SetLanguageFailureAction({ error, language })], asapScheduler))
       )
     )
-  );
+  ));
 
-  @Effect() setLanguageSuccess = this.actions.pipe(
+  setLanguageSuccess = createEffect(() => this.actions.pipe(
     ofType(fromLanguage.LanguageActionTypes.SET_LANGUAGE_SUCCESS),
     map((action: fromLanguage.SetLanguageSuccessAction) => this.alert.setLanguageSuccessAlert(action.payload))
-  );
+  ));
 
-  @Effect({ dispatch: false }) setDefaultLanguage = this.actions.pipe(
+  setDefaultLanguage = createEffect(() => this.actions.pipe(
     ofType(fromLanguage.LanguageActionTypes.SET_DEFAULT_LANGUAGE),
     map((action: fromLanguage.SetLanguageAction) => action.payload),
     map((payload: { language: string }) => payload.language),
     map((language: string) => this.translate.setDefaultLang(language))
-  );
+  ), { dispatch: false });
 
-  @Effect() setLanguageFailure = this.actions.pipe(
+  setLanguageFailure = createEffect(() => this.actions.pipe(
     ofType(fromLanguage.LanguageActionTypes.SET_LANGUAGE_FAILURE),
     map((payload: { error: any; language: string }) => this.alert.setLanguageFailureAlert(payload))
-  );
+  ));
 
-  @Effect() init = defer(() => {
+  ngrxOnInitEffects(): Action {
     let language = this.getLanguage();
     // NOTE: this array should be all available language translations
     // TODO: move array into environment
     if (['en'].indexOf(language) < 0) {
       language = environment.language;
     }
-    return scheduled([new fromLanguage.SetDefaultLanguageAction({ language })], asapScheduler);
-  });
+    return new fromLanguage.SetDefaultLanguageAction({ language });
+  }
 
   private getLanguage(): string {
     let language: string;

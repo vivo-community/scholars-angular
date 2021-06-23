@@ -40,7 +40,9 @@
     },
     "HOME": {
       "LATEST_PUBLICATIONS_TEXT": "Most recently updated faculty profiles by {{organization}}",
-      "CLICK_PUBLICATION_TEXT": "Click to see the faculty profile"
+      "CLICK_PUBLICATION_TEXT": "Click to see the faculty profile",
+      "GOALS_TITLE": "UN Sustainable Development Goals",
+      "GOALS_TEXT": "The Member States of the United Nations adopted the Sustainable Development Goals by General Assembly in September 2015. The aim of these goals is to end all forms of poverty, fighting inequalities and tackling climate change while ensuring that no one is left behind. Click on a goal to the right to discover how Texas A&M researchers and their work are contributing towards these goals."
     }
   },
   "DIRECTORY": {
@@ -160,7 +162,7 @@
       "LABEL": "Find Research at {{organization}}",
       "PLACEHOLDER": "Search...",
       "VIEW_PLACEHOLDER": "Search {{view}}...",
-      "DISCOVERY": "Discovery",
+      "ADVANCED_SEARCH": "Advanced Search",
       "SEARCH_TIPS": "Search Tips"
     },
     "SIDEBAR": {
@@ -180,6 +182,10 @@
         "ARIA_LABEL_COLLAPSE": "Collapse the {{label}} section.",
         "ARIA_LABEL_EXPAND": "Expand the {{label}} section."
       }
+    },
+    "SUSTAINABLE_DEVELOPMENT_GOALS": {
+      "PROFILES_COUNT": "{{count}} Profiles",
+      "RESEARCH_COUNT": "{{count}} Research"
     }
   },
   "LANGUAGE": {

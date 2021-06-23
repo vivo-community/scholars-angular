@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +22,7 @@ export class DialogEffects {
 
   }
 
-  @Effect() openDialog = this.actions.pipe(
+  openDialog = createEffect(() => this.actions.pipe(
     ofType(fromDialog.DialogActionTypes.OPEN_DIALOG),
     map((action: fromDialog.OpenDialogAction) => action.payload),
     map((payload: { dialog: Dialog }) => payload.dialog),
@@ -35,17 +35,17 @@ export class DialogEffects {
       }
       return new fromDialog.DialogOpenedAction();
     })
-  );
+  ));
 
-  @Effect() closeDialog = this.actions.pipe(
+  closeDialog = createEffect(() => this.actions.pipe(
     ofType(fromDialog.DialogActionTypes.CLOSE_DIALOG),
     map(() => {
       this.modalService.dismissAll();
       return new fromDialog.DialogClosedAction();
     })
-  );
+  ));
 
-  @Effect({ dispatch: false }) dismissDialogAlerts = this.actions.pipe(
+  dismissDialogAlerts = createEffect(() => this.actions.pipe(
     ofType(fromDialog.DialogActionTypes.DIALOG_CLOSED),
     withLatestFrom(this.store.select(selectAlertsByLocation(AlertLocation.DIALOG))),
     map(([action, alerts]) => {
@@ -53,6 +53,6 @@ export class DialogEffects {
         this.store.dispatch(new fromAlert.DismissAlertAction({ alert }));
       });
     })
-  );
+  ), { dispatch: false });
 
 }
