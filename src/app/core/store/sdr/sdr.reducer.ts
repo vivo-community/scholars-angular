@@ -52,7 +52,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
         sortTags(individual.tags);
       }
     });
-  }
+  };
   const getResourceItem = (resource: any, references: any[]) => {
     if (Array.isArray(resource[references[0].property])) {
       const refItems = resource[references[0].property].filter((item) => item.id === references[0].id);
