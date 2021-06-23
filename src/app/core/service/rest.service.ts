@@ -4,16 +4,23 @@ import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+
+interface Request {
+  url: string;
+  options: any;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class RestService {
 
-  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: string, @Inject(REQUEST) private request: any) {
+  private cache: Map<string, any>;
 
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: string, @Inject(REQUEST) private request: any) {
+    this.cache = new Map<string, any>();
   }
 
   public hasSession(): boolean {
@@ -28,11 +35,21 @@ export class RestService {
     }
   }
 
-  public get<T>(url: string, options: any = {}): Observable<T> {
+  public get<T>(url: string, options: any = {}, cache = true): Observable<T> {
+    const request = JSON.stringify({ url, options });
+    if (this.cache.has(request)) {
+      return of(this.cache.get(request));
+    }
     // tslint:disable-next-line:no-shadowed-variable
     return this.processRequest<T>(url, options, (url: string, options: any): any => {
       return this.http.get<T>(url, options);
-    });
+    }).pipe(
+      tap((response: T) => {
+        if (cache) {
+          this.cache.set(request, response);
+        }
+      })
+    );
   }
 
   public post<T>(url: string, body: any = {}, options: any = {}): Observable<T> {

@@ -7,6 +7,8 @@ export const environment = {
     otherUniversity: 'ExternalOrganization',
     GreyLiterature: 'InstitutionalRepositoryDocument',
     Webpage: 'InternetPublication',
-    ERO_0000071: 'Software'
+    ERO_0000071: 'Software',
+    selectedPublicationTag: 'UN SDG',
+    tags: 'UN SDG'
   }
 };

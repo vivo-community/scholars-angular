@@ -1,5 +1,6 @@
 :host {
   .goal-logo {
+    opacity: .80;
     max-height: 130px;
     max-width: 130px;
     margin: 10px;
@@ -7,6 +8,10 @@
       max-height: 115px;
       max-width: 115px;
     }
+  }
+
+  .goal-logo:hover {
+    opacity: 1;
   }
 
   .goal-title {

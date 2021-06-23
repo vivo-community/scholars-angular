@@ -35,3 +35,7 @@ body {
 .bs-popover-auto[x-placement^="bottom"] > .arrow::after {
   border-bottom-color: #f7f7f7;
 }
+
+.sdg-popover {
+  box-shadow: 2px 2px 5px #888888;
+}
