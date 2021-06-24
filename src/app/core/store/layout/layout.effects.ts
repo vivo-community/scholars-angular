@@ -78,7 +78,10 @@ export class LayoutEffects implements OnInitEffects {
 
   private updateUrl(menu: SidebarMenu, url: string): void {
     const tree = this.router.parseUrl(url);
-    const expanded = menu.sections.filter(section => !section.collapsed).map(section => encodeURIComponent(section.title)).join(',');
+    const expanded = menu.sections
+      .filter(section => !section.collapsed)
+      .map(section => encodeURIComponent(section.title))
+      .join(',');
     if (expanded.length > 0) {
       tree.queryParams.expanded = expanded;
     } else {
