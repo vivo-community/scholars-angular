@@ -18,17 +18,3 @@ export const fadeOutIn = trigger('fadeOutIn', [
   transition('false=>true', animate('275ms ease-out')),
   transition('true=>false', animate('275ms ease-in'))
 ]);
-
-export const expandCollapse = trigger('expandCollapse', [
-  state('collapsed', style({
-    height: '0px',
-    overflow: 'hidden',
-    opacity: 0,
-  })),
-  state('expanded', style({
-    overflow: 'hidden',
-    opacity: 1,
-  })),
-  transition('collapsed=>expanded', animate('250ms')),
-  transition('expanded=>collapsed', animate('250ms')),
-]);
