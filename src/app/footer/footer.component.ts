@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
 import { Store, select } from '@ngrx/store';
 
@@ -22,6 +22,7 @@ import * as fromAuth from '../core/store/auth/auth.actions';
   selector: 'scholars-footer',
   templateUrl: 'footer.component.html',
   styleUrls: ['footer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FooterComponent implements OnInit {
 
