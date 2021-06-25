@@ -5,14 +5,13 @@ import { Store, select, Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { AppState } from '../../core/store';
-import { SidebarMenu, SidebarItem, SidebarSection } from '../../core/model/sidebar';
+import { SidebarMenu, SidebarSection } from '../../core/model/sidebar';
 
 import { selectIsSidebarCollapsed } from '../../core/store/layout';
 import { selectMenu } from '../../core/store/sidebar';
 
-import { fadeIn, expandCollapse } from '../utilities/animation.utility';
+import { fadeIn } from '../utilities/animation.utility';
 
-import * as fromRouter from '../../core/store/router/router.actions';
 import * as fromSidebar from '../../core/store/sidebar/sidebar.actions';
 import { Params, Router } from '@angular/router';
 import { selectRouterUrl } from 'src/app/core/store/router';
@@ -22,7 +21,7 @@ import { selectResourceIsLoading } from 'src/app/core/store/sdr';
   selector: 'scholars-sidebar',
   templateUrl: 'sidebar.component.html',
   styleUrls: ['sidebar.component.scss'],
-  animations: [fadeIn, expandCollapse],
+  animations: [fadeIn],
 })
 export class SidebarComponent implements OnInit {
 

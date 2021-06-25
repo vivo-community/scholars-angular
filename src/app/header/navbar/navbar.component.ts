@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
@@ -16,6 +16,7 @@ import * as fromLayout from '../../core/store/layout/layout.actions';
   selector: 'scholars-navbar',
   templateUrl: 'navbar.component.html',
   styleUrls: ['navbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
@@ -22,6 +22,7 @@ import * as fromLayout from '../../core/store/layout/layout.actions';
   selector: 'scholars-navigation',
   templateUrl: 'navigation.component.html',
   styleUrls: ['navigation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavigationComponent implements OnInit {
 

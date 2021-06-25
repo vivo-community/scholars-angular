@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
@@ -13,6 +13,7 @@ import { selectActiveThemeHeaderBanner } from '../../core/store/theme';
   selector: 'scholars-banner',
   templateUrl: 'banner.component.html',
   styleUrls: ['banner.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BannerComponent implements OnInit {
 

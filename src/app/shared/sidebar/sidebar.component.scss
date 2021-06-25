@@ -10,9 +10,6 @@
         min-width: 100%;
         max-width: 100%;
       }
-      .collapse:not(.show) {
-        display: block;
-      }
       .card {
         a.card-header {
           color: inherit;
@@ -27,7 +24,7 @@
         .card-header:hover {
           cursor: pointer;
         }
-        .card-items {
+        .card-item {
           ul.list-group {
             padding-left: 1px;
           }
