@@ -10,6 +10,7 @@ import { skipWhile, debounceTime, distinctUntilChanged, take, mergeMap } from 'r
 
 import { AppState } from '../../core/store';
 import { DiscoveryView, Facet, Filter } from '../../core/model/view';
+import { DialogService } from '../../core/service/dialog.service';
 
 import { selectActiveThemeOrganization } from '../../core/store/theme';
 import { selectRouterSearchQuery, selectRouterQueryParams } from '../../core/store/router';
@@ -60,6 +61,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(APP_BASE_HREF) private baseHref: string,
     @Inject(PLATFORM_ID) private platformId: string,
+    private dialog: DialogService,
     private formBuilder: FormBuilder,
     private store: Store<AppState>,
     private router: Router
@@ -146,6 +148,10 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
       queryParams: this.getSearchDiscoveryQueryParams(params, this.form.value.query),
       preserveFragment: true,
     });
+  }
+
+  public openSearchTips(): void {
+    this.store.dispatch(this.dialog.searchTipsDialog());
   }
 
   public getAction(): string {

@@ -134,6 +134,11 @@
         "TITLE": "Notification",
         "CANCEL": "Close"
       },
+      "SEARCH_TIPS": {
+        "ARIA_LABELLED_BY": "Search Tips dialog",
+        "TITLE": "Search Tips",
+        "CANCEL": "Close"
+      },
       "VALIDATION": {
         "REQUIRED": "{{field}} is required",
         "EMAIL": "{{field}} must be a valid email",

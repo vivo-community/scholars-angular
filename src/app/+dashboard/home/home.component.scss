@@ -66,6 +66,11 @@
   .carousel small span {
     color: var(--hero-color);
   }
+
+  .carousel small.search-info a,
+  .carousel small.search-info span {
+    color: var(--hero-search-info-color);
+  }
 }
 
 .home-recent,

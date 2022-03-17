@@ -8,5 +8,6 @@ export interface Hero {
   readonly fontColor: string;
   readonly linkColor: string;
   readonly linkHoverColor: string;
+  readonly searchInfoColor: string;
   readonly interval: number;
 }

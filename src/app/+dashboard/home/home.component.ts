@@ -101,7 +101,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public getStyleVariables(hero: Hero): SafeStyle {
-    const variables = `--hero-color:${hero.fontColor};--hero-link-color:${hero.linkColor};--hero-link-hover-color:${hero.linkHoverColor}`;
+    const variables = `--hero-color:${hero.fontColor};--hero-link-color:${hero.linkColor};--hero-link-hover-color:${hero.linkHoverColor};--hero-search-info-color:${hero.searchInfoColor}`;
     return this.sanitizer.bypassSecurityTrustStyle(variables);
   }
 

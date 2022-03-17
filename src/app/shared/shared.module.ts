@@ -13,6 +13,7 @@ import { ListViewComponent } from './list-view/list-view.component';
 import { LoginComponent } from './dialog/login/login.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { NotificationComponent } from './dialog/notification/notification.component';
+import { SearchTipsComponent } from './dialog/search-tips/search-tips.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { RecentCarouselComponent } from './recent-carousel/recent-carousel.component';
 import { ResultViewComponent } from './result-view/result-view.component';
@@ -59,6 +60,7 @@ const COMPONENTS = [
   RegistrationComponent,
   ResultViewComponent,
   SearchBoxComponent,
+  SearchTipsComponent,
   SidebarComponent,
   StatsBoxComponent,
   SustainableDevelopmentGoalsComponent,

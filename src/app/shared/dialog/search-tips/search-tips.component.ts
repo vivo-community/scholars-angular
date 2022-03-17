@@ -11,12 +11,11 @@ import { DialogButtonType, DialogControl } from '../../../core/model/dialog';
 import * as fromDialog from '../../../core/store/dialog/dialog.actions';
 
 @Component({
-  selector: 'scholars-notification',
-  templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.scss'],
+  selector: 'scholars-search-tips',
+  templateUrl: './search-tips.component.html',
+  styleUrls: ['./search-tips.component.scss'],
 })
-export class NotificationComponent implements OnInit {
-  @Input() text: string;
+export class SearchTipsComponent implements OnInit {
 
   public dialog: DialogControl;
 
@@ -24,10 +23,10 @@ export class NotificationComponent implements OnInit {
 
   ngOnInit() {
     this.dialog = {
-      title: this.translate.get('SHARED.DIALOG.NOTIFICATION.TITLE'),
+      title: this.translate.get('SHARED.DIALOG.SEARCH_TIPS.TITLE'),
       close: {
-        type: DialogButtonType.OUTLINE_WARNING,
-        label: this.translate.get('SHARED.DIALOG.NOTIFICATION.CANCEL'),
+        type: DialogButtonType.OUTLINE_INFO,
+        label: this.translate.get('SHARED.DIALOG.SEARCH_TIPS.CANCEL'),
         action: () => this.store.dispatch(new fromDialog.CloseDialogAction()),
         disabled: () => scheduled([false], queueScheduler),
       },
