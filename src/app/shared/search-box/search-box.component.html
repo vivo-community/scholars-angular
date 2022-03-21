@@ -31,7 +31,6 @@
 
       <ng-template #helpLinks>
         <small *ngIf="isServerRendered()" class="d-block text-right search-info">
-          <!-- <a [routerLink]="['/about']" fragment="searchTips">{{ 'SHARED.SEARCH_BOX.SEARCH_TIPS' | translate }}</a> -->
           <a href="https://scholars.library.tamu.edu/about_scholars/#searchTips">
             <i class="fa fa-info-circle"></i>
             {{ 'SHARED.SEARCH_BOX.SEARCH_TIPS' | translate }}
@@ -40,7 +39,6 @@
           <a [routerLink]="getDiscoveryRouterLink()" [queryParams]="getDefaultDiscoveryQueryParams()">{{ 'SHARED.SEARCH_BOX.ADVANCED_SEARCH' | translate }}</a>
         </small>
         <small *ngIf="isBrowserRendered()" class="d-block text-right search-info">
-          <!-- <a [routerLink]="['/about']" fragment="searchTips">{{ 'SHARED.SEARCH_BOX.SEARCH_TIPS' | translate }}</a> -->
           <span (click)="openSearchTips()" class="open-search-tips link">
             <i class="fa fa-info-circle"></i>
             {{ 'SHARED.SEARCH_BOX.SEARCH_TIPS' | translate }}
