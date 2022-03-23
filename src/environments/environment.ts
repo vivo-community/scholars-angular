@@ -9,7 +9,7 @@ export const environment = {
   stompDebug: false,
   formalize: {
     otherUniversity: 'ExternalOrganization',
-    GreyLiterature: 'InstitutionalRepositoryDocument',
+    GreyLiterature: 'RepositoryDocuments / Preprints',
     Webpage: 'InternetPublication',
     ERO_0000071: 'Software',
     selectedPublicationTag: 'UN SDG',
