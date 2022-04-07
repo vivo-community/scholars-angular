@@ -29,6 +29,8 @@ body {
   a:hover {
     color: var(--link-color-hover);
   }
+
+  padding-right: 0px !important;
 }
 
 .bs-popover-bottom > .arrow::after,

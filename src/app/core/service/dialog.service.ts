@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { FacetEntriesComponent } from '../../shared/dialog/facet-entries/facet-entries.component';
 import { LoginComponent } from '../../shared/dialog/login/login.component';
 import { NotificationComponent } from '../../shared/dialog/notification/notification.component';
+import { SearchTipsComponent } from '../../shared/dialog/search-tips/search-tips.component';
 import { UserEditComponent } from '../../shared/dialog/user-edit/user-edit.component';
 import { RegistrationStep, RegistrationComponent } from '../../shared/dialog/registration/registration.component';
 
@@ -80,6 +81,18 @@ export class DialogService {
           inputs: { name, field },
         },
         options: this.options(this.translate.instant('SHARED.DIALOG.FACET_ENTRIES.ARIA_LABELLED_BY', { name })),
+      },
+    });
+  }
+
+  public searchTipsDialog(): fromDialog.OpenDialogAction {
+    return new fromDialog.OpenDialogAction({
+      dialog: {
+        ref: {
+          component: SearchTipsComponent,
+          inputs: { },
+        },
+        options: this.options(this.translate.instant('SHARED.DIALOG.SEARCH_TIPS.ARIA_LABELLED_BY')),
       },
     });
   }

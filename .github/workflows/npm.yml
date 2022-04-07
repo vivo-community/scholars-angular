@@ -6,7 +6,7 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
@@ -22,7 +22,7 @@ jobs:
         key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package.json') }}
         restore-keys: ${{ runner.os }}-node_modules-
 
-    - name: Install Chrome drivers
+    - name: Install virtual framebuffer
       run: sudo apt-get install xvfb
 
     - name: Install dependencies
