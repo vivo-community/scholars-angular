@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Store, select } from '@ngrx/store';
 
@@ -28,19 +28,19 @@ export class UserEditComponent implements OnInit {
 
   public dialog: DialogControl;
 
-  constructor(private builder: FormBuilder, private translate: TranslateService, private store: Store<AppState>) { }
+  constructor(private builder: UntypedFormBuilder, private translate: TranslateService, private store: Store<AppState>) { }
 
   ngOnInit() {
     this.roles = Object.keys(Role);
     this.dialog = {
       title: this.translate.get('SHARED.DIALOG.USER_EDIT.TITLE'),
       form: this.builder.group({
-        firstName: new FormControl({ value: this.user.firstName, disabled: true }, [Validators.required]),
-        lastName: new FormControl({ value: this.user.lastName, disabled: true }, [Validators.required]),
-        email: new FormControl({ value: this.user.email, disabled: true }, [Validators.required, Validators.email]),
-        role: new FormControl(this.user.role, [Validators.required]),
-        active: new FormControl({ value: this.user.active, disabled: true }, [Validators.required]),
-        enabled: new FormControl(this.user.enabled, [Validators.required]),
+        firstName: new UntypedFormControl({ value: this.user.firstName, disabled: true }, [Validators.required]),
+        lastName: new UntypedFormControl({ value: this.user.lastName, disabled: true }, [Validators.required]),
+        email: new UntypedFormControl({ value: this.user.email, disabled: true }, [Validators.required, Validators.email]),
+        role: new UntypedFormControl(this.user.role, [Validators.required]),
+        active: new UntypedFormControl({ value: this.user.active, disabled: true }, [Validators.required]),
+        enabled: new UntypedFormControl(this.user.enabled, [Validators.required]),
       }),
       close: {
         type: DialogButtonType.OUTLINE_WARNING,

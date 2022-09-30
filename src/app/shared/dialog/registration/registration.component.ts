@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormBuilder, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Store, select } from '@ngrx/store';
@@ -22,7 +22,7 @@ export enum RegistrationStep {
   COMPLETE = 'complete',
 }
 
-export function confirmPasswordValidator(password: FormControl): ValidatorFn {
+export function confirmPasswordValidator(password: UntypedFormControl): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     return password.value !== control.value ? { confirmPassword: { value: control.value } } : null;
   };
@@ -42,23 +42,23 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[];
 
-  constructor(private builder: FormBuilder, private translate: TranslateService, private route: ActivatedRoute, private store: Store<AppState>) {
+  constructor(private builder: UntypedFormBuilder, private translate: TranslateService, private route: ActivatedRoute, private store: Store<AppState>) {
     this.subscriptions = [];
   }
 
   ngOnInit() {
-    const password = new FormControl('', this.isComplete() ? [Validators.required, Validators.minLength(8), Validators.maxLength(64)] : []);
+    const password = new UntypedFormControl('', this.isComplete() ? [Validators.required, Validators.minLength(8), Validators.maxLength(64)] : []);
 
     this.subscriptions.push(
       this.route.queryParams.subscribe((params: Params) => {
         this.dialog = {
           title: this.translate.get('SHARED.DIALOG.REGISTRATION.TITLE'),
           form: this.builder.group({
-            firstName: new FormControl(this.isComplete() ? this.registration.firstName : '', this.isSubmit() ? [Validators.required, Validators.minLength(2), Validators.maxLength(64)] : []),
-            lastName: new FormControl(this.isComplete() ? this.registration.lastName : '', this.isSubmit() ? [Validators.required, Validators.minLength(2), Validators.maxLength(64)] : []),
-            email: new FormControl(this.isComplete() ? this.registration.email : '', this.isSubmit() ? [Validators.required, Validators.email] : []),
+            firstName: new UntypedFormControl(this.isComplete() ? this.registration.firstName : '', this.isSubmit() ? [Validators.required, Validators.minLength(2), Validators.maxLength(64)] : []),
+            lastName: new UntypedFormControl(this.isComplete() ? this.registration.lastName : '', this.isSubmit() ? [Validators.required, Validators.minLength(2), Validators.maxLength(64)] : []),
+            email: new UntypedFormControl(this.isComplete() ? this.registration.email : '', this.isSubmit() ? [Validators.required, Validators.email] : []),
             password,
-            confirm: new FormControl('', this.isComplete() ? [Validators.required, Validators.minLength(8), Validators.maxLength(64), confirmPasswordValidator(password)] : []),
+            confirm: new UntypedFormControl('', this.isComplete() ? [Validators.required, Validators.minLength(8), Validators.maxLength(64), confirmPasswordValidator(password)] : []),
           }),
           close: {
             type: DialogButtonType.OUTLINE_WARNING,

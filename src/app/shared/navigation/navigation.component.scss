@@ -2,7 +2,8 @@
   .navbar {
     padding: 0;
     background-color: var(--navigation-background-color);
-    a {
+    a, 
+    .menu-action {
       color: var(--navigation-color);
     }
     a.btn:hover {
@@ -22,7 +23,8 @@
     .nav-item.active,
     .nav-item:hover {
       background-color: var(--navigation-hover-background-color);
-      a {
+      a,
+      .menu-action {
         color: var(--navigation-hover-color);
       }
     }

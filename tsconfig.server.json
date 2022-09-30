@@ -5,7 +5,9 @@
     "target": "es2016",
     "types": [
       "node"
-    ]
+    ],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "files": [
     "src/main.server.ts",

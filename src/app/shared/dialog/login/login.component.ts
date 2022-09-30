@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Store, select } from '@ngrx/store';
 
@@ -23,14 +23,14 @@ import * as fromDialog from '../../../core/store/dialog/dialog.actions';
 export class LoginComponent implements OnInit {
   public dialog: DialogControl;
 
-  constructor(private builder: FormBuilder, private translate: TranslateService, private store: Store<AppState>) {}
+  constructor(private builder: UntypedFormBuilder, private translate: TranslateService, private store: Store<AppState>) {}
 
   ngOnInit() {
     this.dialog = {
       title: this.translate.get('SHARED.DIALOG.LOGIN.TITLE'),
       form: this.builder.group({
-        email: new FormControl('', [Validators.required, Validators.email]),
-        password: new FormControl('', [Validators.required]),
+        email: new UntypedFormControl('', [Validators.required, Validators.email]),
+        password: new UntypedFormControl('', [Validators.required]),
       }),
       close: {
         type: DialogButtonType.OUTLINE_WARNING,

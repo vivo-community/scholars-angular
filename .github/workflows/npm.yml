@@ -3,27 +3,18 @@ name: Node CI with NPM
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-
   build:
 
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 12.x
+    - uses: actions/checkout@v3
 
-    - name: Cache node modules
-      uses: actions/cache@v2
+    - name: Setup Node.js 14
+      uses: actions/setup-node@v3
       with:
-        path: node_modules
-        key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package.json') }}
-        restore-keys: ${{ runner.os }}-node_modules-
-
-    - name: Install virtual framebuffer
-      run: sudo apt-get install xvfb
+        node-version: 14
+        cache: 'yarn'
 
     - name: Install dependencies
       run: yarn install

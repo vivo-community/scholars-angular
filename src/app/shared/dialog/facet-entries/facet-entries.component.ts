@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { Params, Router, NavigationStart } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 
@@ -51,7 +51,7 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
 
   public routerLink = [];
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public dialog: DialogControl;
 
@@ -59,7 +59,7 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
 
   constructor(
     private router: Router,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store<AppState>,
     private translate: TranslateService,
     private individualRepo: IndividualRepo
@@ -83,7 +83,7 @@ export class FacetEntriesComponent implements OnDestroy, OnInit {
     );
 
     const formGroup = {
-      filter: new FormControl()
+      filter: new UntypedFormControl()
     };
 
     this.form = this.formBuilder.group(formGroup);

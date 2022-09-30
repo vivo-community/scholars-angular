@@ -1,6 +1,6 @@
 <div class="d-flex flex-wrap justify-content-center justify-content-md-start">
   <ng-template ngFor let-goal [ngForOf]="goals" let-i="index" [ngForTrackBy]="trackByFn">
-    <img class="goal-logo link" height="130" width="130" [src]="goal.icon" [ngbPopover]="goalsPopover" [popoverTitle]="goalsPopoverTitle" (hidden)="hidden(goal)" (shown)="shown(goal)" triggers="click" autoClose="outside" popoverClass="sdg-popover" placement="bottom-right">
+    <img class="goal-logo link" height="130" width="130" [src]="goal.icon" [alt]="goal.value" [ngbPopover]="goalsPopover" [popoverTitle]="goalsPopoverTitle" (hidden)="hidden(goal)" (shown)="shown(goal)" triggers="click" autoClose="outside" popoverClass="sdg-popover" placement="bottom-right">
     <ng-template #goalsPopoverTitle>
       <span class="goal-title" [ngStyle]="{'border-left-color': goal.color}">{{goal.title}}</span>
       <span class="fa fa-info-circle" [ngStyle]="{'color': goal.color}" aria-hidden="true"></span>

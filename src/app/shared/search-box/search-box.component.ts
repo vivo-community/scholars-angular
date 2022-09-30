@@ -1,6 +1,6 @@
 import { Component, Input, Inject, PLATFORM_ID, OnInit, OnDestroy } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer, APP_BASE_HREF } from '@angular/common';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { Router, Params } from '@angular/router';
 
 import { Store, select } from '@ngrx/store';
@@ -48,7 +48,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
 
   @Input() debounce = 750;
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public queryParams: Observable<Params>;
 
@@ -62,7 +62,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     @Inject(APP_BASE_HREF) private baseHref: string,
     @Inject(PLATFORM_ID) private platformId: string,
     private dialog: DialogService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store<AppState>,
     private router: Router
   ) {
@@ -83,14 +83,14 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   public setupForm(): boolean {
     if (!this.setup) {
       const formGroup = {
-        query: new FormControl(),
-        collection: new FormControl(),
-        facets: new FormControl(),
+        query: new UntypedFormControl(),
+        collection: new UntypedFormControl(),
+        facets: new UntypedFormControl(),
       };
 
       if (this.view.filters && this.view.filters.length > 0) {
         this.view.filters.forEach((filter: Filter) => {
-          formGroup[`${filter.field}.filter`] = new FormControl();
+          formGroup[`${filter.field}.filter`] = new UntypedFormControl();
         });
       }
 

@@ -87,9 +87,6 @@ const ENTRY_COMPONENTS = [
     ...DIRECTIVES,
     ...ENTRY_COMPONENTS
   ],
-  entryComponents: [
-    ...ENTRY_COMPONENTS
-  ],
   exports: [
     ...MODULES,
     ...PIPES,
@@ -98,6 +95,6 @@ const ENTRY_COMPONENTS = [
   ],
   imports: [
     ...MODULES
-  ],
+  ]
 })
 export class SharedModule { }
