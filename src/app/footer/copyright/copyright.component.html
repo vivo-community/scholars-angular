@@ -1,6 +1,6 @@
 <div class="copyright">
-  <ul class="list-inline text-center">
-    <li class="list-inline-item"><span>© Texas A&M University Libraries</span></li>
+  <ul class="list-inline text-center" *ngIf="footer | async; let footer">
+    <li class="list-inline-item"><span>{{footer.copyright}}</span></li>
     <li class="list-inline-item"><span>|</span></li>
     <li class="list-inline-item"><a href="https://scholars.library.tamu.edu/terms_scholars">{{ 'FOOTER.COPYRIGHT.TERMS' | translate }}</a></li>
     <li class="list-inline-item"><span>|</span></li>

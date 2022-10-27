@@ -1,5 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
+import { Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -25,6 +26,7 @@ import { Facet, DiscoveryView, DirectoryView, FacetType, OpKey } from '../../mod
 import { injectable, repos } from '../../model/repos';
 
 import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue, getFacetFilterLabel } from '../../../shared/utilities/discovery.utility';
+import { removeFilterFromQueryParams } from '../../../shared/utilities/view.utility';
 
 import { selectSdrState } from './';
 import { SdrState } from './sdr.reducer';
@@ -702,15 +704,13 @@ export class SdrEffects {
                 if (selected) {
                   sidebarSection.collapsed = false;
                   if (sidebarItem.queryParams.filters && sidebarItem.queryParams.filters.indexOf(sdrFacet.field) >= 0) {
-                    const filters = sidebarItem.queryParams.filters
-                      .split(',')
-                      .map((field) => field.trim())
-                      .filter((field) => field !== sdrFacet.field);
-                    if (filters.length > 0) {
-                      sidebarItem.queryParams.filters = filters.join(',');
-                    } else {
-                      delete sidebarItem.queryParams.filters;
-                    }
+                    const queryParams: Params = Object.assign({}, sidebarItem.queryParams);
+                    removeFilterFromQueryParams(queryParams, {
+                      field: sdrFacet.field,
+                      value: queryParams[`${sdrFacet.field}.filter`],
+                      opKey: queryParams[`${sdrFacet.field}.filter`],
+                    });
+                    sidebarItem.queryParams = queryParams;
                   }
                 } else {
                   if (sidebarItem.queryParams.filters) {

@@ -20,41 +20,29 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
   constructor(@Inject(APP_CONFIG) private appConfig: AppConfig, protected restService: RestService) { }
 
   public search(request: SdrRequest): Observable<SdrCollection> {
-    return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/advanced${this.mapParameters(request)}`, {
-      withCredentials: true,
-    });
+    return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/advanced${this.mapParameters(request)}`);
   }
 
   public count(request: SdrRequest): Observable<Count> {
-    return this.restService.get<Count>(`${this.appConfig.serviceUrl}/${this.path()}/search/count${this.mapParameters(request)}`, {
-      withCredentials: true,
-    });
+    return this.restService.get<Count>(`${this.appConfig.serviceUrl}/${this.path()}/search/count${this.mapParameters(request)}`);
   }
 
   public recentlyUpdated(limit: number, filters: Filterable[] = []): Observable<R[]> {
     const parameters = this.mapFilters(filters);
     parameters.push(`limit=${limit}`);
-    return this.restService.get<R[]>(`${this.appConfig.serviceUrl}/${this.path()}/search/recentlyUpdated?${parameters.join('&')}`, {
-      withCredentials: true,
-    });
+    return this.restService.get<R[]>(`${this.appConfig.serviceUrl}/${this.path()}/search/recentlyUpdated?${parameters.join('&')}`);
   }
 
   public page(request: SdrRequest): Observable<SdrCollection> {
-    return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}${this.mapParameters(request)}`, {
-      withCredentials: true,
-    });
+    return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}${this.mapParameters(request)}`);
   }
 
   public getAll(): Observable<SdrCollection> {
-    return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}`, {
-      withCredentials: true,
-    });
+    return this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}`);
   }
 
   public getOne(id: string | number): Observable<R> {
-    return this.restService.get<R>(`${this.appConfig.serviceUrl}/${this.path()}/${id}`, {
-      withCredentials: true,
-    });
+    return this.restService.get<R>(`${this.appConfig.serviceUrl}/${this.path()}/${id}`);
   }
 
   public findByIdIn(ids: string[]): Observable<SdrCollection> {
@@ -63,9 +51,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
     const observables: Observable<SdrCollection>[] = [];
     batches.forEach((batch) => {
       observables.push(
-        this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/findByIdIn?ids=${batch.join(',')}`, {
-          withCredentials: true,
-        })
+        this.restService.get<SdrCollection>(`${this.appConfig.serviceUrl}/${this.path()}/search/findByIdIn?ids=${batch.join(',')}`)
       );
     });
     return forkJoin(observables).pipe(
@@ -95,9 +81,7 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
   }
 
   public findByTypesIn(types: string[]): Observable<R> {
-    return this.restService.get<R>(`${this.appConfig.serviceUrl}/${this.path()}/search/findByTypesIn?types=${types.join(',')}`, {
-      withCredentials: true,
-    });
+    return this.restService.get<R>(`${this.appConfig.serviceUrl}/${this.path()}/search/findByTypesIn?types=${types.join(',')}`);
   }
 
   public post(resource: R): Observable<R> {
@@ -105,15 +89,11 @@ export abstract class AbstractSdrRepo<R extends SdrResource> implements SdrRepo<
   }
 
   public put(resource: R): Observable<R> {
-    return this.restService.put<R>(resource._links.self.href, resource, {
-      withCredentials: true,
-    });
+    return this.restService.put<R>(resource._links.self.href, resource, { withCredentials: true });
   }
 
   public patch(resource: R): Observable<R> {
-    return this.restService.patch<R>(resource._links.self.href, resource, {
-      withCredentials: true,
-    });
+    return this.restService.patch<R>(resource._links.self.href, resource, { withCredentials: true });
   }
 
   public delete(resource: R): Observable<string> {

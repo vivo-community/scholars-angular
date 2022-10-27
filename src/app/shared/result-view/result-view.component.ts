@@ -38,12 +38,10 @@ export class ResultViewComponent implements OnInit {
   }
 
   private getTemplateFunction(): (document: any) => string {
-    for (const type of this.resource.type) {
-      if (this.view.templateFunctions[type] !== undefined) {
-        return this.view.templateFunctions[type];
-      }
+    if (this.view.templateFunctions.hasOwnProperty(this.resource.class)) {
+      return this.view.templateFunctions[this.resource.class];
     }
-    // tslint:disable-next-line: no-string-literal
-    return this.view.templateFunctions['default'];
+
+    return this.view.templateFunctions.default;
   }
 }

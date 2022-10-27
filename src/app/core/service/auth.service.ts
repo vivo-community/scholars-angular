@@ -29,17 +29,11 @@ export class AuthService {
       'Content-Type': 'application/x-www-form-urlencoded',
     });
     const data = `username=${login.email}&password=${login.password}`;
-    return this.restService.post<User>(this.appConfig.serviceUrl + '/login', data, {
-      withCredentials: true,
-      headers,
-    });
+    return this.restService.post<User>(this.appConfig.serviceUrl + '/login', data, { headers });
   }
 
   public logout(): Observable<string> {
-    return this.restService.get<string>(this.appConfig.serviceUrl + '/logout', {
-      withCredentials: true,
-      responseType: 'text',
-    });
+    return this.restService.get<string>(this.appConfig.serviceUrl + '/logout', { withCredentials: true, responseType: 'text' });
   }
 
   public submitRegistration(registration: RegistrationRequest): Observable<RegistrationRequest> {
@@ -55,9 +49,7 @@ export class AuthService {
   }
 
   public getUser(): Observable<User> {
-    return this.restService.get<User>(this.appConfig.serviceUrl + '/user', {
-      withCredentials: true,
-    });
+    return this.restService.get<User>(this.appConfig.serviceUrl + '/user', { withCredentials: true });
   }
 
 }

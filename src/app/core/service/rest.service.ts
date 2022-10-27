@@ -7,11 +7,6 @@ import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-interface Request {
-  url: string;
-  options: any;
-}
-
 @Injectable({
   providedIn: 'root',
 })

@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.discoveryView = this.store.pipe(
-      select(selectDiscoveryViewByClass('Person')),
+      select(selectDiscoveryViewByClass('People')),
       filter((view: DiscoveryView) => view !== undefined)
     );
     this.home = this.store.pipe(
