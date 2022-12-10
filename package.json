@@ -48,7 +48,7 @@
     "bootstrap": "4.4.1",
     "classlist.js": "1.1.20150312",
     "compression": "1.7.4",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "font-awesome": "4.7.0",
     "ie11-custom-properties": "3.1.0",
     "net": "1.0.2",
