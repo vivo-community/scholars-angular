@@ -27,7 +27,7 @@ export class DirectoryComponent implements OnDestroy, OnInit {
 
   public queryParams: Observable<Params>;
 
-  public filters: Observable<any[]>;
+  public filters: Observable<Filter[]>;
 
   public directoryView: Observable<DirectoryView>;
 

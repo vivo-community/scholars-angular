@@ -1,9 +1,9 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Params } from '@angular/router';
 
-import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType, DiscoveryView } from '../../core/model/view';
-import { SdrPage } from '../../core/model/sdr';
 import { Direction } from '../../core/model/request';
+import { SdrPage } from '../../core/model/sdr';
+import { Boost, CollectionView, DiscoveryView, Export, Facet, FacetType, Filter, OpKey, Sort } from '../../core/model/view';
 
 const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.facets && collectionView.facets.length > 0) {
@@ -87,12 +87,25 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
 };
 
 const removeFilterFromQueryParams = (queryParams: Params, filterToRemove: Filter): void => {
-  queryParams.filters = queryParams.filters.split(',').filter((filter: string) => filter !== filterToRemove.field).join(',');
-  if (!queryParams.filters) {
-    delete queryParams.filters;
-  }
-  delete queryParams[`${filterToRemove.field}.filter`];
-  delete queryParams[`${filterToRemove.field}.opKey`];
+  const filterValues = queryParams[`${filterToRemove.field}.filter`]
+    .split(',');
+
+  if (filterValues.length === 1) {
+    queryParams.filters = queryParams.filters.split(',')
+      .filter((filter: string) => filter !== filterToRemove.field)
+      .join(',');
+
+    if (!queryParams.filters) {
+      delete queryParams.filters;
+    }
+    delete queryParams[`${filterToRemove.field}.filter`];
+    delete queryParams[`${filterToRemove.field}.opKey`];
+
+  } else if (filterValues.length > 1) {
+    queryParams[`${filterToRemove.field}.filter`] = filterValues
+      .filter((filterValue: string) => filterValue !== filterToRemove.value)
+      .join(',');
+  } // else (filterValues.length < 1) do nothing 
 };
 
 const resetFiltersInQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
