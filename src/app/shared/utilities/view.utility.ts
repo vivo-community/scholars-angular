@@ -160,21 +160,47 @@ const equals = (filterOne: Filter, filterTwo: Filter): boolean => {
   return filterTwo ? filterOne.field === filterTwo.field && filterOne.value === filterTwo.value : true;
 };
 
+/**
+ * Traverse object by path returning value else undefined.
+ *
+ * {
+ *   'trainee': {
+ *     'label': 'Name of organization'
+ *   }
+ * }
+ * i.e. `trainee.label` returns 'Name of organizarion'
+ *
+ * @param doc solr document or any JSON object
+ * @param path dot notation path
+ * @returns value at path
+ */
+const getValueByPath = (doc: any, path: string): string | undefined => {
+  let pathValue;
+  path.split('.').forEach((p: string) => {
+    pathValue = pathValue ? pathValue[p] : doc[p];
+  });
+  return pathValue;
+};
+
 const getResourcesPage = (resources: any[], sort: Sort[], page: SdrPage): any[] => {
   let sorted = [].concat(resources);
   // sort
   sorted = sorted.sort((a, b) => {
     let result = 0;
     for (const s of sort) {
+
+      const aField = getValueByPath(a, s.field);
+      const bField = getValueByPath(b, s.field);
+
       const isAsc = Direction[s.direction] === Direction.ASC;
-      if (a[s.field] === undefined) {
+      if (aField === undefined) {
         return isAsc ? -1 : 1;
       }
-      if (b[s.field] === undefined) {
+      if (bField === undefined) {
         return isAsc ? 1 : -1;
       }
-      const av = s.date ? new Date(a[s.field]) : a[s.field];
-      const bv = s.date ? new Date(b[s.field]) : b[s.field];
+      const av = s.date ? new Date(aField) : aField;
+      const bv = s.date ? new Date(bField) : bField;
       if (isAsc) {
         result = av > bv ? 1 : av < bv ? -1 : 0;
       } else {
