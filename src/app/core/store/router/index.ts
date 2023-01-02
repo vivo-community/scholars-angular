@@ -4,7 +4,7 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { CustomRouterState } from './router.reducer';
 import { Filter } from '../../model/view';
-import { FILTER_VALUE_DELIMITER } from 'src/app/shared/utilities/discovery.utility';
+import { FILTER_VALUE_DELIMITER } from '../../../shared/utilities/discovery.utility';
 
 export const selectRouterState = createFeatureSelector<RouterReducerState<CustomRouterState>>('router');
 

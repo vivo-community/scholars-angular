@@ -84,7 +84,8 @@ export class DirectoryComponent implements OnDestroy, OnInit {
     );
   }
 
-  public isActive(directoryView: DirectoryView, queryParams: Params, option: string): boolean {
+  public isActive(directoryView: DirectoryView, params: Params, option: string): boolean {
+    const queryParams: Params = Object.assign({}, params);
     if (queryParams.filters && queryParams.filters.indexOf(directoryView.index.field) >= 0) {
       return queryParams[`${directoryView.index.field}.filter`] === option;
     }
@@ -163,10 +164,16 @@ export class DirectoryComponent implements OnDestroy, OnInit {
       if (!queryParams.filters) {
         queryParams.filters = directoryView.index.field;
       } else {
-        queryParams.filters += `,${directoryView.index.field}`;
+        if (queryParams.filters.split(',').indexOf(directoryView.index.field) < 0) {
+          queryParams.filters += `,${directoryView.index.field}`;
+        }
       }
     }
     return queryParams;
+  }
+
+  public trackByOption(index: number, option: string): string {
+    return option;
   }
 
 }
