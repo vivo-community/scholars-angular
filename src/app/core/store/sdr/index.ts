@@ -33,7 +33,7 @@ const findCollectionView = (collectionViews, clazz: string, defaultName: string)
   let defaultCollectionView;
   for (const collectionView of collectionViews) {
     const viewByClass = collectionView.filters.find((filter: Filter) => filter.field === 'class');
-    if (!!viewByClass && viewByClass.value === clazz) {
+    if (!!viewByClass && viewByClass.value.startsWith(clazz)) {
       return collectionView;
     }
     if (collectionView.name === defaultName) {
