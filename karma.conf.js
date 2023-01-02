@@ -40,6 +40,11 @@ module.exports = function (config) {
     autoWatch: false,
     browsers: ['Chrome'],
     singleRun: true,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    browserNoActivityTimeout: 30000,
+    flags: [
+      '--disable-gpu',
+      '--no-sandbox'
+    ]
   });
 };
