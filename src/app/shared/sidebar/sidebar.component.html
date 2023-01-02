@@ -3,12 +3,12 @@
 
     <div class="card" *ngFor="let section of menu.sections; let sectionIndex = index">
 
-      <div *ngIf="isBrowserRendered()" class="card-header font-weight-bold {{section.classes}}" (click)="toggleSectionCollapse(sectionIndex)">
+      <div *ngIf="isBrowserRendered()" tabindex="0" class="card-header font-weight-bold {{section.classes}}" (click)="toggleSectionCollapse(sectionIndex)" (keyup.enter)="toggleSectionCollapse(sectionIndex)">
         <span>{{section.title}}</span>
         <span *ngIf="section.collapsible" class="section-collapse float-right fa" [ngClass]="{ 'fa-caret-right': section.collapsed, 'fa-caret-down': !section.collapsed }" aria-role="button" attr.aria-label="{{ (section.collapsed ? 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_EXPAND' : 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_COLLAPSE') | translate:{ label: section.title } }}"></span>
       </div>
 
-      <a *ngIf="isServerRendered()" class="card-header font-weight-bold {{section.classes}}" [routerLink]="getRouterLink()" [queryParams]="getQueryParams(section, url | async)">
+      <a *ngIf="isServerRendered()" tabindex="0" class="card-header font-weight-bold {{section.classes}}" [routerLink]="getRouterLink()" [queryParams]="getQueryParams(section, url | async)">
         <span>{{section.title}}</span>
         <span *ngIf="section.collapsible" class="section-collapse float-right fa" [ngClass]="{ 'fa-caret-right': section.collapsed, 'fa-caret-down': !section.collapsed }" aria-role="button" attr.aria-label="{{ (section.collapsed ? 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_EXPAND' : 'SHARED.SIDEBAR.SECTION.ARIA_LABEL_COLLAPSE') | translate:{ label: section.title } }}"></span>
       </a>
