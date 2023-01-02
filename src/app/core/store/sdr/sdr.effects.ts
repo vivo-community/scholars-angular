@@ -25,7 +25,7 @@ import { Facet, DiscoveryView, DirectoryView, FacetType, OpKey } from '../../mod
 
 import { injectable, repos } from '../../model/repos';
 
-import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue, getFacetFilterLabel } from '../../../shared/utilities/discovery.utility';
+import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue, getFacetFilterLabel, FILTER_VALUE_DELIMITER } from '../../../shared/utilities/discovery.utility';
 import { removeFilterFromQueryParams } from '../../../shared/utilities/view.utility';
 
 import { selectSdrState } from './';
@@ -671,7 +671,7 @@ export class SdrEffects {
                     : facetEntry.value;
 
                 if (requestFacet && route.queryParams[`${requestFacet}.filter`] !== undefined) {
-                  selected = route.queryParams[`${requestFacet}.filter`].split(',').indexOf(filterValue) >= 0;
+                  selected = route.queryParams[`${requestFacet}.filter`].split(FILTER_VALUE_DELIMITER).indexOf(filterValue) >= 0;
                 }
 
                 const sidebarItem: SidebarItem = {
@@ -709,7 +709,7 @@ export class SdrEffects {
                   }
 
                   selectedFilterValues.forEach((selectedFilterValue: string) => {
-                    filterValue += `,${selectedFilterValue}`;
+                    filterValue += `${FILTER_VALUE_DELIMITER}${selectedFilterValue}`;
                   });
 
                   sidebarItem.queryParams[`${sdrFacet.field}.filter`] = filterValue;

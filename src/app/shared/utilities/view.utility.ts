@@ -4,6 +4,7 @@ import { Params } from '@angular/router';
 import { Direction } from '../../core/model/request';
 import { SdrPage } from '../../core/model/sdr';
 import { Boost, CollectionView, DiscoveryView, Export, Facet, FacetType, Filter, OpKey, Sort } from '../../core/model/view';
+import { FILTER_VALUE_DELIMITER } from './discovery.utility';
 
 const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.facets && collectionView.facets.length > 0) {
@@ -87,8 +88,7 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
 };
 
 const removeFilterFromQueryParams = (queryParams: Params, filterToRemove: Filter): void => {
-  const filterValues = queryParams[`${filterToRemove.field}.filter`]
-    .split(',');
+  const filterValues = queryParams[`${filterToRemove.field}.filter`].split(FILTER_VALUE_DELIMITER);
 
   if (filterValues.length === 1) {
     queryParams.filters = queryParams.filters.split(',')
@@ -104,7 +104,7 @@ const removeFilterFromQueryParams = (queryParams: Params, filterToRemove: Filter
   } else if (filterValues.length > 1) {
     queryParams[`${filterToRemove.field}.filter`] = filterValues
       .filter((filterValue: string) => filterValue !== filterToRemove.value)
-      .join(',');
+      .join(FILTER_VALUE_DELIMITER);
   } // else (filterValues.length < 1) do nothing 
 };
 

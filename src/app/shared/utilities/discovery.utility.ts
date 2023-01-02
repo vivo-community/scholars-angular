@@ -6,6 +6,8 @@ import { OpKey, Facet, FacetType } from '../../core/model/view';
 import { Queryable } from 'src/app/core/model/request/sdr.request';
 import { SdrFacetEntry } from 'src/app/core/model/sdr';
 
+export const FILTER_VALUE_DELIMITER = ';;';
+
 export const buildDateYearFilterValue = (facetEntry: SdrFacetEntry): string => {
   const date = new Date(facetEntry.value);
   const year = date.getUTCFullYear();
