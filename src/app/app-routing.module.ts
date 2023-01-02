@@ -55,8 +55,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
-      anchorScrolling: 'enabled',
-      relativeLinkResolution: 'legacy'
+      anchorScrolling: 'enabled'
     }),
   ],
   exports: [RouterModule],

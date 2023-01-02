@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { DOCUMENT, APP_BASE_HREF } from '@angular/common';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ServerModule, ServerTransferStateModule } from '@angular/platform-server';
+import { ServerModule } from '@angular/platform-server';
 
 import { TranslateModule, TranslateLoader, MissingTranslationHandler } from '@ngx-translate/core';
 
@@ -53,7 +53,6 @@ const createUniversalStyleLoader = (document: Document, baseHref: string): Compu
   imports: [
     AppModule,
     ServerModule,
-    ServerTransferStateModule,
     NoopAnimationsModule,
     TranslateModule.forRoot({
       missingTranslationHandler: {

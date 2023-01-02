@@ -1,7 +1,7 @@
 import { isPlatformBrowser, APP_BASE_HREF, DOCUMENT } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { PLATFORM_ID, Inject, NgModule } from '@angular/core';
-import { makeStateKey, BrowserModule, TransferState, BrowserTransferStateModule } from '@angular/platform-browser';
+import { makeStateKey, BrowserModule, TransferState } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
@@ -38,7 +38,6 @@ const getBaseHref = (document: Document, appConfig: AppConfig): string => {
   imports: [
     BrowserModule.withServerTransition({ appId: 'scholars-discovery' }),
     BrowserAnimationsModule,
-    BrowserTransferStateModule,
     AppRoutingModule,
     HttpClientModule,
     TranslateModule.forRoot(),
