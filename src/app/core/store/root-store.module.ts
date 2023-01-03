@@ -19,7 +19,7 @@ import { SidebarEffects } from './sidebar/sidebar.effects';
 import { StompEffects } from './stomp/stomp.effects';
 import { ThemeEffects } from './theme/theme.effects';
 
-import { extModules } from '../../build-specifics';
+import { extModules } from '../../../environments/environment';
 import { metaReducers, reducerProvider, reducerToken } from './';
 
 @NgModule({
