@@ -202,18 +202,18 @@ const getResourcesPage = (resources: any[], sort: Sort[], page: SdrPage): any[] 
     let result = 0;
     for (const s of sort) {
 
-      const aField = getValueByPath(a, s.field);
-      const bField = getValueByPath(b, s.field);
+      const aValue = getValueByPath(a, s.field);
+      const bValue = getValueByPath(b, s.field);
 
       const isAsc = Direction[s.direction] === Direction.ASC;
-      if (aField === undefined) {
+      if (aValue === undefined) {
         return isAsc ? -1 : 1;
       }
-      if (bField === undefined) {
+      if (bValue === undefined) {
         return isAsc ? 1 : -1;
       }
-      const av = s.date ? new Date(aField) : aField;
-      const bv = s.date ? new Date(bField) : bField;
+      const av = s.date ? new Date(aValue) : aValue;
+      const bv = s.date ? new Date(bValue) : bValue;
       if (isAsc) {
         result = av > bv ? 1 : av < bv ? -1 : 0;
       } else {
