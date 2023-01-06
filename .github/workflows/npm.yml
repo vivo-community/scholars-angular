@@ -4,23 +4,29 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
+    strategy:
+      matrix:
+        runs-on: [ubuntu-latest, macos-latest, windows-latest]
+        node-version: [14, 16, 18]
 
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.runs-on }}
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Setup Node.js 14
+    - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 14
+        node-version: ${{ matrix.node-version }}
         cache: 'yarn'
 
     - name: Install dependencies
-      run: yarn install
+      run: yarn install --network-timeout 3600000
 
     - name: Test CI
-      run: xvfb-run --auto-servernum yarn test:ci
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        run: yarn test:ci
 
     - name: Coveralls coverage report
       uses: coverallsapp/github-action@master

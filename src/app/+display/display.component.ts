@@ -329,7 +329,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
         const metaTemplateFunction = displayView.metaTemplateFunctions[name];
         metaTags.push({
           name,
-          content: metaTemplateFunction(document),
+          content: metaTemplateFunction(document).trim(),
         });
       }
     }

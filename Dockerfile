@@ -1,4 +1,4 @@
-FROM node:14-alpine as node
+FROM node:18-alpine as node
 
 # copy project to build excluding node_modules and dist via .dockerignore
 COPY . /scholars-angular
@@ -13,12 +13,12 @@ RUN yarn install
 RUN yarn build:ssr
 
 # final base image
-FROM keymetrics/pm2:14-alpine
+FROM keymetrics/pm2:18-alpine
 
 # set deployment directory
 WORKDIR /
 
-# copy over the built artifact from the maven image
+# copy over the built artifact from the node image
 COPY --from=node /scholars-angular/dist /dist
 
 # deploy scholars-angular using pm2 when running container

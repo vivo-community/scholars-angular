@@ -1,16 +1,12 @@
-import { NgModule } from '@angular/core';
-import { DOCUMENT, APP_BASE_HREF } from '@angular/common';
+import { APP_BASE_HREF, DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-
+import { NgModule } from '@angular/core';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
-
-import { TranslateModule, TranslateLoader, MissingTranslationHandler } from '@ngx-translate/core';
+import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { AppModule } from './app.module';
-
 import { AppComponent } from './app.component';
-
+import { AppModule } from './app.module';
 import { ComputedStyleLoader } from './core/computed-style-loader';
 import { CustomMissingTranslationHandler } from './core/handler/custom-missing-translation.handler';
 

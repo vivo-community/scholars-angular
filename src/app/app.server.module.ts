@@ -1,20 +1,14 @@
+import { APP_BASE_HREF, DOCUMENT } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { DOCUMENT, APP_BASE_HREF } from '@angular/common';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ServerModule, ServerTransferStateModule } from '@angular/platform-server';
-
-import { TranslateModule, TranslateLoader, MissingTranslationHandler } from '@ngx-translate/core';
-
+import { ServerModule } from '@angular/platform-server';
+import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { readFileSync } from 'fs';
 import { Observable, Observer } from 'rxjs';
 
-import { readFileSync } from 'fs';
-
-import { AppModule } from './app.module';
-
 import { AppComponent } from './app.component';
-
+import { AppModule } from './app.module';
 import { ComputedStyleLoader } from './core/computed-style-loader';
-
 import { CustomMissingTranslationHandler } from './core/handler/custom-missing-translation.handler';
 
 const createUniversalTranslateLoader = (): TranslateLoader => {
@@ -34,7 +28,7 @@ const createUniversalStyleLoader = (document: Document, baseHref: string): Compu
       const styleLinkTag = document.querySelector('head > link[rel=stylesheet]');
       const stylesheet = styleLinkTag.getAttribute('href');
       const styles = readFileSync(`./dist/scholars-angular/browser/${stylesheet.replace(baseHref, '')}`, 'utf8');
-      const root = styles.match(/:root{([^}]+)}/g)[0];
+      const root = styles.match(/:root.*{([^}]+)}/g)[0];
       const cssTxt = root.replace(/\/\*(.|\s)*?\*\//g, ' ').replace(/\s+/g, ' ');
       // tslint:disable-next-line:one-variable-per-declaration
       const style = {}, [, ruleName, rule] = cssTxt.match(/ ?(.*?) ?{([^}]*)}/) || [, , cssTxt];
@@ -53,7 +47,6 @@ const createUniversalStyleLoader = (document: Document, baseHref: string): Compu
   imports: [
     AppModule,
     ServerModule,
-    ServerTransferStateModule,
     NoopAnimationsModule,
     TranslateModule.forRoot({
       missingTranslationHandler: {

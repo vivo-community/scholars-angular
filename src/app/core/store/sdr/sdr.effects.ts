@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Params } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
@@ -25,7 +25,7 @@ import { Facet, DiscoveryView, DirectoryView, FacetType, OpKey } from '../../mod
 
 import { injectable, repos } from '../../model/repos';
 
-import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue, getFacetFilterLabel } from '../../../shared/utilities/discovery.utility';
+import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue, getFacetFilterLabel, FILTER_VALUE_DELIMITER } from '../../../shared/utilities/discovery.utility';
 import { removeFilterFromQueryParams } from '../../../shared/utilities/view.utility';
 
 import { selectSdrState } from './';
@@ -616,7 +616,7 @@ export class SdrEffects {
     directory: SdrState<DirectoryView>,
     discovery: SdrState<DiscoveryView>
   }): void {
-    const  { action, route, directory, discovery } = results;
+    const { action, route, directory, discovery } = results;
     if (route.queryParams.collection) {
       this.stats.collect(route.queryParams).toPromise().then((data: any) => {
         if (data) {
@@ -627,7 +627,9 @@ export class SdrEffects {
       });
 
       // tslint:disable-next-line: no-string-literal
-      const viewFacets: Facet[] = route.url.startsWith('/directory') ? directory.entities[route.params.view].facets : discovery.entities[route.params.view].facets;
+      const viewFacets: Facet[] = route.url.startsWith('/directory')
+        ? directory.entities[route.params.view].facets
+        : discovery.entities[route.params.view].facets;
 
       const sdrFacets: SdrFacet[] = action.payload.collection.facets;
 
@@ -651,27 +653,25 @@ export class SdrEffects {
               collapsed: expanded.indexOf(encodeURIComponent(viewFacet.name)) >= 0 ? false : viewFacet.collapsed,
             };
 
+            const selectedFilterValues = [];
+
             sidebarMenu.sections.push(sidebarSection);
 
             sdrFacet.entries.content
               .filter((facetEntry: SdrFacetEntry) => facetEntry.value.length > 0)
               .forEach((facetEntry: SdrFacetEntry) => {
-                let selected = false;
-
                 const requestFacet = route.queryParams.facets.split(',').find((rf: string) => rf === sdrFacet.field);
 
+                let selected = false;
+
+                let filterValue = viewFacet.type === FacetType.DATE_YEAR
+                  ? buildDateYearFilterValue(facetEntry)
+                  : viewFacet.type === FacetType.NUMBER_RANGE
+                    ? buildNumberRangeFilterValue(viewFacet, facetEntry)
+                    : facetEntry.value;
+
                 if (requestFacet && route.queryParams[`${requestFacet}.filter`] !== undefined) {
-                  switch (viewFacet.type) {
-                    case FacetType.DATE_YEAR:
-                      selected = route.queryParams[`${requestFacet}.filter`] === buildDateYearFilterValue(facetEntry);
-                      break;
-                    case FacetType.NUMBER_RANGE:
-                      selected = route.queryParams[`${requestFacet}.filter`] === buildNumberRangeFilterValue(viewFacet, facetEntry);
-                      break;
-                    default:
-                      selected = route.queryParams[`${requestFacet}.filter`] === facetEntry.value;
-                      break;
-                  }
+                  selected = route.queryParams[`${requestFacet}.filter`].split(FILTER_VALUE_DELIMITER).indexOf(filterValue) >= 0;
                 }
 
                 const sidebarItem: SidebarItem = {
@@ -684,21 +684,6 @@ export class SdrEffects {
                   queryParams: Object.assign({}, route.queryParams)
                 };
 
-                switch (viewFacet.type) {
-                  case FacetType.DATE_YEAR:
-                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? buildDateYearFilterValue(facetEntry) : undefined;
-                    sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
-                    break;
-                  case FacetType.NUMBER_RANGE:
-                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? buildNumberRangeFilterValue(viewFacet, facetEntry) : undefined;
-                    sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.BETWEEN;
-                    break;
-                  default:
-                    sidebarItem.queryParams[`${sdrFacet.field}.filter`] = !selected ? facetEntry.value : undefined;
-                    sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = OpKey.EQUALS;
-                    break;
-                }
-
                 sidebarItem.queryParams.page = 1;
 
                 if (selected) {
@@ -707,11 +692,13 @@ export class SdrEffects {
                     const queryParams: Params = Object.assign({}, sidebarItem.queryParams);
                     removeFilterFromQueryParams(queryParams, {
                       field: sdrFacet.field,
-                      value: queryParams[`${sdrFacet.field}.filter`],
-                      opKey: queryParams[`${sdrFacet.field}.filter`],
+                      value: filterValue,
+                      opKey: queryParams[`${sdrFacet.field}.opKey`],
                     });
                     sidebarItem.queryParams = queryParams;
                   }
+
+                  selectedFilterValues.push(filterValue);
                 } else {
                   if (sidebarItem.queryParams.filters) {
                     if (sidebarItem.queryParams.filters.indexOf(sdrFacet.field) < 0) {
@@ -720,7 +707,18 @@ export class SdrEffects {
                   } else {
                     sidebarItem.queryParams.filters = sdrFacet.field;
                   }
+
+                  selectedFilterValues.forEach((selectedFilterValue: string) => {
+                    filterValue += `${FILTER_VALUE_DELIMITER}${selectedFilterValue}`;
+                  });
+
+                  sidebarItem.queryParams[`${sdrFacet.field}.filter`] = filterValue;
+
+                  sidebarItem.queryParams[`${sdrFacet.field}.opKey`] = (viewFacet.type === FacetType.DATE_YEAR || viewFacet.type === FacetType.NUMBER_RANGE)
+                    ? OpKey.BETWEEN
+                    : OpKey.EQUALS;
                 }
+
                 sidebarSection.items.push(sidebarItem);
               });
 

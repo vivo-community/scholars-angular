@@ -46,6 +46,7 @@ export interface AppState {
 
 export const reducers = (appConfig: AppConfig): ActionReducerMap<AppState> => {
   const additionalContext = {
+    uiUrl: `//${appConfig.host}${appConfig.port !== 80 && appConfig.port !== 443 ? ':' + appConfig.port : ''}${appConfig.baseHref}`,
     vivoUrl: appConfig.vivoUrl,
     serviceUrl: appConfig.serviceUrl,
   };

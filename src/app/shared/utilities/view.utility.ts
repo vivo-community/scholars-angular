@@ -1,9 +1,10 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Params } from '@angular/router';
 
-import { Export, Facet, Filter, CollectionView, Sort, Boost, OpKey, FacetType, DiscoveryView } from '../../core/model/view';
-import { SdrPage } from '../../core/model/sdr';
 import { Direction } from '../../core/model/request';
+import { SdrPage } from '../../core/model/sdr';
+import { Boost, CollectionView, DiscoveryView, Export, Facet, FacetType, Filter, OpKey, Sort } from '../../core/model/view';
+import { FILTER_VALUE_DELIMITER } from './discovery.utility';
 
 const addFacetsToQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
   if (collectionView.facets && collectionView.facets.length > 0) {
@@ -87,12 +88,24 @@ const addExportToQueryParams = (queryParams: Params, collectionView: CollectionV
 };
 
 const removeFilterFromQueryParams = (queryParams: Params, filterToRemove: Filter): void => {
-  queryParams.filters = queryParams.filters.split(',').filter((filter: string) => filter !== filterToRemove.field).join(',');
-  if (!queryParams.filters) {
-    delete queryParams.filters;
-  }
-  delete queryParams[`${filterToRemove.field}.filter`];
-  delete queryParams[`${filterToRemove.field}.opKey`];
+  const filterValues = queryParams[`${filterToRemove.field}.filter`].split(FILTER_VALUE_DELIMITER);
+
+  if (filterValues.length === 1) {
+    queryParams.filters = queryParams.filters.split(',')
+      .filter((filter: string) => filter !== filterToRemove.field)
+      .join(',');
+
+    if (!queryParams.filters) {
+      delete queryParams.filters;
+    }
+    delete queryParams[`${filterToRemove.field}.filter`];
+    delete queryParams[`${filterToRemove.field}.opKey`];
+
+  } else if (filterValues.length > 1) {
+    queryParams[`${filterToRemove.field}.filter`] = filterValues
+      .filter((filterValue: string) => filterValue !== filterToRemove.value)
+      .join(FILTER_VALUE_DELIMITER);
+  } // else (filterValues.length < 1) do nothing 
 };
 
 const resetFiltersInQueryParams = (queryParams: Params, collectionView: CollectionView): void => {
@@ -160,21 +173,47 @@ const equals = (filterOne: Filter, filterTwo: Filter): boolean => {
   return filterTwo ? filterOne.field === filterTwo.field && filterOne.value === filterTwo.value : true;
 };
 
+/**
+ * Traverse object by path returning value else undefined.
+ *
+ * {
+ *   'trainee': {
+ *     'label': 'Name of organization'
+ *   }
+ * }
+ * i.e. `trainee.label` returns 'Name of organizarion'
+ *
+ * @param doc solr document or any JSON object
+ * @param path dot notation path
+ * @returns value at path
+ */
+const getValueByPath = (doc: any, path: string): string | undefined => {
+  let pathValue;
+  path.split('.').forEach((p: string) => {
+    pathValue = pathValue ? pathValue[p] : doc[p];
+  });
+  return pathValue;
+};
+
 const getResourcesPage = (resources: any[], sort: Sort[], page: SdrPage): any[] => {
   let sorted = [].concat(resources);
   // sort
   sorted = sorted.sort((a, b) => {
     let result = 0;
     for (const s of sort) {
+
+      const aValue = getValueByPath(a, s.field);
+      const bValue = getValueByPath(b, s.field);
+
       const isAsc = Direction[s.direction] === Direction.ASC;
-      if (a[s.field] === undefined) {
+      if (aValue === undefined) {
         return isAsc ? -1 : 1;
       }
-      if (b[s.field] === undefined) {
+      if (bValue === undefined) {
         return isAsc ? 1 : -1;
       }
-      const av = s.date ? new Date(a[s.field]) : a[s.field];
-      const bv = s.date ? new Date(b[s.field]) : b[s.field];
+      const av = s.date ? new Date(aValue) : aValue;
+      const bv = s.date ? new Date(bValue) : bValue;
       if (isAsc) {
         result = av > bv ? 1 : av < bv ? -1 : 0;
       } else {

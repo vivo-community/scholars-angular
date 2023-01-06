@@ -4,6 +4,7 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { CustomRouterState } from './router.reducer';
 import { Filter } from '../../model/view';
+import { FILTER_VALUE_DELIMITER } from '../../../shared/utilities/discovery.utility';
 
 export const selectRouterState = createFeatureSelector<RouterReducerState<CustomRouterState>>('router');
 
@@ -17,13 +18,15 @@ export const selectRouterQueryParamFilters = createSelector(selectRouterQueryPar
   const filters: Filter[] = [];
   if (queryParams.filters) {
     queryParams.filters.split(',').forEach((field: string) => {
-      const value = queryParams[`${field}.filter`];
+      const values = queryParams[`${field}.filter`];
       const opKey = queryParams[`${field}.opKey`];
-      if (value) {
-        filters.push({
-          field,
-          value,
-          opKey,
+      if (values) {
+        values.split(FILTER_VALUE_DELIMITER).forEach((value: string) => {
+          filters.push({
+            field,
+            value,
+            opKey,
+          });
         });
       }
     });

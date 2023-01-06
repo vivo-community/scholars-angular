@@ -30,17 +30,18 @@ export const selectResourceById = <R extends SdrResource>(name: string, id: stri
 export const selectCollectionViewByName = (collectionViewType: string, name: string) => createSelector(selectResourceEntities<CollectionView>(collectionViewType), (collectionViews) => collectionViews[name]);
 
 const findCollectionView = (collectionViews, clazz: string, defaultName: string): CollectionView => {
-  let defaultCollectionView;
+  let view;
   for (const collectionView of collectionViews) {
     const viewByClass = collectionView.filters.find((filter: Filter) => filter.field === 'class');
-    if (!!viewByClass && viewByClass.value === clazz) {
-      return collectionView;
+    if (!!viewByClass && viewByClass.value.startsWith(clazz)) {
+      view = collectionView;
+      break;
     }
     if (collectionView.name === defaultName) {
-      defaultCollectionView = collectionView;
+      view = collectionView;
     }
   }
-  return defaultCollectionView;
+  return view;
 };
 
 export const selectDirectoryViewByClass = (clazz: string) => createSelector(selectAllResources<DirectoryView>('directoryViews'), (resources) => findCollectionView(resources, clazz, 'People'));
@@ -48,23 +49,23 @@ export const selectDirectoryViewByClass = (clazz: string) => createSelector(sele
 export const selectDiscoveryViewByClass = (clazz: string) => createSelector(selectAllResources<DiscoveryView>('discoveryViews'), (resources) => findCollectionView(resources, clazz, 'People'));
 
 const findDisplayView = (displayViews, types: string[], defaultName: string): DisplayView => {
-  let defaultDisplayView;
+  let view;
   for (const key in displayViews) {
     if (displayViews.hasOwnProperty(key)) {
       for (const i in types) {
         if (displayViews.hasOwnProperty(key)) {
           if (displayViews[key].types.indexOf(types[i]) >= 0) {
-            return displayViews[key];
+            view = displayViews[key];
+            break;
           }
         }
       }
       if (displayViews[key].name === defaultName) {
-        defaultDisplayView = displayViews[key];
+        view = displayViews[key];
       }
     }
   }
-  return defaultDisplayView;
+  return view;
 };
 
 export const selectDisplayViewByTypes = (types: string[]) => createSelector(selectResourceEntities<DisplayView>('displayViews'), (resources) => findDisplayView(resources, types, 'Default'));
-
