@@ -6,6 +6,7 @@ interface AppConfig {
   baseHref: string;
   serviceUrl: string;
   embedUrl: string;
+  uiUrl: string;
   vivoUrl: string;
   vivoEditorUrl: string;
   collectSearchStats: boolean;

@@ -80,6 +80,7 @@ function run() {
 
   const SERVICE_URL = process.env.SERVICE_URL || 'http://localhost:9000';
   const EMBED_URL = process.env.EMBED_URL || 'http://localhost:4201';
+  const UI_URL = process.env.UI_URL || 'http://localhost:4200';
   const VIVO_URL = process.env.VIVO_URL || 'http://localhost:8080/vivo';
   const VIVO_EDITOR_URL = process.env.VIVO_EDITOR_URL || 'http://localhost:8080/vivo_editor';
 
@@ -91,6 +92,7 @@ function run() {
     baseHref: BASE_HREF,
     serviceUrl: SERVICE_URL,
     embedUrl: EMBED_URL,
+    uiUrl: UI_URL,
     vivoUrl: VIVO_URL,
     vivoEditorUrl: VIVO_EDITOR_URL,
     collectSearchStats: COLLECT_SEARCH_STATS

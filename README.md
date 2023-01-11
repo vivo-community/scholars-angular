@@ -28,9 +28,10 @@ In addition to having [Docker](https://docs.docker.com/) installed, a running [S
   -e BASE_HREF=/ \
   -e SERVICE_URL="http://localhost:9000" \
   -e EMBED_URL="http://localhost:4201" \
+  -e UI_URL="http://localhost:4200" \
   -e VIVO_URL="http://localhost:8080/vivo" \
   -e VIVO_EDITOR_URL="http://localhost:8080/vivo_editor" \
-  -e COLLECT_SEARCH_STATS=true \
+  -e COLLECT_SEARCH_STATS=false \
   scholars/angular
 ```
 

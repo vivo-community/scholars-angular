@@ -6,6 +6,7 @@ export const testAppConfig: AppConfig = {
   baseHref: '/',
   serviceUrl: 'http://localhost:9000',
   embedUrl: 'http://localhost:4201',
+  uiUrl: 'http://localhost:4200',
   vivoUrl: 'http://localhost:8080/vivo',
   vivoEditorUrl: 'http://localhost:8080/vivo_editor',
   collectSearchStats: false
