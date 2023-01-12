@@ -6,6 +6,8 @@ import { Store, select } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
 
+import { v4 as uuidv4 } from 'uuid';
+
 import { pagination } from 'scholars-embed-utilities';
 
 import { AppState } from '../../core/store';
@@ -38,7 +40,11 @@ export class PaginationComponent implements OnInit {
 
   public windowDimensions: Observable<WindowDimensions>;
 
-  constructor(@Inject(APP_BASE_HREF) private baseHref: string, private store: Store<AppState>, private router: Router, private route: ActivatedRoute) {}
+  public id: string;
+
+  constructor(@Inject(APP_BASE_HREF) private baseHref: string, private store: Store<AppState>, private router: Router, private route: ActivatedRoute) {
+    this.id = uuidv4();
+  }
 
   ngOnInit() {
     this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
@@ -78,6 +84,6 @@ export class PaginationComponent implements OnInit {
       queryParamsHandling: 'merge',
     });
     const path = this.router.serializeUrl(urlTree);
-    return `${this.baseHref}${path.substring(1)}`;
+    return `${this.baseHref}${path.substring(1)}#${this.id}`;
   }
 }
