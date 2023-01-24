@@ -60,6 +60,44 @@
       "COPIED": "Embeddable snippet copied!"
     }
   },
+  "VISUALIZATION": {
+    "COMMON": {
+      "TABLES": "Tables",
+      "YEAR": "Year"
+    },
+    "NETWORK": {
+      "COAUTHOR": {
+        "LABEL": "Co-author Network",
+        "ICON_ALT": "Co-author network icon",
+        "NOTE": "Note: This information is based solely on publications that have been loaded into the VIVO system. This may only be a small sample of the person's total work.",
+        "OBJECTS": "Publications",
+        "OBJECTS_PER_YEAR": "Publications per year",
+        "OBJECTS_WITH": "Publications with",
+        "PARTICIPANT": "Author",
+        "COPARTICIPANT": "Co-authors",
+        "TOOLTIP": {
+          "SOURCE": "<span>{{name}}</span><br/><span>{{count}} Co-authored</span>",
+          "TARGET": "<span>{{name}}</span><br/><span>{{count}} Joint Publication(s)</span>",
+          "RIBBON": "<span>{{source}} co-authored {{value}} time(s) with {{target}}</span>"
+        }
+      },
+      "COINVESTIGATOR": {
+        "LABEL": "Co-investigator Network",
+        "ICON_ALT": "Co-investigator network icon",
+        "NOTE": "Note: This information is based solely on grants that have been loaded into the VIVO system. This may only be a small sample of the person's total work.",
+        "OBJECTS": "Grants",
+        "OBJECTS_WITH": "Grants with",
+        "OBJECTS_PER_YEAR": "Grants per year",
+        "COPARTICIPANT": "Co-investigators",
+        "PARTICIPANT": "Investigator",
+        "TOOLTIP": {
+          "SOURCE": "<span>{{name}}</span><br/><span>{{count}} Co-investigated</span>",
+          "TARGET": "<span>{{name}}</span><br/><span>{{count}} Joint Grant(s)</span>",
+          "RIBBON": "<span>{{source}} co-investigated {{value}} time(s) with {{target}}</span>"
+        }
+      }
+    }
+  },
   "HEADER": {
     "BANNER": {
       "LOGO_ALT": "Scholars at Texas A&M University logo"

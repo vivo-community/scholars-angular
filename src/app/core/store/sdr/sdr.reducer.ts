@@ -8,12 +8,27 @@ import { keys } from '../../model/repos';
 import { augmentCollectionViewTemplates, augmentDisplayViewTemplates } from '../../../shared/utilities/template.utility';
 import { CollectionView, DisplayView } from '../../model/view';
 
+export interface DirectedData {
+  source: string;
+  target: string;
+  count: number;
+};
+
+export interface DataNetwork {
+  id: string;
+  lookup: Map<string, string>;
+  linkCounts: Map<string, number>;
+  yearCounts: Map<string, number>;
+  data: DirectedData[];
+};
+
 export interface SdrState<R extends SdrResource> extends EntityState<R> {
   page: SdrPage;
   facets: SdrFacet[];
   counts: {};
   links: SdrCollectionLinks;
   recentlyUpdated: SdrResource[];
+  dataNetwork: DataNetwork;
   counting: boolean;
   loading: boolean;
   dereferencing: boolean;
@@ -34,6 +49,7 @@ export const getSdrInitialState = <R extends SdrResource>(key: string) => {
     counts: {},
     links: undefined,
     recentlyUpdated: [],
+    dataNetwork: undefined,
     counting: false,
     loading: false,
     dereferencing: false,
@@ -130,6 +146,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
       case getSdrAction(SdrActionTypes.FIND_BY_ID_IN, name):
       case getSdrAction(SdrActionTypes.PAGE, name):
       case getSdrAction(SdrActionTypes.SEARCH, name):
+      case getSdrAction(SdrActionTypes.GET_NETWORK, name):
       case getSdrAction(SdrActionTypes.RECENTLY_UPDATED, name):
         return {
           ...state,
@@ -155,6 +172,14 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
           loading: false,
           error: undefined,
         });
+      case getSdrAction(SdrActionTypes.GET_NETWORK_SUCCESS, name):
+        const dataNetwork = action.payload.dataNetwork;
+        return {
+          ...state,
+          dataNetwork,
+          loading: false,
+          error: undefined,
+        };
       case getSdrAction(SdrActionTypes.RECENTLY_UPDATED_SUCCESS, name):
         const recentlyUpdated = action.payload.recentlyUpdated._embedded !== undefined ? action.payload.recentlyUpdated._embedded[name] : [];
         return {
@@ -218,6 +243,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
         };
       case getSdrAction(SdrActionTypes.GET_ALL_FAILURE, name):
       case getSdrAction(SdrActionTypes.GET_ONE_FAILURE, name):
+      case getSdrAction(SdrActionTypes.GET_NETWORK_FAILURE, name):
       case getSdrAction(SdrActionTypes.FIND_BY_ID_IN_FAILURE, name):
       case getSdrAction(SdrActionTypes.FIND_BY_TYPES_IN_FAILURE, name):
       case getSdrAction(SdrActionTypes.FETCH_LAZY_REFERENCE_FAILURE, name):
@@ -269,6 +295,7 @@ export const getSdrReducer = <R extends SdrResource>(name: string, additionalCon
           page: undefined,
           facets: [],
           links: undefined,
+          dataNetwork: undefined,
           loading: false,
           updating: false,
           error: undefined,
@@ -295,3 +322,4 @@ export const getCountByLabel = (label: string) => <R extends SdrResource>(state:
 export const getFacets = <R extends SdrResource>(state: SdrState<R>) => state.facets;
 export const getLinks = <R extends SdrResource>(state: SdrState<R>) => state.links;
 export const getRecentlyUpdated = <R extends SdrResource>(state: SdrState<R>) => state.recentlyUpdated;
+export const getDataNetwork = <R extends SdrResource>(state: SdrState<R>) => state.dataNetwork;

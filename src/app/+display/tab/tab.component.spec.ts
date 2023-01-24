@@ -45,10 +45,10 @@ describe('TabComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: scheduled([{ view: 'People', tab: 'View All' }], queueScheduler),
             parent: {
               params: scheduled([{ collection: 'individual', id: 'test' }], queueScheduler),
             },
+            params: scheduled([{ view: 'People', tab: 'View All' }], queueScheduler),
           },
         },
       ],

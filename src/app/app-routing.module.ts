@@ -39,6 +39,14 @@ const routes: Routes = [
     },
   },
   {
+    path: 'visualization',
+    loadChildren: () => import('./+visualization').then((m) => m.VisualizationModule),
+    canActivate: [],
+    data: {
+      tags: [{ name: 'view', content: 'Scholars Visualization' }],
+    },
+  },
+  {
     path: '',
     loadChildren: () => import('./+dashboard').then((m) => m.DashboardModule),
     canActivate: [],
