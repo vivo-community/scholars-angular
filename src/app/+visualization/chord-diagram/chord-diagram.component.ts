@@ -68,7 +68,7 @@ export class ChordDiagramComponent implements OnInit {
 
       const color = (i: number) => d3.scaleOrdinal(ids, d3.schemeCategory10)(ids[i]);
 
-      const ribbon = d3.ribbonArrow()
+      const ribbon = d3.ribbon()
         .radius(innerRadius - this.shellGap)
         .padAngle(1 / innerRadius);
 
