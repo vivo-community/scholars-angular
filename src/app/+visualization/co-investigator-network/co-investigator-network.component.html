@@ -1,0 +1,72 @@
+<div *ngIf="document | async; let individual" [@fadeIn]>
+  <div class="float-right">
+    <div class="text-nowrap">
+      <img src="assets/images/co_author_icon.png" height="25" width="25" alt="{{ 'VISUALIZATION.NETWORK.COAUTHOR.ICON_ALT' | translate }}">
+      <span class="ml-2">
+        <a [routerLink]="['/visualization', individual.id, 'Co-author Network']">{{ 'VISUALIZATION.NETWORK.COAUTHOR.LABEL' | translate }}</a>
+      </span>
+    </div>
+  </div>
+  <div class="h1"><a href="display/{{individual.id}}">{{individual.name}}</a></div>
+  <div class="h2">{{ 'VISUALIZATION.NETWORK.COINVESTIGATOR.LABEL' | translate }}</div>
+  <div *ngIf="dataNetwork | async; let dataNetwork" class="mb-4">
+    <scholars-chord-diagram
+      [dataNetwork]="dataNetwork"
+      sourceTooltipKey="VISUALIZATION.NETWORK.COINVESTIGATOR.TOOLTIP.SOURCE"
+      targetTooltipKey="VISUALIZATION.NETWORK.COINVESTIGATOR.TOOLTIP.TARGET"
+      ribbonTooltipKey="VISUALIZATION.NETWORK.COINVESTIGATOR.TOOLTIP.RIBBON"
+    ></scholars-chord-diagram>
+    <div class="row">
+      <div class="col">
+        <div class="alert alert-warning" role="alert">
+          <p>{{ 'VISUALIZATION.NETWORK.COINVESTIGATOR.NOTE' | translate }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="h3">{{ 'VISUALIZATION.COMMON.TABLES' | translate }}</div>
+    <div class="row">
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">{{ 'VISUALIZATION.NETWORK.COINVESTIGATOR.OBJECTS_PER_YEAR' | translate }}</div>
+          <div class="card-body">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">{{ 'VISUALIZATION.COMMON.YEAR' | translate }}</th>
+                  <th scope="col">{{ 'VISUALIZATION.NETWORK.COINVESTIGATOR.OBJECTS' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let count of dataNetwork.yearCounts | keyvalue: asIsOrder">
+                  <td>{{ count.key }}</td>
+                  <td>{{ count.value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header">{{ 'VISUALIZATION.NETWORK.COINVESTIGATOR.COPARTICIPANT' | translate }}</div>
+          <div class="card-body">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">{{ 'VISUALIZATION.NETWORK.COINVESTIGATOR.PARTICIPANT' | translate }}</th>
+                  <th scope="col">{{ 'VISUALIZATION.NETWORK.COINVESTIGATOR.OBJECTS_WITH' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let count of dataNetwork.linkCounts | keyvalue: asIsOrder">
+                  <td>{{ dataNetwork.lookup[count.key] }}</td>
+                  <td>{{ count.value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

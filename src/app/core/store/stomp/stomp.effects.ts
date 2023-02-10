@@ -95,7 +95,7 @@ export class StompEffects implements OnInitEffects {
     ofType(fromStomp.StompActionTypes.UNSUBSCRIBE),
     map((action: fromStomp.UnsubscribeAction) => action),
     withLatestFrom(this.store),
-    skipWhile(([action, store]) => !store.stomp.subscriptions.has(action.payload.channel)),
+    skipWhile(([action, store]) => !store.stomp.subscriptions.get(action.payload.channel)),
     switchMap(([action, store]) =>
       scheduled([store.stomp.subscriptions.get(action.payload.channel).unsubscribe()], asapScheduler).pipe(
         map(

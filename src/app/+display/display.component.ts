@@ -1,29 +1,22 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, PLATFORM_ID, Inject } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { MetaDefinition } from '@angular/platform-browser';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { BehaviorSubject, firstValueFrom, Observable, Subscription } from 'rxjs';
+import { filter, switchMap, take, tap } from 'rxjs/operators';
 
-import { Store, select } from '@ngrx/store';
-
-import { Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { filter, take, switchMap, tap } from 'rxjs/operators';
-
+import { SolrDocument } from '../core/model/discovery';
+import { DiscoveryView, DisplayTabSectionView, DisplayTabView, DisplayView, Filter } from '../core/model/view';
+import { DisplaySubsectionView, Side } from '../core/model/view/display-view';
 import { AppState } from '../core/store';
-
-import { DiscoveryView, DisplayView, DisplayTabView, DisplayTabSectionView, Filter } from '../core/model/view';
-
+import { selectWindowDimensions } from '../core/store/layout';
 import { WindowDimensions } from '../core/store/layout/layout.reducer';
-
+import { selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceById, selectResourceIsDereferencing } from '../core/store/sdr';
 import { fadeIn } from '../shared/utilities/animation.utility';
 import { loadBadges } from '../shared/utilities/view.utility';
 
-import { selectWindowDimensions } from '../core/store/layout';
-import { SolrDocument } from '../core/model/discovery';
-import { Side, DisplaySubsectionView } from '../core/model/view/display-view';
-
-import { selectResourceById, selectDiscoveryViewByClass, selectDisplayViewByTypes, selectResourceIsDereferencing } from '../core/store/sdr';
-
-import * as fromSdr from '../core/store/sdr/sdr.actions';
 import * as fromMetadata from '../core/store/metadata/metadata.actions';
+import * as fromSdr from '../core/store/sdr/sdr.actions';
 
 const hasDataAfterFilter = (fltr: Filter, obj: any): boolean => {
   return Array.isArray(obj[fltr.field]) ? obj[fltr.field].indexOf(fltr.value) >= 0 : obj[fltr.field] === fltr.value;
@@ -91,9 +84,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
   public document: Observable<SolrDocument>;
 
-  public ready: Observable<boolean>;
-
-  private readySubject: BehaviorSubject<boolean>;
+  public ready: BehaviorSubject<boolean>;
 
   private subscriptions: Subscription[];
 
@@ -104,7 +95,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute
   ) {
     this.subscriptions = [];
-    this.readySubject = new BehaviorSubject<boolean>(false);
+    this.ready = new BehaviorSubject<boolean>(false);
   }
 
   ngOnDestroy() {
@@ -114,14 +105,12 @@ export class DisplayComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    this.ready = this.readySubject.asObservable();
-
     this.windowDimensions = this.store.pipe(select(selectWindowDimensions));
 
     this.subscriptions.push(
       this.route.params.subscribe((params: Params) => {
         if (params.id) {
-          this.readySubject.next(false);
+          this.ready.next(false);
 
           this.store.dispatch(new fromSdr.GetOneResourceAction('individual', { id: params.id }));
 
@@ -187,7 +176,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
           );
 
           // subscribe to first defined document to find display view
-          this.subscriptions.push(this.store.pipe(
+          firstValueFrom(this.store.pipe(
             select(selectResourceById('individual', params.id)),
             filter((document: SolrDocument) => document !== undefined),
             take(1),
@@ -241,7 +230,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
 
                   // lazily fetch references sequentially
                   lazyReferences.reduce((previousPromise, nextlazyReference) => previousPromise.then(() => dereference(nextlazyReference)), Promise.resolve()).then(() => {
-                    this.readySubject.next(true);
+                    this.ready.next(true);
 
                     if (this.route.children.length === 0) {
                       this.router.navigate([displayView.name, 'View All'], {
@@ -257,7 +246,7 @@ export class DisplayComponent implements OnDestroy, OnInit {
                 })
               );
             })
-          ).subscribe());
+          ));
         }
       })
     );

@@ -21,6 +21,9 @@ export enum SdrActionTypes {
   GET_ONE = 'get one resource by id',
   GET_ONE_SUCCESS = 'sucessfully got resource by id',
   GET_ONE_FAILURE = 'failed getting resource by id',
+  GET_NETWORK = 'get network for resource by id',
+  GET_NETWORK_SUCCESS = 'sucessfully got network for resource by id',
+  GET_NETWORK_FAILURE = 'failed getting network for resource by id',
   FIND_BY_ID_IN = 'find resource by id in',
   FIND_BY_ID_IN_SUCCESS = 'sucessfully found resource by id in',
   FIND_BY_ID_IN_FAILURE = 'failed finding resource by id is',
@@ -136,6 +139,26 @@ export class GetOneResourceSuccessAction implements Action {
 
 export class GetOneResourceFailureAction implements Action {
   readonly type = getSdrAction(SdrActionTypes.GET_ONE_FAILURE, this.name);
+  constructor(public name: string, public payload: any) { }
+}
+
+export class GetNetworkAction implements Action {
+  readonly type = getSdrAction(SdrActionTypes.GET_NETWORK, this.name);
+  constructor(public name: string, public payload: {
+    id: string | number,
+    dateField: string,
+    dataFields: string[],
+    typeFilter: string
+  }) { }
+}
+
+export class GetNetworkSuccessAction implements Action {
+  readonly type = getSdrAction(SdrActionTypes.GET_NETWORK_SUCCESS, this.name);
+  constructor(public name: string, public payload: any) { }
+}
+
+export class GetNetworkFailureAction implements Action {
+  readonly type = getSdrAction(SdrActionTypes.GET_NETWORK_FAILURE, this.name);
   constructor(public name: string, public payload: any) { }
 }
 
@@ -268,6 +291,9 @@ export type SdrActions =
   GetOneResourceAction |
   GetOneResourceSuccessAction |
   GetOneResourceFailureAction |
+  GetNetworkAction |
+  GetNetworkSuccessAction |
+  GetNetworkFailureAction |
   FindByIdInResourceAction |
   FindByIdInResourceSuccessAction |
   FindByIdInResourceFailureAction |

@@ -29,7 +29,7 @@ import { createSdrRequest, buildDateYearFilterValue, buildNumberRangeFilterValue
 import { removeFilterFromQueryParams } from '../../../shared/utilities/view.utility';
 
 import { selectSdrState } from './';
-import { SdrState } from './sdr.reducer';
+import { DataNetwork, SdrState } from './sdr.reducer';
 import { selectRouterState } from '../router';
 import { selectIsStompConnected, selectStompState } from '../stomp';
 
@@ -130,6 +130,40 @@ export class SdrEffects {
   getOneFailure = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_ONE_FAILURE)),
     map((action: fromSdr.GetOneResourceFailureAction) => this.alert.getOneFailureAlert(action.payload))
+  ));
+
+  getNetwork = createEffect(() => this.actions.pipe(
+    ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_NETWORK)),
+    switchMap((action: fromSdr.GetNetworkAction) =>
+      this.repos
+        .get(action.name)
+        .getNetwork(action.payload.id, action.payload.dateField, action.payload.dataFields, action.payload.typeFilter)
+        .pipe(
+          map((dataNetwork: DataNetwork) => new fromSdr.GetNetworkSuccessAction(action.name, { dataNetwork })),
+          catchError((response) =>
+            scheduled(
+              [
+                new fromSdr.GetNetworkFailureAction(action.name, {
+                  response,
+                }),
+              ],
+              asapScheduler
+            )
+          )
+        )
+    )
+  ));
+
+  getNetworkSuccess = createEffect(() => this.actions.pipe(
+    ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_NETWORK_SUCCESS)),
+    switchMap((action: fromSdr.GetNetworkSuccessAction) => this.waitForStompConnection(action.name)),
+    withLatestFrom(this.store.pipe(select(selectStompState))),
+    map(([combination, stomp]) => this.subscribeToResourceQueue(combination[0], stomp))
+  ), { dispatch: false });
+
+  getNetworkFailure = createEffect(() => this.actions.pipe(
+    ofType(...this.buildActions(fromSdr.SdrActionTypes.GET_NETWORK_FAILURE)),
+    map((action: fromSdr.GetNetworkFailureAction) => this.alert.getNetworkFailureAlert(action.payload))
   ));
 
   findByIdIn = createEffect(() => this.actions.pipe(
@@ -415,7 +449,7 @@ export class SdrEffects {
 
   clearResourceSubscription = createEffect(() => this.actions.pipe(
     ofType(...this.buildActions(fromSdr.SdrActionTypes.CLEAR)),
-    map((action: fromSdr.PageResourcesSuccessAction) => new fromStomp.UnsubscribeAction({ channel: `/queue/${action.name}` }))
+    map((action: fromSdr.ClearResourcesAction) => new fromStomp.UnsubscribeAction({ channel: `/queue/${action.name}` }))
   ));
 
   post = createEffect(() => this.actions.pipe(
